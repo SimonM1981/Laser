@@ -8,15 +8,8 @@
     body { font-family: system-ui, -apple-system, sans-serif; background: #f8f9fa; }
     .nav-tabs .nav-link { font-weight: 600; }
     .table th { background-color: #f8f9fa; }
-    .excel-row input, .excel-row select { 
-      font-size: 1rem; 
-      height: 42px; 
-    }
-    .excel-row label { 
-      font-size: 0.85rem; 
-      margin-bottom: 4px; 
-      font-weight: 500; 
-    }
+    .excel-row input, .excel-row select { font-size: 1rem; height: 42px; }
+    .excel-row label { font-size: 0.85rem; margin-bottom: 4px; font-weight: 500; }
     .paste-info { font-size: 0.85rem; color: #555; }
     .header {
       background: linear-gradient(90deg, #0d6efd, #6610f2);
@@ -25,21 +18,18 @@
       border-radius: 12px;
       margin-bottom: 25px;
     }
-    .app-url {
-      color: white;
-      text-decoration: underline;
-    }
+    .app-url { color: white; text-decoration: underline; }
     .app-url:hover { color: #fff; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="container py-4">
 
-    <!-- Header with your URL -->
+    <!-- Header with your latest URL -->
     <div class="header d-flex justify-content-between align-items-center">
       <div>
         <h1 class="mb-1">🔥 Laser Data App</h1>
-        <p class="mb-0">Data Entry • Daily Report • Summary</p>
+        <p class="mb-0">Data Entry • Daily • Summary</p>
       </div>
       <div>
         <a href="https://script.google.com/macros/s/AKfycbz_hQaLVedOduHp0AyAvqR4aKeX5DQJRkMb8s51TW8128fFsn7rda4tRP72W0ildyic/exec" 
@@ -57,16 +47,15 @@
 
     <div class="tab-content">
 
-      <!-- ==================== DATA ENTRY ==================== -->
+      <!-- Data Entry -->
       <div class="tab-pane fade show active" id="entry">
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="mb-3">📋 New Entry (Excel-style row)</h5>
             <p class="paste-info mb-3">
-              💡 Tip: Copy rows from Excel → click any field below → press Ctrl + V<br>
-              (Order: Received Date, Lasered Date, Customer, Brand, P/I No., Part No., Lot Received, Qty, Laser Lot No., Laser by, Machine No.)
+              💡 Copy from Excel (Received Date to Machine No. order) → click any field → Ctrl + V
             </p>
-
+            
             <form id="entryForm">
               <div class="excel-row row g-2 align-items-end">
                 <div class="col-md-2"><label>Received Date</label><input type="date" id="receivedDate" class="form-control"></div>
@@ -96,9 +85,7 @@
         <div class="card shadow-sm p-4">
           <div class="row g-3 mb-3">
             <div class="col-md-3"><label>Lasered Date</label><input type="date" id="dailyDate" class="form-control" required></div>
-            <div class="col-md-3"><label>Machine No.</label>
-              <select id="machineFilter" class="form-select"><option value="">All Machines</option></select>
-            </div>
+            <div class="col-md-3"><label>Machine No.</label><select id="machineFilter" class="form-select"><option value="">All Machines</option></select></div>
             <div class="col-md-2"><button id="loadDailyBtn" class="btn btn-primary w-100">Load Data</button></div>
           </div>
           <div id="dailyResult"></div>
@@ -178,10 +165,10 @@
       });
     }
 
-    // Bulk Paste from Excel
+    // Bulk Paste
     function setupBulkPaste() {
       const inputs = document.querySelectorAll('#entryForm input');
-      inputs.forEach((input, index) => {
+      inputs.forEach(input => {
         input.addEventListener('paste', function(e) {
           const text = e.clipboardData.getData('text');
           const lines = text.trim().split(/\r?\n/);
@@ -210,7 +197,6 @@
           e.preventDefault();
 
           if (rows.length === 1) {
-            // Single row - fill form
             const d = rows[0];
             document.getElementById('receivedDate').value = d[0] ? d[0].toISOString().split('T')[0] : '';
             document.getElementById('laseredDate').value = d[1] ? d[1].toISOString().split('T')[0] : '';
@@ -223,19 +209,12 @@
             document.getElementById('laserLotNo').value = d[8];
             document.getElementById('laserBy').value = d[9];
             document.getElementById('machineNo').value = d[10];
-          } else if (confirm(`Paste and save ${rows.length} rows?`)) {
+          } else if (confirm(`Add ${rows.length} rows?`)) {
             let done = 0;
             rows.forEach((entry, i) => {
               google.script.run
-                .withSuccessHandler(() => {
-                  done++;
-                  if (done === rows.length) {
-                    alert(`✅ ${rows.length} rows added successfully!`);
-                    clearForm();
-                    loadData();
-                  }
-                })
-                .withFailureHandler(err => alert(`Error on row ${i+1}: ${err.message}`))
+                .withSuccessHandler(() => { done++; if (done === rows.length) { alert(`✅ ${rows.length} rows added!`); clearForm(); loadData(); } })
+                .withFailureHandler(err => alert(`Error row ${i+1}: ${err.message}`))
                 .addNewEntry(entry);
             });
           }
@@ -247,7 +226,6 @@
       document.getElementById('entryForm').reset();
     }
 
-    // Form Submit
     document.getElementById('entryForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const entryData = [
@@ -265,19 +243,15 @@
       ];
 
       google.script.run
-        .withSuccessHandler(res => {
-          alert(res.message);
-          clearForm();
-          loadData();
-        })
-        .withFailureHandler(err => alert("Submit failed: " + err.message))
+        .withSuccessHandler(res => { alert(res.message); clearForm(); loadData(); })
+        .withFailureHandler(err => alert("Error: " + err.message))
         .addNewEntry(entryData);
     });
 
     // Daily Tab
     document.getElementById('loadDailyBtn').addEventListener('click', () => {
       const dateStr = document.getElementById('dailyDate').value;
-      if (!dateStr) return alert('Please choose a date');
+      if (!dateStr) return alert('Please select date');
       const target = new Date(dateStr);
       const machine = document.getElementById('machineFilter').value;
 
@@ -292,9 +266,8 @@
 
       let html = `<h5>📅 ${target.toDateString()} ${machine ? `(${machine})` : '(All Machines)'}</h5>`;
       if (filtered.length === 0) {
-        html += '<p class="text-muted">No data found.</p>';
+        html += '<p class="text-muted">No items found.</p>';
       } else {
-        // Group by machine
         const groups = {};
         filtered.forEach(row => {
           const m = String(row[11] || 'Unknown').trim();
@@ -329,21 +302,21 @@
 
     // Summary Tab
     document.getElementById('loadSummaryBtn').addEventListener('click', () => {
-      const y = document.getElementById('yearSelect').value ? parseInt(document.getElementById('yearSelect').value) : null;
-      const m = document.getElementById('monthSelect').value ? parseInt(document.getElementById('monthSelect').value) : null;
+      const year = document.getElementById('yearSelect').value ? parseInt(document.getElementById('yearSelect').value) : null;
+      const month = document.getElementById('monthSelect').value ? parseInt(document.getElementById('monthSelect').value) : null;
 
       const filtered = allData.slice(1).filter(row => {
         const d = row[2];
         if (!(d instanceof Date)) return false;
-        if (y && d.getFullYear() !== y) return false;
-        if (m !== null && d.getMonth() !== m) return false;
+        if (year && d.getFullYear() !== year) return false;
+        if (month !== null && d.getMonth() !== month) return false;
         return true;
       });
 
       let html = `<h5>📊 Summary</h5>`;
       const totalItems = filtered.length;
       const totalQty = filtered.reduce((s,r) => s + (parseFloat(r[8])||0), 0);
-      html += `<div class="alert alert-info">Total Items: <strong>${totalItems}</strong> | Total Quantity: <strong>${totalQty}</strong></div>`;
+      html += `<div class="alert alert-info">Total Items: <strong>${totalItems}</strong> | Total Qty: <strong>${totalQty}</strong></div>`;
 
       if (totalItems > 0) {
         html += `<table class="table table-striped"><thead><tr>`;
@@ -359,6 +332,8 @@
           html += `</tr>`;
         });
         html += `</tbody></table>`;
+      } else {
+        html += '<p class="text-muted">No data found.</p>';
       }
       document.getElementById('summaryResult').innerHTML = html;
     });
