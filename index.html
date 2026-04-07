@@ -9,20 +9,13 @@
     body { font-family: system-ui, -apple-system, sans-serif; }
     .nav-tabs .nav-link { font-weight: 600; }
     .table th { background-color: #f8f9fa; }
-    .excel-row input {
-      font-size: 1rem;
-      height: 42px;
-    }
-    .excel-row label {
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
+    .excel-row input, .excel-row select { font-size: 1rem; height: 42px; }
+    .excel-row label { font-size: 0.85rem; margin-bottom: 4px; font-weight: 500; }
+    .paste-info { font-size: 0.8rem; color: #666; }
   </style>
 </head>
 <body class="bg-light">
   <div class="container py-4">
-    
     <h1 class="mb-4 text-primary">🔥 Laser Data App</h1>
 
     <!-- Tabs -->
@@ -40,54 +33,56 @@
 
     <div class="tab-content">
 
-      <!-- ==================== DATA ENTRY TAB (Excel-style) ==================== -->
+      <!-- ==================== DATA ENTRY TAB (Single Excel-style row + Bulk Paste) ==================== -->
       <div class="tab-pane fade show active" id="entry">
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="mb-3">📋 New Entry (Excel-style row)</h5>
+            <p class="paste-info mb-3">💡 Tip: Copy multiple rows from Excel (columns in order: Received Date to Machine No.) → click any field below → Ctrl+V to add all rows at once.</p>
+            
             <form id="entryForm">
               <div class="excel-row row g-2 align-items-end">
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Received Date</label>
                   <input type="date" id="receivedDate" class="form-control">
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Lasered Date</label>
                   <input type="date" id="laseredDate" class="form-control" required>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                   <label class="form-label">Customer</label>
                   <input type="text" id="customer" class="form-control" required>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Brand</label>
                   <input type="text" id="brand" class="form-control">
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">P/I No.</label>
                   <input type="text" id="piNo" class="form-control">
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                   <label class="form-label">Part No.</label>
                   <input type="text" id="partNo" class="form-control" required>
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Lot Received</label>
                   <input type="text" id="lotReceived" class="form-control">
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Qty</label>
                   <input type="number" id="qty" class="form-control" required>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                   <label class="form-label">Laser Lot No.</label>
                   <input type="text" id="laserLotNo" class="form-control">
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Laser by</label>
                   <input type="text" id="laserBy" class="form-control">
                 </div>
-                <div class="col-md-2">
+                <div class="col">
                   <label class="form-label">Machine No.</label>
                   <input type="text" id="machineNo" class="form-control" required>
                 </div>
@@ -102,16 +97,22 @@
         </div>
       </div>
 
-      <!-- ==================== DAILY TAB ==================== -->
+      <!-- ==================== DAILY TAB (with Machine selector) ==================== -->
       <div class="tab-pane fade" id="daily">
         <div class="card shadow-sm p-4">
-          <div class="row align-items-end mb-3">
-            <div class="col-auto">
-              <label class="form-label">Select Lasered Date</label>
-              <input type="date" id="dailyDate" class="form-control">
+          <div class="row g-3 align-items-end mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Lasered Date</label>
+              <input type="date" id="dailyDate" class="form-control" required>
             </div>
-            <div class="col-auto">
-              <button id="loadDailyBtn" class="btn btn-primary">Load Daily Items</button>
+            <div class="col-md-3">
+              <label class="form-label">Machine No.</label>
+              <select id="machineFilter" class="form-select">
+                <option value="">All Machines</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button id="loadDailyBtn" class="btn btn-primary w-100">Load Data</button>
             </div>
           </div>
           <div id="dailyResult"></div>
@@ -156,6 +157,7 @@
   <script>
     let allData = [];
     let headers = [];
+    let machineOptions = new Set();
 
     function loadData() {
       google.script.run
@@ -163,6 +165,7 @@
           allData = data;
           if (allData.length > 0) headers = allData[0];
           populateYears();
+          populateMachineFilter();
         })
         .withFailureHandler(err => alert('Error loading data: ' + err.message))
         .getSheetData();
@@ -171,58 +174,111 @@
     function populateYears() {
       const years = new Set();
       allData.slice(1).forEach(row => {
-        const d = row[2]; // Lasered Date
+        const d = row[2];
         if (d instanceof Date) years.add(d.getFullYear());
       });
       const select = document.getElementById('yearSelect');
       select.innerHTML = '<option value="">All Years</option>';
       Array.from(years).sort((a,b)=>b-a).forEach(y => {
         const opt = document.createElement('option');
-        opt.value = y;
-        opt.textContent = y;
+        opt.value = y; opt.textContent = y;
         select.appendChild(opt);
       });
     }
 
-    // Support paste from Excel (Tab-separated)
-    function setupPasteSupport() {
-      const inputs = document.querySelectorAll('#entryForm input');
-      inputs.forEach((input, index) => {
-        input.addEventListener('paste', function(e) {
-          const pasteData = e.clipboardData.getData('text');
-          const values = pasteData.split('\t');   // Excel uses Tab as separator
+    function populateMachineFilter() {
+      machineOptions.clear();
+      allData.slice(1).forEach(row => {
+        const m = (row[11] || '').toString().trim();
+        if (m) machineOptions.add(m);
+      });
+      const select = document.getElementById('machineFilter');
+      select.innerHTML = '<option value="">All Machines</option>';
+      Array.from(machineOptions).sort().forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        select.appendChild(opt);
+      });
+    }
 
-          if (values.length > 1) {
-            e.preventDefault();
-            let currentIndex = index;
-            
-            values.forEach((val, i) => {
-              if (currentIndex + i < inputs.length) {
-                const targetInput = inputs[currentIndex + i];
-                if (targetInput.type === 'date') {
-                  // Try to convert pasted date if possible
-                  const date = new Date(val);
-                  if (!isNaN(date)) {
-                    targetInput.value = date.toISOString().split('T')[0];
-                  }
-                } else if (targetInput.type === 'number') {
-                  targetInput.value = parseFloat(val) || '';
-                } else {
-                  targetInput.value = val.trim();
-                }
-              }
-            });
+    // Bulk paste support (multiple rows from Excel)
+    function setupBulkPaste() {
+      const inputs = document.querySelectorAll('#entryForm input');
+      inputs.forEach(input => {
+        input.addEventListener('paste', function(e) {
+          const pasteText = e.clipboardData.getData('text');
+          if (!pasteText) return;
+
+          const lines = pasteText.trim().split(/\r?\n/);
+          if (lines.length === 0) return;
+
+          const parsedRows = [];
+          lines.forEach(line => {
+            const values = line.split('\t'); // Excel uses Tab
+            if (values.length < 11) return; // skip incomplete rows
+
+            const entryData = [
+              values[0] ? new Date(values[0]) : null,
+              values[1] ? new Date(values[1]) : null,
+              values[2] || '',
+              values[3] || '',
+              values[4] || '',
+              values[5] || '',
+              values[6] || '',
+              parseFloat(values[7]) || 0,
+              values[8] || '',
+              values[9] || '',
+              values[10] || ''
+            ];
+            parsedRows.push(entryData);
+          });
+
+          if (parsedRows.length === 0) return;
+
+          e.preventDefault();
+
+          if (parsedRows.length === 1) {
+            // Single row - fill the form
+            const data = parsedRows[0];
+            document.getElementById('receivedDate').value = data[0] ? data[0].toISOString().split('T')[0] : '';
+            document.getElementById('laseredDate').value = data[1] ? data[1].toISOString().split('T')[0] : '';
+            document.getElementById('customer').value = data[2];
+            document.getElementById('brand').value = data[3];
+            document.getElementById('piNo').value = data[4];
+            document.getElementById('partNo').value = data[5];
+            document.getElementById('lotReceived').value = data[6];
+            document.getElementById('qty').value = data[7];
+            document.getElementById('laserLotNo').value = data[8];
+            document.getElementById('laserBy').value = data[9];
+            document.getElementById('machineNo').value = data[10];
+          } else {
+            // Multiple rows - submit all at once
+            if (confirm(`Paste and save ${parsedRows.length} rows?`)) {
+              let completed = 0;
+              parsedRows.forEach((entryData, idx) => {
+                google.script.run
+                  .withSuccessHandler(() => {
+                    completed++;
+                    if (completed === parsedRows.length) {
+                      alert(`✅ ${parsedRows.length} rows added successfully!`);
+                      clearForm();
+                      loadData();
+                    }
+                  })
+                  .withFailureHandler(err => alert('Error adding row ' + (idx+1) + ': ' + err.message))
+                  .addNewEntry(entryData);
+              });
+            }
           }
         });
       });
     }
 
-    // Clear form
     function clearForm() {
       document.getElementById('entryForm').reset();
     }
 
-    // ====================== DATA ENTRY ======================
+    // Single entry submit
     document.getElementById('entryForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const entryData = [
@@ -249,27 +305,31 @@
         .addNewEntry(entryData);
     });
 
-    // ====================== DAILY TAB ======================
+    // Daily Tab with Machine filter
     document.getElementById('loadDailyBtn').addEventListener('click', () => {
       const dateStr = document.getElementById('dailyDate').value;
-      if (!dateStr) return alert('Please select a date');
+      if (!dateStr) return alert('Please select a Lasered Date');
       const targetDate = new Date(dateStr);
+      const selectedMachine = document.getElementById('machineFilter').value;
 
       const filtered = allData.slice(1).filter(row => {
         const lasered = row[2];
         if (!(lasered instanceof Date)) return false;
-        return lasered.getFullYear() === targetDate.getFullYear() &&
-               lasered.getMonth() === targetDate.getMonth() &&
-               lasered.getDate() === targetDate.getDate();
+        const dateMatch = lasered.getFullYear() === targetDate.getFullYear() &&
+                          lasered.getMonth() === targetDate.getMonth() &&
+                          lasered.getDate() === targetDate.getDate();
+        const machineMatch = !selectedMachine || (row[11] || '').toString().trim() === selectedMachine;
+        return dateMatch && machineMatch;
       });
 
-      let html = `<h5>📅 Daily Laser Items – ${targetDate.toDateString()}</h5>`;
+      let html = `<h5>📅 Daily Laser Items – ${targetDate.toDateString()} ${selectedMachine ? `(${selectedMachine})` : '(All Machines)'}</h5>`;
+
       if (filtered.length === 0) {
-        html += '<p class="text-muted">No items found for this date.</p>';
+        html += '<p class="text-muted">No items found.</p>';
       } else {
         const groups = {};
         filtered.forEach(row => {
-          const machine = row[11] || 'Unknown';
+          const machine = (row[11] || 'Unknown').toString().trim();
           if (!groups[machine]) groups[machine] = [];
           groups[machine].push(row);
         });
@@ -296,7 +356,7 @@
           row.forEach(cell => {
             let val = cell;
             if (cell instanceof Date) val = cell.toLocaleDateString();
-            html += `<td>${val}</td>`;
+            html += `<td>${val || ''}</td>`;
           });
           html += `</tr>`;
         });
@@ -305,7 +365,7 @@
       document.getElementById('dailyResult').innerHTML = html;
     });
 
-    // ====================== SUMMARY TAB ======================
+    // Summary Tab (unchanged logic)
     document.getElementById('loadSummaryBtn').addEventListener('click', () => {
       const yearVal = document.getElementById('yearSelect').value;
       const monthVal = document.getElementById('monthSelect').value;
@@ -340,7 +400,7 @@
           row.forEach(cell => {
             let val = cell;
             if (cell instanceof Date) val = cell.toLocaleDateString();
-            html += `<td>${val}</td>`;
+            html += `<td>${val || ''}</td>`;
           });
           html += `</tr>`;
         });
@@ -351,14 +411,13 @@
       document.getElementById('summaryResult').innerHTML = html;
     });
 
-    // ====================== EXPORT ======================
     function exportToCSV() {
       if (!allData.length) return alert('No data to export');
       let csv = allData.map(row => 
         row.map(cell => {
           let val = cell;
           if (cell instanceof Date) val = cell.toLocaleDateString('en-CA');
-          return `"${String(val).replace(/"/g, '""')}"`;
+          return `"${String(val || '').replace(/"/g, '""')}"`;
         }).join(',')
       ).join('\n');
 
@@ -371,11 +430,9 @@
       URL.revokeObjectURL(url);
     }
 
-    // Initialize everything
     window.onload = () => {
       loadData();
-      // Wait a moment then setup paste support
-      setTimeout(setupPasteSupport, 800);
+      setTimeout(setupBulkPaste, 800);
     };
   </script>
 </body>
