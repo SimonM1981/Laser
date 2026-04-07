@@ -34,9 +34,6 @@
             max-height: 300px;
             overflow-y: auto;
         }
-        .status {
-            font-size: 0.8rem;
-        }
     </style>
 </head>
 <body>
@@ -288,7 +285,7 @@
             return isNaN(date.getTime()) ? value : date.toLocaleDateString('en-GB');
         }
 
-        function renderTable(tableId, data, isSummary = false) {
+        function renderTable(tableId, data) {
             const table = document.getElementById(tableId);
             const thead = table.querySelector("thead tr");
             const tbody = table.querySelector("tbody");
@@ -355,7 +352,7 @@
             showToast("Data refreshed from Google Sheet", "success");
         }
 
-        // Save single row (11 values → B to L)
+        // Save single row or batch (11 values → B to L)
         async function saveToSheet(rows) {
             try {
                 const response = await fetch(WEB_APP_URL, {
@@ -408,20 +405,17 @@
             const text = textarea.value.trim();
             if (!text) return;
 
-            // Split by lines then tabs (Excel paste = tab separated)
             const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
             currentPreviewRows = lines.map(line => 
                 line.split("\t").map(cell => cell.trim())
             );
 
-            // Validate each row has exactly 11 columns
             const invalid = currentPreviewRows.filter(r => r.length !== 11);
             if (invalid.length > 0) {
                 showToast(`Some rows have ${invalid[0].length} columns instead of 11`, "warning");
                 return;
             }
 
-            // Build preview table
             const previewDiv = document.getElementById("pastePreview");
             const table = document.getElementById("previewTableBody");
             table.innerHTML = `
@@ -475,16 +469,14 @@
 
         function loadDailyData() {
             const selectedMachine = document.getElementById("machineSelect").value;
-            const selectedDate = document.getElementById("dailyDateInput").value; // YYYY-MM-DD
+            const selectedDate = document.getElementById("dailyDateInput").value;
 
             let filtered = allData;
 
-            // Filter by machine
             if (selectedMachine) {
                 filtered = filtered.filter(row => row["Machine No."] === selectedMachine);
             }
 
-            // Filter by Lasered Date if date is selected
             if (selectedDate) {
                 filtered = filtered.filter(row => {
                     const lasered = row["Lasered Date"];
@@ -534,7 +526,6 @@
             currentSummaryData.forEach(row => {
                 const csvRow = COLUMN_HEADERS.map(header => {
                     let val = row[header] || "";
-                    // Escape commas and quotes
                     val = String(val).replace(/"/g, '""');
                     if (val.includes(",") || val.includes("\n")) val = `"${val}"`;
                     return val;
@@ -556,19 +547,14 @@
 
         // ==================== TAB SWITCHING ====================
         function switchTab(tab) {
-            // Hide all contents
             document.querySelectorAll(".tab-pane").forEach(el => el.style.display = "none");
-            // Show selected
             document.getElementById(`tabContent${tab}`).style.display = "block";
             
-            // Update active tab
             document.querySelectorAll("#mainTabs a").forEach(link => link.classList.remove("active"));
             document.getElementById(`tab${tab}`).classList.add("active");
 
-            // Auto-load data when switching to tabs that need it
             if (tab === 2) {
                 if (allData.length === 0) fetchAllData();
-                // Set default date to today if empty
                 if (!document.getElementById("dailyDateInput").value) {
                     const today = new Date().toISOString().split("T")[0];
                     document.getElementById("dailyDateInput").value = today;
@@ -584,12 +570,10 @@
             const success = await fetchAllData();
             if (success) {
                 showToast("✅ Connected to Google Sheet • App ready!", "success");
-                // Default open on Tab 1
                 switchTab(1);
             }
         }
 
-        // Start the app when page loads
         window.onload = initApp;
     </script>
 </body>
