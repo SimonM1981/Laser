@@ -11,7 +11,7 @@
     .table th { background-color: #f8f9fa; }
     .excel-row input, .excel-row select { font-size: 1rem; height: 42px; }
     .excel-row label { font-size: 0.85rem; margin-bottom: 4px; font-weight: 500; }
-    .paste-info { font-size: 0.8rem; color: #666; }
+    .paste-info { font-size: 0.82rem; color: #555; font-style: italic; }
   </style>
 </head>
 <body class="bg-light">
@@ -33,12 +33,15 @@
 
     <div class="tab-content">
 
-      <!-- ==================== DATA ENTRY TAB (Single Excel-style row + Bulk Paste) ==================== -->
+      <!-- ==================== DATA ENTRY TAB ==================== -->
       <div class="tab-pane fade show active" id="entry">
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="mb-3">📋 New Entry (Excel-style row)</h5>
-            <p class="paste-info mb-3">💡 Tip: Copy multiple rows from Excel (columns in order: Received Date to Machine No.) → click any field below → Ctrl+V to add all rows at once.</p>
+            <p class="paste-info mb-3">
+              💡 Copy multiple rows from Excel (order: Received Date → Lasered Date → Customer → Brand → P/I No. → Part No. → Lot Received → Qty → Laser Lot No. → Laser by → Machine No.)<br>
+              Then click any field below and press Ctrl + V
+            </p>
             
             <form id="entryForm">
               <div class="excel-row row g-2 align-items-end">
@@ -97,7 +100,7 @@
         </div>
       </div>
 
-      <!-- ==================== DAILY TAB (with Machine selector) ==================== -->
+      <!-- ==================== DAILY TAB ==================== -->
       <div class="tab-pane fade" id="daily">
         <div class="card shadow-sm p-4">
           <div class="row g-3 align-items-end mb-3">
@@ -131,10 +134,18 @@
               <label class="form-label">Month</label>
               <select id="monthSelect" class="form-select">
                 <option value="">All Months</option>
-                <option value="0">January</option><option value="1">February</option><option value="2">March</option>
-                <option value="3">April</option><option value="4">May</option><option value="5">June</option>
-                <option value="6">July</option><option value="7">August</option><option value="8">September</option>
-                <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
               </select>
             </div>
             <div class="col-md-3 d-flex align-items-end">
@@ -167,7 +178,10 @@
           populateYears();
           populateMachineFilter();
         })
-        .withFailureHandler(err => alert('Error loading data: ' + err.message))
+        .withFailureHandler(err => {
+          console.error("Failed to load data:", err);
+          alert("Error loading data from sheet. Check console (F12).");
+        })
         .getSheetData();
     }
 
@@ -189,7 +203,7 @@
     function populateMachineFilter() {
       machineOptions.clear();
       allData.slice(1).forEach(row => {
-        const m = (row[11] || '').toString().trim();
+        const m = String(row[11] || '').trim();
         if (m) machineOptions.add(m);
       });
       const select = document.getElementById('machineFilter');
@@ -210,12 +224,11 @@
           if (!pasteText) return;
 
           const lines = pasteText.trim().split(/\r?\n/);
-          if (lines.length === 0) return;
-
           const parsedRows = [];
+
           lines.forEach(line => {
-            const values = line.split('\t'); // Excel uses Tab
-            if (values.length < 11) return; // skip incomplete rows
+            const values = line.split('\t');
+            if (values.length < 11) return;
 
             const entryData = [
               values[0] ? new Date(values[0]) : null,
@@ -234,11 +247,10 @@
           });
 
           if (parsedRows.length === 0) return;
-
           e.preventDefault();
 
           if (parsedRows.length === 1) {
-            // Single row - fill the form
+            // Fill single row into form
             const data = parsedRows[0];
             document.getElementById('receivedDate').value = data[0] ? data[0].toISOString().split('T')[0] : '';
             document.getElementById('laseredDate').value = data[1] ? data[1].toISOString().split('T')[0] : '';
@@ -247,13 +259,13 @@
             document.getElementById('piNo').value = data[4];
             document.getElementById('partNo').value = data[5];
             document.getElementById('lotReceived').value = data[6];
-            document.getElementById('qty').value = data[7];
+            document.getElementById('qty').value = data[7] || '';
             document.getElementById('laserLotNo').value = data[8];
             document.getElementById('laserBy').value = data[9];
             document.getElementById('machineNo').value = data[10];
           } else {
-            // Multiple rows - submit all at once
-            if (confirm(`Paste and save ${parsedRows.length} rows?`)) {
+            // Bulk add multiple rows
+            if (confirm(`You are about to add ${parsedRows.length} rows. Continue?`)) {
               let completed = 0;
               parsedRows.forEach((entryData, idx) => {
                 google.script.run
@@ -265,7 +277,7 @@
                       loadData();
                     }
                   })
-                  .withFailureHandler(err => alert('Error adding row ' + (idx+1) + ': ' + err.message))
+                  .withFailureHandler(err => alert(`Error adding row ${idx+1}: ${err.message}`))
                   .addNewEntry(entryData);
               });
             }
@@ -278,37 +290,45 @@
       document.getElementById('entryForm').reset();
     }
 
-    // Single entry submit
+    // Single entry submit with better debugging
     document.getElementById('entryForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      console.log("Submit clicked");
+
       const entryData = [
         document.getElementById('receivedDate').value ? new Date(document.getElementById('receivedDate').value) : null,
         document.getElementById('laseredDate').value ? new Date(document.getElementById('laseredDate').value) : null,
-        document.getElementById('customer').value,
-        document.getElementById('brand').value,
-        document.getElementById('piNo').value,
-        document.getElementById('partNo').value,
-        document.getElementById('lotReceived').value,
+        document.getElementById('customer').value.trim(),
+        document.getElementById('brand').value.trim(),
+        document.getElementById('piNo').value.trim(),
+        document.getElementById('partNo').value.trim(),
+        document.getElementById('lotReceived').value.trim(),
         parseFloat(document.getElementById('qty').value) || 0,
-        document.getElementById('laserLotNo').value,
-        document.getElementById('laserBy').value,
-        document.getElementById('machineNo').value
+        document.getElementById('laserLotNo').value.trim(),
+        document.getElementById('laserBy').value.trim(),
+        document.getElementById('machineNo').value.trim()
       ];
 
+      console.log("Sending data:", entryData);
+
       google.script.run
-        .withSuccessHandler(res => {
-          alert(res.message);
+        .withSuccessHandler(function(res) {
+          console.log("Success response:", res);
+          alert(res.message || "✅ Entry added successfully!");
           clearForm();
           loadData();
         })
-        .withFailureHandler(err => alert('Error: ' + err.message))
+        .withFailureHandler(function(err) {
+          console.error("Add entry failed:", err);
+          alert("❌ Failed to add entry:\n" + err.message);
+        })
         .addNewEntry(entryData);
     });
 
-    // Daily Tab with Machine filter
+    // Daily Tab
     document.getElementById('loadDailyBtn').addEventListener('click', () => {
       const dateStr = document.getElementById('dailyDate').value;
-      if (!dateStr) return alert('Please select a Lasered Date');
+      if (!dateStr) return alert('Please select Lasered Date');
       const targetDate = new Date(dateStr);
       const selectedMachine = document.getElementById('machineFilter').value;
 
@@ -318,18 +338,18 @@
         const dateMatch = lasered.getFullYear() === targetDate.getFullYear() &&
                           lasered.getMonth() === targetDate.getMonth() &&
                           lasered.getDate() === targetDate.getDate();
-        const machineMatch = !selectedMachine || (row[11] || '').toString().trim() === selectedMachine;
+        const machineMatch = !selectedMachine || String(row[11] || '').trim() === selectedMachine;
         return dateMatch && machineMatch;
       });
 
       let html = `<h5>📅 Daily Laser Items – ${targetDate.toDateString()} ${selectedMachine ? `(${selectedMachine})` : '(All Machines)'}</h5>`;
 
       if (filtered.length === 0) {
-        html += '<p class="text-muted">No items found.</p>';
+        html += '<p class="text-muted">No items found for this date/machine.</p>';
       } else {
         const groups = {};
         filtered.forEach(row => {
-          const machine = (row[11] || 'Unknown').toString().trim();
+          const machine = String(row[11] || 'Unknown').trim();
           if (!groups[machine]) groups[machine] = [];
           groups[machine].push(row);
         });
@@ -365,7 +385,7 @@
       document.getElementById('dailyResult').innerHTML = html;
     });
 
-    // Summary Tab (unchanged logic)
+    // Summary Tab
     document.getElementById('loadSummaryBtn').addEventListener('click', () => {
       const yearVal = document.getElementById('yearSelect').value;
       const monthVal = document.getElementById('monthSelect').value;
@@ -430,9 +450,10 @@
       URL.revokeObjectURL(url);
     }
 
+    // Initialize
     window.onload = () => {
       loadData();
-      setTimeout(setupBulkPaste, 800);
+      setTimeout(setupBulkPaste, 1000);
     };
   </script>
 </body>
