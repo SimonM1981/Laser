@@ -12,19 +12,37 @@
     .excel-row input, .excel-row select { font-size: 1rem; height: 42px; }
     .excel-row label { font-size: 0.85rem; margin-bottom: 4px; font-weight: 500; }
     .paste-info { font-size: 0.82rem; color: #555; }
-    .warning { background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .app-header {
+      background: linear-gradient(90deg, #0d6efd, #6610f2);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+    }
+    .app-link {
+      color: white;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    .app-link:hover { color: #fff; text-decoration: none; }
   </style>
 </head>
 <body class="bg-light">
   <div class="container py-4">
 
-    <div id="warningBox" class="warning d-none">
-      <strong>⚠️ Wrong URL Detected!</strong><br>
-      You are opening this app from GitHub Pages.<br>
-      Please use the <strong>Google Apps Script Web App URL</strong> instead.
+    <!-- App Header with your new URL -->
+    <div class="app-header d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="mb-1">🔥 Laser Data App</h1>
+        <p class="mb-0">Manage your laser production data</p>
+      </div>
+      <div class="text-end">
+        <a href="https://script.google.com/macros/s/AKfycbz_hQaLVedOduHp0AyAvqR4aKeX5DQJRkMb8s51TW8128fFsn7rda4tRP72W0ildyic/exec" 
+           target="_blank" class="app-link">
+          🔗 Open App URL
+        </a>
+      </div>
     </div>
-
-    <h1 class="mb-4 text-primary">🔥 Laser Data App</h1>
 
     <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
       <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#entry" type="button">Data Entry</button></li>
@@ -40,7 +58,8 @@
           <div class="card-body">
             <h5 class="mb-3">📋 New Entry (Excel-style row)</h5>
             <p class="paste-info mb-3">
-              💡 Copy rows from Excel (Received Date to Machine No. order) → click any field → Ctrl + V
+              💡 Copy multiple rows from Excel (order: Received Date → Lasered Date → Customer → Brand → P/I No. → Part No. → Lot Received → Qty → Laser Lot No. → Laser by → Machine No.)<br>
+              Click any field below and press Ctrl + V
             </p>
             
             <form id="entryForm">
@@ -106,9 +125,9 @@
   </div>
 
   <script>
-    // Show warning if opened from GitHub instead of Apps Script
+    // Warning if opened outside Apps Script
     if (typeof google === 'undefined' || typeof google.script === 'undefined') {
-      document.getElementById('warningBox').classList.remove('d-none');
+      alert("⚠️ Please open this app using the Google Apps Script Web App URL:\n\nhttps://script.google.com/macros/s/AKfycbz_hQaLVedOduHp0AyAvqR4aKeX5DQJRkMb8s51TW8128fFsn7rda4tRP72W0ildyic/exec");
     }
 
     let allData = [];
@@ -158,6 +177,7 @@
       });
     }
 
+    // Bulk paste support
     function setupBulkPaste() {
       const inputs = document.querySelectorAll('#entryForm input');
       inputs.forEach(input => {
@@ -201,7 +221,7 @@
             document.getElementById('laserLotNo').value = data[8];
             document.getElementById('laserBy').value = data[9];
             document.getElementById('machineNo').value = data[10];
-          } else if (confirm(`Add ${parsedRows.length} rows to the sheet?`)) {
+          } else if (confirm(`Add ${parsedRows.length} rows?`)) {
             let completed = 0;
             parsedRows.forEach((entry, idx) => {
               google.script.run
@@ -225,10 +245,11 @@
       document.getElementById('entryForm').reset();
     }
 
+    // Submit
     document.getElementById('entryForm').addEventListener('submit', function(e) {
       e.preventDefault();
       if (typeof google === 'undefined') {
-        alert("❌ This app must be run from the Google Apps Script Web App URL");
+        alert("Please use the Google Apps Script Web App URL");
         return;
       }
 
@@ -311,10 +332,8 @@
 
     // Summary Tab
     document.getElementById('loadSummaryBtn').addEventListener('click', () => {
-      const yearVal = document.getElementById('yearSelect').value;
-      const monthVal = document.getElementById('monthSelect').value;
-      const year = yearVal ? parseInt(yearVal) : null;
-      const month = monthVal ? parseInt(monthVal) : null;
+      const year = document.getElementById('yearSelect').value ? parseInt(document.getElementById('yearSelect').value) : null;
+      const month = document.getElementById('monthSelect').value ? parseInt(document.getElementById('monthSelect').value) : null;
 
       const filtered = allData.slice(1).filter(row => {
         const d = row[2];
@@ -344,7 +363,7 @@
         });
         html += `</tbody></table>`;
       } else {
-        html += '<p class="text-muted">No data found.</p>';
+        html += '<p class="text-muted">No data found for selected period.</p>';
       }
       document.getElementById('summaryResult').innerHTML = html;
     });
