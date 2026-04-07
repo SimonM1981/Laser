@@ -8,7 +8,7 @@
     body { font-family: system-ui, -apple-system, sans-serif; background: #f8f9fa; }
     .nav-tabs .nav-link { font-weight: 600; }
     .table th { background-color: #f8f9fa; }
-    .excel-row input { font-size: 1rem; height: 42px; }
+    .excel-row input, .excel-row select { font-size: 1rem; height: 42px; }
     .excel-row label { font-size: 0.85rem; margin-bottom: 4px; font-weight: 500; }
     .paste-info { font-size: 0.85rem; color: #555; }
     .header {
@@ -25,10 +25,11 @@
 <body>
   <div class="container py-4">
 
+    <!-- Header with your App URL -->
     <div class="header d-flex justify-content-between align-items-center">
       <div>
         <h1 class="mb-1">🔥 Laser Data App</h1>
-        <p class="mb-0">Live from Google Apps Script</p>
+        <p class="mb-0">Data Entry • Daily Report • Summary</p>
       </div>
       <div>
         <a href="https://script.google.com/macros/s/AKfycbz_hQaLVedOduHp0AyAvqR4aKeX5DQJRkMb8s51TW8128fFsn7rda4tRP72W0ildyic/exec" 
@@ -38,21 +39,25 @@
       </div>
     </div>
 
-    <ul class="nav nav-tabs mb-4">
-      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#entry">Data Entry</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#daily">Daily by Machine</button></li>
-      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#summary">Summary Data</button></li>
+    <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#entry" type="button">Data Entry</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#daily" type="button">Daily Laser Items by Machine No.</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#summary" type="button">Summary Data</button></li>
     </ul>
 
     <div class="tab-content">
 
+      <!-- ==================== DATA ENTRY TAB ==================== -->
       <div class="tab-pane fade show active" id="entry">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h5>📋 New Entry (Excel-style row)</h5>
+            <h5 class="mb-3">📋 New Entry (Excel-style row)</h5>
             <p class="paste-info mb-3">
-              💡 Copy rows from Excel → click any field → Ctrl + V
+              💡 Copy multiple rows from Excel in this exact order:<br>
+              Received Date → Lasered Date → Customer → Brand → P/I No. → Part No. → Lot Received → Qty → Laser Lot No. → Laser by → Machine No.<br>
+              Then click any field and press Ctrl + V
             </p>
+            
             <form id="entryForm">
               <div class="excel-row row g-2 align-items-end">
                 <div class="col-md-2"><label>Received Date</label><input type="date" id="receivedDate" class="form-control"></div>
@@ -77,26 +82,180 @@
         </div>
       </div>
 
-      <!-- Daily and Summary tabs (simplified for now) -->
+      <!-- ==================== DAILY TAB ==================== -->
       <div class="tab-pane fade" id="daily">
         <div class="card shadow-sm p-4">
-          <p class="text-muted">Daily tab coming soon after basic submit works.</p>
+          <div class="row g-3 align-items-end mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Lasered Date</label>
+              <input type="date" id="dailyDate" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Machine No.</label>
+              <select id="machineFilter" class="form-select">
+                <option value="">All Machines</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button id="loadDailyBtn" class="btn btn-primary w-100">Load Data</button>
+            </div>
+          </div>
+          <div id="dailyResult"></div>
         </div>
       </div>
+
+      <!-- ==================== SUMMARY TAB ==================== -->
       <div class="tab-pane fade" id="summary">
         <div class="card shadow-sm p-4">
-          <p class="text-muted">Summary tab coming soon after basic submit works.</p>
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Year</label>
+              <select id="yearSelect" class="form-select"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Month</label>
+              <select id="monthSelect" class="form-select">
+                <option value="">All Months</option>
+                <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+                <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+                <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+                <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+              </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button id="loadSummaryBtn" class="btn btn-primary w-100">Show Summary</button>
+            </div>
+          </div>
+          <div id="summaryResult"></div>
         </div>
       </div>
     </div>
 
+    <!-- Export Button -->
+    <div class="text-end mt-4">
+      <button onclick="exportToCSV()" class="btn btn-outline-dark btn-lg">
+        📥 Export All Data to Excel (CSV)
+      </button>
+    </div>
   </div>
 
   <script>
-    // Simple version to test submit first
+    let allData = [];
+    let headers = [];
+    let machineOptions = new Set();
+
+    function loadData() {
+      google.script.run
+        .withSuccessHandler(data => {
+          allData = data;
+          if (allData.length > 0) headers = allData[0];
+          populateYears();
+          populateMachineFilter();
+        })
+        .withFailureHandler(err => alert("Error loading data: " + err.message))
+        .getSheetData();
+    }
+
+    function populateYears() {
+      const years = new Set();
+      allData.slice(1).forEach(row => {
+        const d = row[2];
+        if (d instanceof Date) years.add(d.getFullYear());
+      });
+      const select = document.getElementById('yearSelect');
+      select.innerHTML = '<option value="">All Years</option>';
+      Array.from(years).sort((a,b)=>b-a).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y; opt.textContent = y;
+        select.appendChild(opt);
+      });
+    }
+
+    function populateMachineFilter() {
+      machineOptions.clear();
+      allData.slice(1).forEach(row => {
+        const m = String(row[11] || '').trim();
+        if (m) machineOptions.add(m);
+      });
+      const select = document.getElementById('machineFilter');
+      select.innerHTML = '<option value="">All Machines</option>';
+      Array.from(machineOptions).sort().forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        select.appendChild(opt);
+      });
+    }
+
+    // Bulk paste from Excel
+    function setupBulkPaste() {
+      const inputs = document.querySelectorAll('#entryForm input');
+      inputs.forEach(input => {
+        input.addEventListener('paste', function(e) {
+          const pasteText = e.clipboardData.getData('text');
+          const lines = pasteText.trim().split(/\r?\n/);
+          const parsedRows = [];
+
+          lines.forEach(line => {
+            const values = line.split('\t');
+            if (values.length < 11) return;
+            parsedRows.push([
+              values[0] ? new Date(values[0]) : null,
+              values[1] ? new Date(values[1]) : null,
+              values[2] || '',
+              values[3] || '',
+              values[4] || '',
+              values[5] || '',
+              values[6] || '',
+              parseFloat(values[7]) || 0,
+              values[8] || '',
+              values[9] || '',
+              values[10] || ''
+            ]);
+          });
+
+          if (parsedRows.length === 0) return;
+          e.preventDefault();
+
+          if (parsedRows.length === 1) {
+            const data = parsedRows[0];
+            document.getElementById('receivedDate').value = data[0] ? data[0].toISOString().split('T')[0] : '';
+            document.getElementById('laseredDate').value = data[1] ? data[1].toISOString().split('T')[0] : '';
+            document.getElementById('customer').value = data[2];
+            document.getElementById('brand').value = data[3];
+            document.getElementById('piNo').value = data[4];
+            document.getElementById('partNo').value = data[5];
+            document.getElementById('lotReceived').value = data[6];
+            document.getElementById('qty').value = data[7] || '';
+            document.getElementById('laserLotNo').value = data[8];
+            document.getElementById('laserBy').value = data[9];
+            document.getElementById('machineNo').value = data[10];
+          } else if (confirm(`Add ${parsedRows.length} rows to sheet?`)) {
+            let completed = 0;
+            parsedRows.forEach((entry, idx) => {
+              google.script.run
+                .withSuccessHandler(() => {
+                  completed++;
+                  if (completed === parsedRows.length) {
+                    alert(`✅ ${parsedRows.length} rows added successfully!`);
+                    clearForm();
+                    loadData();
+                  }
+                })
+                .withFailureHandler(err => alert(`Error on row ${idx+1}: ${err.message}`))
+                .addNewEntry(entry);
+            });
+          }
+        });
+      });
+    }
+
+    function clearForm() {
+      document.getElementById('entryForm').reset();
+    }
+
+    // Submit Entry
     document.getElementById('entryForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
       const entryData = [
         document.getElementById('receivedDate').value ? new Date(document.getElementById('receivedDate').value) : null,
         document.getElementById('laseredDate').value ? new Date(document.getElementById('laseredDate').value) : null,
@@ -114,20 +273,130 @@
       google.script.run
         .withSuccessHandler(res => {
           alert(res.message);
-          document.getElementById('entryForm').reset();
+          clearForm();
+          loadData();
         })
-        .withFailureHandler(err => {
-          alert("Submit failed: " + err.message);
-          console.error(err);
-        })
+        .withFailureHandler(err => alert("Error: " + err.message))
         .addNewEntry(entryData);
     });
 
-    // Test load
-    window.onload = function() {
-      if (typeof google === 'undefined') {
-        alert("Please open using the Google Apps Script URL, not GitHub.");
+    // Daily Tab
+    document.getElementById('loadDailyBtn').addEventListener('click', () => {
+      const dateStr = document.getElementById('dailyDate').value;
+      if (!dateStr) return alert('Please select a Lasered Date');
+      const targetDate = new Date(dateStr);
+      const selectedMachine = document.getElementById('machineFilter').value;
+
+      const filtered = allData.slice(1).filter(row => {
+        const lasered = row[2];
+        if (!(lasered instanceof Date)) return false;
+        const dateMatch = lasered.getFullYear() === targetDate.getFullYear() &&
+                          lasered.getMonth() === targetDate.getMonth() &&
+                          lasered.getDate() === targetDate.getDate();
+        const machineMatch = !selectedMachine || String(row[11] || '').trim() === selectedMachine;
+        return dateMatch && machineMatch;
+      });
+
+      let html = `<h5>📅 Daily Items – ${targetDate.toDateString()} ${selectedMachine ? `(${selectedMachine})` : '(All Machines)'}</h5>`;
+      if (filtered.length === 0) {
+        html += '<p class="text-muted">No items found.</p>';
+      } else {
+        const groups = {};
+        filtered.forEach(row => {
+          const m = String(row[11] || 'Unknown').trim();
+          if (!groups[m]) groups[m] = [];
+          groups[m].push(row);
+        });
+
+        html += `<h6>Summary by Machine</h6><div class="row">`;
+        Object.keys(groups).sort().forEach(m => {
+          const items = groups[m];
+          const totalQty = items.reduce((sum, r) => sum + (parseFloat(r[8]) || 0), 0);
+          html += `<div class="col-md-4 mb-2"><div class="border p-3 rounded bg-white"><strong>${m}</strong><br>${items.length} items • Total Qty: <strong>${totalQty}</strong></div></div>`;
+        });
+        html += `</div>`;
+
+        html += `<table class="table table-striped table-hover mt-4"><thead><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+        filtered.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => {
+            let val = cell;
+            if (cell instanceof Date) val = cell.toLocaleDateString();
+            html += `<td>${val || ''}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table>`;
       }
+      document.getElementById('dailyResult').innerHTML = html;
+    });
+
+    // Summary Tab
+    document.getElementById('loadSummaryBtn').addEventListener('click', () => {
+      const yearVal = document.getElementById('yearSelect').value;
+      const monthVal = document.getElementById('monthSelect').value;
+      const year = yearVal ? parseInt(yearVal) : null;
+      const month = monthVal ? parseInt(monthVal) : null;
+
+      const filtered = allData.slice(1).filter(row => {
+        const d = row[2];
+        if (!(d instanceof Date)) return false;
+        let match = true;
+        if (year !== null && d.getFullYear() !== year) match = false;
+        if (month !== null && d.getMonth() !== month) match = false;
+        return match;
+      });
+
+      let html = `<h5>📊 Summary ${year ? year : 'All Years'} ${month !== null ? new Date(2000, month, 1).toLocaleString('default', { month: 'long' }) : ''}</h5>`;
+      const totalItems = filtered.length;
+      const totalQty = filtered.reduce((sum, r) => sum + (parseFloat(r[8]) || 0), 0);
+
+      html += `<div class="alert alert-info">Total Items: <strong>${totalItems}</strong> | Total Quantity: <strong>${totalQty}</strong></div>`;
+
+      if (totalItems > 0) {
+        html += `<table class="table table-striped"><thead><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+        filtered.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => {
+            let val = cell;
+            if (cell instanceof Date) val = cell.toLocaleDateString();
+            html += `<td>${val || ''}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table>`;
+      } else {
+        html += '<p class="text-muted">No data found for the selected period.</p>';
+      }
+      document.getElementById('summaryResult').innerHTML = html;
+    });
+
+    function exportToCSV() {
+      if (!allData.length) return alert('No data to export');
+      let csv = allData.map(row => 
+        row.map(cell => {
+          let val = cell;
+          if (cell instanceof Date) val = cell.toLocaleDateString('en-CA');
+          return `"${String(val || '').replace(/"/g, '""')}"`;
+        }).join(',')
+      ).join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Laser_Data_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    window.onload = () => {
+      loadData();
+      setTimeout(setupBulkPaste, 1000);
     };
   </script>
 </body>
