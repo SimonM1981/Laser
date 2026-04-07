@@ -9,11 +9,25 @@
     body { font-family: system-ui, -apple-system, sans-serif; }
     .nav-tabs .nav-link { font-weight: 600; }
     .table th { background-color: #f8f9fa; }
+    .header-link { font-size: 0.95rem; color: #0d6efd; }
   </style>
 </head>
 <body class="bg-light">
   <div class="container py-4">
-    <h1 class="mb-4 text-primary">🔥 Laser Data App</h1>
+    
+    <!-- === APP HEADER WITH YOUR URL === -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <div>
+        <h1 class="mb-1 text-primary">🔥 Laser Data App</h1>
+        <p class="text-muted mb-0">Live Web App for Laser Data Sheet</p>
+      </div>
+      <div class="text-end">
+        <a href="https://script.google.com/macros/s/AKfycbzl39JLQ-Po-eqZIfpj7_z08oVZCxNtmrMwqeXeAhaukS1QYb4ONeKiNXtnVRaQuw/exec" 
+           target="_blank" class="header-link fw-bold">
+          🔗 Your Web App URL
+        </a>
+      </div>
+    </div>
 
     <!-- Tabs -->
     <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
@@ -162,7 +176,7 @@
     function populateYears() {
       const years = new Set();
       allData.slice(1).forEach(row => {
-        const d = row[2]; // Column C = Lasered Date (index 2)
+        const d = row[2]; // Lasered Date (Column C)
         if (d instanceof Date) years.add(d.getFullYear());
       });
       const select = document.getElementById('yearSelect');
@@ -196,7 +210,7 @@
         .withSuccessHandler(res => {
           alert(res.message);
           document.getElementById('entryForm').reset();
-          loadData(); // refresh data
+          loadData();
         })
         .withFailureHandler(err => alert('Error: ' + err.message))
         .addNewEntry(entryData);
@@ -220,7 +234,6 @@
       if (filtered.length === 0) {
         html += '<p class="text-muted">No items found for this date.</p>';
       } else {
-        // Group by Machine No. (Column L = index 11)
         const groups = {};
         filtered.forEach(row => {
           const machine = row[11] || 'Unknown';
@@ -228,7 +241,6 @@
           groups[machine].push(row);
         });
 
-        // Summary by machine
         html += `<h6>Summary by Machine No.</h6><div class="row">`;
         Object.keys(groups).sort().forEach(m => {
           const items = groups[m];
@@ -243,13 +255,12 @@
         });
         html += `</div>`;
 
-        // Full table
         html += `<table class="table table-striped table-hover mt-4"><thead><tr>`;
         headers.forEach(h => html += `<th>${h}</th>`);
         html += `</tr></thead><tbody>`;
         filtered.forEach(row => {
           html += `<tr>`;
-          row.forEach((cell, i) => {
+          row.forEach(cell => {
             let val = cell;
             if (cell instanceof Date) val = cell.toLocaleDateString();
             html += `<td>${val}</td>`;
@@ -313,7 +324,7 @@
       let csv = allData.map(row => 
         row.map(cell => {
           let val = cell;
-          if (cell instanceof Date) val = cell.toLocaleDateString('en-CA'); // YYYY-MM-DD
+          if (cell instanceof Date) val = cell.toLocaleDateString('en-CA');
           return `"${String(val).replace(/"/g, '""')}"`;
         }).join(',')
       ).join('\n');
@@ -327,7 +338,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Load data when page opens
     window.onload = loadData;
   </script>
 </body>
