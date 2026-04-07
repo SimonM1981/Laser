@@ -9,25 +9,21 @@
     body { font-family: system-ui, -apple-system, sans-serif; }
     .nav-tabs .nav-link { font-weight: 600; }
     .table th { background-color: #f8f9fa; }
-    .header-link { font-size: 0.95rem; color: #0d6efd; }
+    .excel-row input {
+      font-size: 1rem;
+      height: 42px;
+    }
+    .excel-row label {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body class="bg-light">
   <div class="container py-4">
     
-    <!-- === APP HEADER WITH YOUR URL === -->
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-      <div>
-        <h1 class="mb-1 text-primary">🔥 Laser Data App</h1>
-        <p class="text-muted mb-0">Live Web App for Laser Data Sheet</p>
-      </div>
-      <div class="text-end">
-        <a href="https://script.google.com/macros/s/AKfycbzl39JLQ-Po-eqZIfpj7_z08oVZCxNtmrMwqeXeAhaukS1QYb4ONeKiNXtnVRaQuw/exec" 
-           target="_blank" class="header-link fw-bold">
-          🔗 Your Web App URL
-        </a>
-      </div>
-    </div>
+    <h1 class="mb-4 text-primary">🔥 Laser Data App</h1>
 
     <!-- Tabs -->
     <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
@@ -43,64 +39,63 @@
     </ul>
 
     <div class="tab-content">
-      <!-- ==================== DATA ENTRY TAB ==================== -->
+
+      <!-- ==================== DATA ENTRY TAB (Excel-style) ==================== -->
       <div class="tab-pane fade show active" id="entry">
         <div class="card shadow-sm">
           <div class="card-body">
+            <h5 class="mb-3">📋 New Entry (Excel-style row)</h5>
             <form id="entryForm">
-              <div class="row g-3">
-                <div class="col-md-6">
+              <div class="excel-row row g-2 align-items-end">
+                <div class="col-md-2">
                   <label class="form-label">Received Date</label>
-                  <input type="date" id="receivedDate" class="form-control" required>
+                  <input type="date" id="receivedDate" class="form-control">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-2">
                   <label class="form-label">Lasered Date</label>
                   <input type="date" id="laseredDate" class="form-control" required>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label class="form-label">Customer</label>
                   <input type="text" id="customer" class="form-control" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <label class="form-label">Brand</label>
                   <input type="text" id="brand" class="form-control">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <label class="form-label">P/I No.</label>
                   <input type="text" id="piNo" class="form-control">
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label class="form-label">Part No.</label>
                   <input type="text" id="partNo" class="form-control" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <label class="form-label">Lot Received</label>
                   <input type="text" id="lotReceived" class="form-control">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <label class="form-label">Qty</label>
                   <input type="number" id="qty" class="form-control" required>
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label class="form-label">Laser Lot No.</label>
                   <input type="text" id="laserLotNo" class="form-control">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <label class="form-label">Laser by</label>
                   <input type="text" id="laserBy" class="form-control">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                   <label class="form-label">Machine No.</label>
                   <input type="text" id="machineNo" class="form-control" required>
                 </div>
               </div>
 
               <div class="mt-4">
-                <button type="submit" class="btn btn-success btn-lg px-5">Submit Entry</button>
-                <button type="button" onclick="document.getElementById('entryForm').reset()" class="btn btn-outline-secondary ms-3">Clear Form</button>
+                <button type="submit" class="btn btn-success btn-lg px-5 me-3">Submit Entry</button>
+                <button type="button" onclick="clearForm()" class="btn btn-outline-secondary">Clear Form</button>
               </div>
             </form>
           </div>
@@ -176,7 +171,7 @@
     function populateYears() {
       const years = new Set();
       allData.slice(1).forEach(row => {
-        const d = row[2]; // Lasered Date (Column C)
+        const d = row[2]; // Lasered Date
         if (d instanceof Date) years.add(d.getFullYear());
       });
       const select = document.getElementById('yearSelect');
@@ -187,6 +182,44 @@
         opt.textContent = y;
         select.appendChild(opt);
       });
+    }
+
+    // Support paste from Excel (Tab-separated)
+    function setupPasteSupport() {
+      const inputs = document.querySelectorAll('#entryForm input');
+      inputs.forEach((input, index) => {
+        input.addEventListener('paste', function(e) {
+          const pasteData = e.clipboardData.getData('text');
+          const values = pasteData.split('\t');   // Excel uses Tab as separator
+
+          if (values.length > 1) {
+            e.preventDefault();
+            let currentIndex = index;
+            
+            values.forEach((val, i) => {
+              if (currentIndex + i < inputs.length) {
+                const targetInput = inputs[currentIndex + i];
+                if (targetInput.type === 'date') {
+                  // Try to convert pasted date if possible
+                  const date = new Date(val);
+                  if (!isNaN(date)) {
+                    targetInput.value = date.toISOString().split('T')[0];
+                  }
+                } else if (targetInput.type === 'number') {
+                  targetInput.value = parseFloat(val) || '';
+                } else {
+                  targetInput.value = val.trim();
+                }
+              }
+            });
+          }
+        });
+      });
+    }
+
+    // Clear form
+    function clearForm() {
+      document.getElementById('entryForm').reset();
     }
 
     // ====================== DATA ENTRY ======================
@@ -209,7 +242,7 @@
       google.script.run
         .withSuccessHandler(res => {
           alert(res.message);
-          document.getElementById('entryForm').reset();
+          clearForm();
           loadData();
         })
         .withFailureHandler(err => alert('Error: ' + err.message))
@@ -338,7 +371,12 @@
       URL.revokeObjectURL(url);
     }
 
-    window.onload = loadData;
+    // Initialize everything
+    window.onload = () => {
+      loadData();
+      // Wait a moment then setup paste support
+      setTimeout(setupPasteSupport, 800);
+    };
   </script>
 </body>
 </html>
