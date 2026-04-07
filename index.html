@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .nav-tabs .nav-link { font-weight: 600; }
+    .table th { background-color: #f8f9fa; }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container py-4">
+    <h1 class="mb-4 text-primary">🔥 Laser Data App</h1>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="entry-tab" data-bs-toggle="tab" data-bs-target="#entry" type="button">Data Entry</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="daily-tab" data-bs-toggle="tab" data-bs-target="#daily" type="button">Daily Laser Items by Machine No.</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button">Summary Data</button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <!-- ==================== DATA ENTRY TAB ==================== -->
+      <div class="tab-pane fade show active" id="entry">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <form id="entryForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Received Date</label>
+                  <input type="date" id="receivedDate" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Lasered Date</label>
+                  <input type="date" id="laseredDate" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Customer</label>
+                  <input type="text" id="customer" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Brand</label>
+                  <input type="text" id="brand" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">P/I No.</label>
+                  <input type="text" id="piNo" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Part No.</label>
+                  <input type="text" id="partNo" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Lot Received</label>
+                  <input type="text" id="lotReceived" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Qty</label>
+                  <input type="number" id="qty" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Laser Lot No.</label>
+                  <input type="text" id="laserLotNo" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Laser by</label>
+                  <input type="text" id="laserBy" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Machine No.</label>
+                  <input type="text" id="machineNo" class="form-control" required>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5">Submit Entry</button>
+                <button type="button" onclick="document.getElementById('entryForm').reset()" class="btn btn-outline-secondary ms-3">Clear Form</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== DAILY TAB ==================== -->
+      <div class="tab-pane fade" id="daily">
+        <div class="card shadow-sm p-4">
+          <div class="row align-items-end mb-3">
+            <div class="col-auto">
+              <label class="form-label">Select Lasered Date</label>
+              <input type="date" id="dailyDate" class="form-control">
+            </div>
+            <div class="col-auto">
+              <button id="loadDailyBtn" class="btn btn-primary">Load Daily Items</button>
+            </div>
+          </div>
+          <div id="dailyResult"></div>
+        </div>
+      </div>
+
+      <!-- ==================== SUMMARY TAB ==================== -->
+      <div class="tab-pane fade" id="summary">
+        <div class="card shadow-sm p-4">
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Year</label>
+              <select id="yearSelect" class="form-select"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Month</label>
+              <select id="monthSelect" class="form-select">
+                <option value="">All Months</option>
+                <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+                <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+                <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+                <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+              </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button id="loadSummaryBtn" class="btn btn-primary w-100">Show Summary</button>
+            </div>
+          </div>
+          <div id="summaryResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Export Button -->
+    <div class="text-end mt-4">
+      <button onclick="exportToCSV()" class="btn btn-outline-dark btn-lg">
+        📥 Export All Data to Excel (CSV)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let allData = [];
+    let headers = [];
+
+    function loadData() {
+      google.script.run
+        .withSuccessHandler(data => {
+          allData = data;
+          if (allData.length > 0) headers = allData[0];
+          populateYears();
+        })
+        .withFailureHandler(err => alert('Error loading data: ' + err.message))
+        .getSheetData();
+    }
+
+    function populateYears() {
+      const years = new Set();
+      allData.slice(1).forEach(row => {
+        const d = row[2]; // Column C = Lasered Date (index 2)
+        if (d instanceof Date) years.add(d.getFullYear());
+      });
+      const select = document.getElementById('yearSelect');
+      select.innerHTML = '<option value="">All Years</option>';
+      Array.from(years).sort((a,b)=>b-a).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        select.appendChild(opt);
+      });
+    }
+
+    // ====================== DATA ENTRY ======================
+    document.getElementById('entryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const entryData = [
+        document.getElementById('receivedDate').value ? new Date(document.getElementById('receivedDate').value) : null,
+        document.getElementById('laseredDate').value ? new Date(document.getElementById('laseredDate').value) : null,
+        document.getElementById('customer').value,
+        document.getElementById('brand').value,
+        document.getElementById('piNo').value,
+        document.getElementById('partNo').value,
+        document.getElementById('lotReceived').value,
+        parseFloat(document.getElementById('qty').value) || 0,
+        document.getElementById('laserLotNo').value,
+        document.getElementById('laserBy').value,
+        document.getElementById('machineNo').value
+      ];
+
+      google.script.run
+        .withSuccessHandler(res => {
+          alert(res.message);
+          document.getElementById('entryForm').reset();
+          loadData(); // refresh data
+        })
+        .withFailureHandler(err => alert('Error: ' + err.message))
+        .addNewEntry(entryData);
+    });
+
+    // ====================== DAILY TAB ======================
+    document.getElementById('loadDailyBtn').addEventListener('click', () => {
+      const dateStr = document.getElementById('dailyDate').value;
+      if (!dateStr) return alert('Please select a date');
+      const targetDate = new Date(dateStr);
+
+      const filtered = allData.slice(1).filter(row => {
+        const lasered = row[2];
+        if (!(lasered instanceof Date)) return false;
+        return lasered.getFullYear() === targetDate.getFullYear() &&
+               lasered.getMonth() === targetDate.getMonth() &&
+               lasered.getDate() === targetDate.getDate();
+      });
+
+      let html = `<h5>📅 Daily Laser Items – ${targetDate.toDateString()}</h5>`;
+      if (filtered.length === 0) {
+        html += '<p class="text-muted">No items found for this date.</p>';
+      } else {
+        // Group by Machine No. (Column L = index 11)
+        const groups = {};
+        filtered.forEach(row => {
+          const machine = row[11] || 'Unknown';
+          if (!groups[machine]) groups[machine] = [];
+          groups[machine].push(row);
+        });
+
+        // Summary by machine
+        html += `<h6>Summary by Machine No.</h6><div class="row">`;
+        Object.keys(groups).sort().forEach(m => {
+          const items = groups[m];
+          const totalQty = items.reduce((sum, r) => sum + (parseFloat(r[8]) || 0), 0);
+          html += `
+            <div class="col-md-4 mb-2">
+              <div class="border p-3 rounded bg-white">
+                <strong>${m}</strong><br>
+                ${items.length} items • Total Qty: <strong>${totalQty}</strong>
+              </div>
+            </div>`;
+        });
+        html += `</div>`;
+
+        // Full table
+        html += `<table class="table table-striped table-hover mt-4"><thead><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+        filtered.forEach(row => {
+          html += `<tr>`;
+          row.forEach((cell, i) => {
+            let val = cell;
+            if (cell instanceof Date) val = cell.toLocaleDateString();
+            html += `<td>${val}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table>`;
+      }
+      document.getElementById('dailyResult').innerHTML = html;
+    });
+
+    // ====================== SUMMARY TAB ======================
+    document.getElementById('loadSummaryBtn').addEventListener('click', () => {
+      const yearVal = document.getElementById('yearSelect').value;
+      const monthVal = document.getElementById('monthSelect').value;
+      const year = yearVal ? parseInt(yearVal) : null;
+      const month = monthVal ? parseInt(monthVal) : null;
+
+      const filtered = allData.slice(1).filter(row => {
+        const d = row[2];
+        if (!(d instanceof Date)) return false;
+        let match = true;
+        if (year !== null && d.getFullYear() !== year) match = false;
+        if (month !== null && d.getMonth() !== month) match = false;
+        return match;
+      });
+
+      let html = `<h5>📊 Summary ${year ? year : 'All Years'} ${month !== null ? new Date(2000, month, 1).toLocaleString('default', { month: 'long' }) : ''}</h5>`;
+      const totalItems = filtered.length;
+      const totalQty = filtered.reduce((sum, r) => sum + (parseFloat(r[8]) || 0), 0);
+
+      html += `
+        <div class="alert alert-info">
+          <strong>Total Items:</strong> ${totalItems} &nbsp;&nbsp;&nbsp;
+          <strong>Total Quantity:</strong> ${totalQty}
+        </div>`;
+
+      if (totalItems > 0) {
+        html += `<table class="table table-striped"><thead><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+        filtered.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => {
+            let val = cell;
+            if (cell instanceof Date) val = cell.toLocaleDateString();
+            html += `<td>${val}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table>`;
+      } else {
+        html += '<p class="text-muted">No data found for the selected period.</p>';
+      }
+      document.getElementById('summaryResult').innerHTML = html;
+    });
+
+    // ====================== EXPORT ======================
+    function exportToCSV() {
+      if (!allData.length) return alert('No data to export');
+      let csv = allData.map(row => 
+        row.map(cell => {
+          let val = cell;
+          if (cell instanceof Date) val = cell.toLocaleDateString('en-CA'); // YYYY-MM-DD
+          return `"${String(val).replace(/"/g, '""')}"`;
+        }).join(',')
+      ).join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Laser_Data_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Load data when page opens
+    window.onload = loadData;
+  </script>
+</body>
+</html>
