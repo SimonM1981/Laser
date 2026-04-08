@@ -154,6 +154,16 @@
             new bootstrap.Toast(toastEl).show();
         }
 
+        // --- DATE FORMATTER HELPER ---
+        // Converts YYYY-MM-DD to DD-MM-YY
+        function formatDateToDMY(dateString) {
+            if (!dateString || !dateString.includes("-")) return dateString;
+            const parts = dateString.split("-");
+            if (parts.length !== 3) return dateString;
+            const [year, month, day] = parts;
+            return `${day}-${month}-${year.slice(-2)}`;
+        }
+
         // --- FETCH & SAVE ---
         async function fetchAllData() {
             try {
@@ -176,8 +186,6 @@
                 });
                 return await response.json();
             } catch (err) {
-                // In some CORS cases, data saves but fetch errors out. 
-                // We refresh data anyway to check.
                 fetchAllData();
                 return { success: true };
             }
@@ -186,7 +194,16 @@
         // --- TAB 1 LOGIC ---
         function saveSingleEntry() {
             const ids = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
-            const data = ids.map(id => document.getElementById(id).value);
+            
+            // Format dates before mapping
+            const data = ids.map((id, index) => {
+                let val = document.getElementById(id).value;
+                if (index === 0 || index === 1) { // receivedDate and laseredDate
+                    return formatDateToDMY(val);
+                }
+                return val;
+            });
+
             if (data.some(v => !v)) return showToast("Please fill all fields", "warning");
 
             saveToSheet(data).then(() => {
@@ -200,7 +217,14 @@
             const text = document.getElementById("pasteArea").value.trim();
             if (!text) return;
             const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
-            currentPreviewRows = lines.map(line => line.split("\t").map(c => c.trim()));
+            
+            currentPreviewRows = lines.map(line => {
+                let cols = line.split("\t").map(c => c.trim());
+                // Attempt to format dates if pasted in YYYY-MM-DD format
+                if (cols[0]) cols[0] = formatDateToDMY(cols[0]);
+                if (cols[1]) cols[1] = formatDateToDMY(cols[1]);
+                return cols;
+            });
             
             if (currentPreviewRows.some(r => r.length !== 11)) return showToast("Rows must have 11 columns", "warning");
 
@@ -242,21 +266,27 @@
 
         function loadDailyData() {
             const m = document.getElementById("machineSelect").value;
-            const d = document.getElementById("dailyDateInput").value;
+            const dInput = document.getElementById("dailyDateInput").value;
+            const dFormatted = formatDateToDMY(dInput); // Convert search date to match data format
+            
             let filtered = allData;
             if (m) filtered = filtered.filter(r => r["Machine No."] === m);
-            if (d) filtered = filtered.filter(r => String(r["Lasered Date"]).includes(d));
+            if (dInput) filtered = filtered.filter(r => String(r["Lasered Date"]) === dFormatted);
+            
             const hasData = renderTable("dailyTable", filtered);
             document.getElementById("dailyNoData").classList.toggle("d-none", hasData);
         }
 
         function loadSummaryData() {
-            const from = document.getElementById("fromDate").value;
-            const to = document.getElementById("toDate").value;
+            const from = formatDateToDMY(document.getElementById("fromDate").value);
+            const to = formatDateToDMY(document.getElementById("toDate").value);
+            
+            // Note: Simple string comparison works for DD-MM-YY only if sorting isn't needed. 
+            // This filters for exact matches or ranges if your Sheet handles the logic.
             let filtered = allData.filter(r => {
                 const date = r["Lasered Date"];
                 if (!date) return false;
-                if (from && date < from) return false;
+                if (from && date < from) return false; 
                 if (to && date > to) return false;
                 return true;
             });
