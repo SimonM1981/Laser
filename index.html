@@ -24,7 +24,7 @@
                 <p class="text-muted mb-0">✅ LIVE DEPLOYMENT • Data saved to "Laser Data" → Sheet1</p>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <button onclick="refreshAllData()" class="btn btn-outline-primary btn-sm">
+                <button onclick="fetchAllData()" class="btn btn-outline-primary btn-sm">
                     <span id="lastRefresh">↻</span> Refresh Data
                 </button>
             </div>
@@ -140,7 +140,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // CONFIG
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby14tJjbf_aJ_V5RhgUXjWl9lVs3IN94vK8V9RW2uFmq2NzpdEtt-ITjLaLO4cRaCiJ/exec";
         const COLUMN_HEADERS = ["Timestamp", "Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
 
@@ -151,25 +150,26 @@
             const toastEl = document.getElementById("toast");
             document.getElementById("toastBody").textContent = message;
             toastEl.className = `toast align-items-center text-white border-0 bg-${type}`;
-            new bootstrap.Toast(toastEl).show();
+            const t = new bootstrap.Toast(toastEl);
+            t.show();
         }
 
-        // --- DATE FORMATTER HELPER ---
-        // Converts YYYY-MM-DD to DD-MM-YY
+        // Helper to convert HTML Date input (YYYY-MM-DD) to Sheet format (DD-MM-YY)
         function formatDateToDMY(dateString) {
-            if (!dateString || !dateString.includes("-")) return dateString;
+            if (!dateString) return "";
             const parts = dateString.split("-");
             if (parts.length !== 3) return dateString;
-            const [year, month, day] = parts;
-            return `${day}-${month}-${year.slice(-2)}`;
+            return `${parts[2]}-${parts[1]}-${parts[0].slice(-2)}`;
         }
 
-        // --- FETCH & SAVE ---
         async function fetchAllData() {
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=read`);
                 allData = await response.json();
                 populateMachineDropdown();
+                // If we are on Tab 2 or 3, refresh the current view
+                if (document.getElementById('tabContent2').style.display === 'block') loadDailyData();
+                if (document.getElementById('tabContent3').style.display === 'block') loadSummaryData();
                 return true;
             } catch (err) {
                 showToast("Connection failed", "danger");
@@ -179,28 +179,22 @@
 
         async function saveToSheet(rows) {
             try {
-                const response = await fetch(WEB_APP_URL, {
+                await fetch(WEB_APP_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(rows)
                 });
-                return await response.json();
-            } catch (err) {
-                fetchAllData();
                 return { success: true };
+            } catch (err) {
+                return { success: true }; 
             }
         }
 
-        // --- TAB 1 LOGIC ---
         function saveSingleEntry() {
             const ids = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
-            
-            // Format dates before mapping
             const data = ids.map((id, index) => {
                 let val = document.getElementById(id).value;
-                if (index === 0 || index === 1) { // receivedDate and laseredDate
-                    return formatDateToDMY(val);
-                }
+                if (index === 0 || index === 1) return formatDateToDMY(val);
                 return val;
             });
 
@@ -217,17 +211,13 @@
             const text = document.getElementById("pasteArea").value.trim();
             if (!text) return;
             const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
-            
             currentPreviewRows = lines.map(line => {
                 let cols = line.split("\t").map(c => c.trim());
-                // Attempt to format dates if pasted in YYYY-MM-DD format
-                if (cols[0]) cols[0] = formatDateToDMY(cols[0]);
-                if (cols[1]) cols[1] = formatDateToDMY(cols[1]);
+                if (cols[0] && cols[0].includes("-") && cols[0].length > 8) cols[0] = formatDateToDMY(cols[0]);
+                if (cols[1] && cols[1].includes("-") && cols[1].length > 8) cols[1] = formatDateToDMY(cols[1]);
                 return cols;
             });
-            
             if (currentPreviewRows.some(r => r.length !== 11)) return showToast("Rows must have 11 columns", "warning");
-
             const table = document.getElementById("previewTableBody");
             table.innerHTML = `<thead class="table-light"><tr>${COLUMN_HEADERS.slice(1).map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${currentPreviewRows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>`;
             document.getElementById("pastePreview").style.display = "block";
@@ -249,7 +239,6 @@
             document.getElementById("pasteActions").style.display = "none";
         }
 
-        // --- TAB 2 & 3 RENDERERS ---
         function populateMachineDropdown() {
             const select = document.getElementById("machineSelect");
             const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
@@ -266,13 +255,22 @@
 
         function loadDailyData() {
             const m = document.getElementById("machineSelect").value;
-            const dInput = document.getElementById("dailyDateInput").value;
-            const dFormatted = formatDateToDMY(dInput); // Convert search date to match data format
-            
+            const dRaw = document.getElementById("dailyDateInput").value;
+            const dFormatted = formatDateToDMY(dRaw); // Convert YYYY-MM-DD search to DD-MM-YY match
+
             let filtered = allData;
-            if (m) filtered = filtered.filter(r => r["Machine No."] === m);
-            if (dInput) filtered = filtered.filter(r => String(r["Lasered Date"]) === dFormatted);
-            
+            // Filter by Machine
+            if (m) {
+                filtered = filtered.filter(r => String(r["Machine No."]) === String(m));
+            }
+            // Filter by Lasered Date
+            if (dRaw) {
+                filtered = filtered.filter(r => {
+                    const rowDate = String(r["Lasered Date"]);
+                    return rowDate.startsWith(dFormatted);
+                });
+            }
+
             const hasData = renderTable("dailyTable", filtered);
             document.getElementById("dailyNoData").classList.toggle("d-none", hasData);
         }
@@ -281,8 +279,7 @@
             const from = formatDateToDMY(document.getElementById("fromDate").value);
             const to = formatDateToDMY(document.getElementById("toDate").value);
             
-            // Note: Simple string comparison works for DD-MM-YY only if sorting isn't needed. 
-            // This filters for exact matches or ranges if your Sheet handles the logic.
+            // For simple DD-MM-YY string filtering (only works for exact matches or pre-sorted data)
             let filtered = allData.filter(r => {
                 const date = r["Lasered Date"];
                 if (!date) return false;
@@ -311,7 +308,7 @@
             document.getElementById(`tabContent${tab}`).style.display = "block";
             document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
             document.getElementById(`tab${tab}`).classList.add("active");
-            if (tab > 1 && allData.length === 0) fetchAllData();
+            if (tab > 1) fetchAllData();
         }
 
         window.onload = fetchAllData;
