@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laser Data App • GitHub + Google Sheets</title>
+    <title>Laser Data Management • Live System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #0d6efd; }
-        body { background: #f8f9fa; }
-        .nav-tabs .nav-link { font-weight: 600; cursor: pointer; }
-        .nav-tabs .nav-link.active { background: white; border-bottom: 3px solid var(--primary); color: var(--primary); }
-        .card { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        table { font-size: 0.9rem; }
-        .table thead { background: #0d6efd; color: white; }
-        .preview-table { max-height: 300px; overflow-y: auto; }
+        :root { --primary: #0d6efd; --success: #198754; }
+        body { background: #f4f7f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .nav-tabs .nav-link { font-weight: 600; color: #6c757d; border: none; padding: 1rem 1.5rem; }
+        .nav-tabs .nav-link.active { color: var(--primary); background: transparent; border-bottom: 3px solid var(--primary); }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .card-header { border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; font-weight: bold; }
+        .table thead { background: #f8f9fa; }
+        .table thead th { border-bottom: 2px solid #dee2e6; color: #495057; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .preview-table { max-height: 400px; overflow-y: auto; background: white; }
+        .sticky-header th { position: sticky; top: 0; background: #f8f9fa; z-index: 10; }
     </style>
 </head>
 <body>
-    <div class="container py-4">
+    <div class="container-fluid py-4 px-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="display-6 fw-bold text-primary">Laser Data Management</h1>
-                <p class="text-muted mb-0">✅ LIVE DEPLOYMENT • Data saved to "Laser Data" → Sheet1</p>
+                <h1 class="h3 fw-bold text-primary mb-1">Laser Data Management</h1>
+                <p class="text-muted small mb-0">Connected to <strong>Laser Data</strong> → Sheet1</p>
             </div>
-            <div class="d-flex align-items-center gap-3">
-                <button onclick="fetchAllData()" class="btn btn-outline-primary btn-sm">
-                    <span id="lastRefresh">↻</span> Refresh Data
-                </button>
-            </div>
+            <button onclick="fetchAllData()" class="btn btn-white border shadow-sm btn-sm px-3">
+                <span id="refreshIcon">↻</span> Refresh Database
+            </button>
         </div>
 
         <ul class="nav nav-tabs mb-4" id="mainTabs">
@@ -37,48 +37,48 @@
         </ul>
 
         <div id="tabContent1" class="tab-pane">
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-lg-5">
                     <div class="card h-100">
-                        <div class="card-header bg-primary text-white"><strong>Manual Single Entry</strong></div>
+                        <div class="card-header bg-primary text-white">Manual Single Entry</div>
                         <div class="card-body">
                             <form id="entryForm">
                                 <div class="row g-3">
-                                    <div class="col-6"><label class="form-label">Received Date</label><input type="date" id="receivedDate" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">Lasered Date</label><input type="date" id="laseredDate" class="form-control" required></div>
-                                    <div class="col-12"><label class="form-label">Customer</label><input type="text" id="customer" class="form-control" placeholder="Customer name" required></div>
-                                    <div class="col-6"><label class="form-label">Brand</label><input type="text" id="brand" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">P/I No.</label><input type="text" id="piNo" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">Part No.</label><input type="text" id="partNo" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">Lot Received</label><input type="text" id="lotReceived" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">Qty</label><input type="number" id="qty" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">Laser Lot No.</label><input type="text" id="laserLotNo" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label">Laser by</label><input type="text" id="laserBy" class="form-control" required></div>
-                                    <div class="col-12"><label class="form-label">Machine No.</label><input type="text" id="machineNo" class="form-control" placeholder="e.g. M01" required></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Received Date</label><input type="date" id="receivedDate" class="form-control" required></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Lasered Date</label><input type="date" id="laseredDate" class="form-control" required></div>
+                                    <div class="col-12"><label class="form-label small fw-bold">Customer</label><input type="text" id="customer" class="form-control" placeholder="Customer name" required></div>
+                                    <div class="col-6"><label class="form-label small fw-bold">Brand</label><input type="text" id="brand" class="form-control" required></div>
+                                    <div class="col-6"><label class="form-label small fw-bold">P/I No.</label><input type="text" id="piNo" class="form-control" required></div>
+                                    <div class="col-12"><label class="form-label small fw-bold">Part No.</label><input type="text" id="partNo" class="form-control" placeholder="Enter Part Number" required></div>
+                                    <div class="col-6"><label class="form-label small fw-bold">Lot Received</label><input type="text" id="lotReceived" class="form-control" required></div>
+                                    <div class="col-6"><label class="form-label small fw-bold">Qty</label><input type="number" id="qty" class="form-control" required></div>
+                                    <div class="col-6"><label class="form-label small fw-bold">Laser Lot No.</label><input type="text" id="laserLotNo" class="form-control" required></div>
+                                    <div class="col-6"><label class="form-label small fw-bold">Laser by</label><input type="text" id="laserBy" class="form-control" required></div>
+                                    <div class="col-12"><label class="form-label small fw-bold">Machine No.</label><input type="text" id="machineNo" class="form-control" placeholder="e.g. 1" required></div>
+                                </div>
+                                <div class="mt-4 d-grid">
+                                    <button type="button" onclick="saveSingleEntry()" class="btn btn-primary btn-lg">💾 Save to Sheet</button>
                                 </div>
                             </form>
-                            <div class="mt-4 d-grid">
-                                <button onclick="saveSingleEntry()" class="btn btn-primary btn-lg">💾 Save to Google Sheet</button>
-                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-lg-7">
                     <div class="card h-100">
-                        <div class="card-header bg-success text-white"><strong>Bulk Paste (Excel)</strong></div>
+                        <div class="card-header bg-success text-white">Bulk Paste (from Excel)</div>
                         <div class="card-body">
-                            <p class="small text-muted">Copy 11 columns from Excel and paste below.</p>
-                            <textarea id="pasteArea" class="form-control font-monospace" rows="6" placeholder="Paste here..."></textarea>
-                            <div class="mt-3 d-flex gap-2">
-                                <button onclick="previewPaste()" class="btn btn-outline-success">👀 Preview Paste</button>
-                                <button onclick="clearPaste()" class="btn btn-outline-secondary">Clear</button>
+                            <p class="small text-muted mb-2">Copy 11 columns from Excel and paste below.</p>
+                            <textarea id="pasteArea" class="form-control font-monospace mb-3" rows="8" placeholder="Paste data rows here..."></textarea>
+                            <div class="d-flex gap-2 mb-3">
+                                <button onclick="previewPaste()" class="btn btn-outline-success px-4">👀 Preview</button>
+                                <button onclick="clearPaste()" class="btn btn-outline-secondary px-4">Clear</button>
                             </div>
-                            <div id="pastePreview" class="mt-4 preview-table border rounded" style="display:none;">
+                            <div id="pastePreview" class="preview-table border rounded shadow-sm" style="display:none;">
                                 <table class="table table-sm mb-0" id="previewTableBody"></table>
                             </div>
                             <div id="pasteActions" class="mt-3 d-grid" style="display:none;">
-                                <button onclick="addBatchFromPaste()" class="btn btn-success">✅ Add All Rows to Google Sheet</button>
+                                <button onclick="addBatchFromPaste()" class="btn btn-success btn-lg">✅ Upload Previewed Rows</button>
                             </div>
                         </div>
                     </div>
@@ -88,51 +88,54 @@
 
         <div id="tabContent2" class="tab-pane" style="display: none;">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <strong>Daily Data by Machine</strong>
-                    <div class="d-flex gap-2 align-items-center">
-                        <div>
-                            <label class="form-label small mb-0 me-1">Date</label>
-                            <input type="date" id="dailyDateInput" class="form-control form-control-sm">
+                <div class="card-header bg-white py-3">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">Lasered Date</label>
+                            <input type="date" id="dailyDateInput" class="form-control">
                         </div>
-                        <div>
-                            <label class="form-label small mb-0 me-1">Machine</label>
-                            <select id="machineSelect" class="form-select form-select-sm" style="width: 130px;"></select>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Machine</label>
+                            <select id="machineSelect" class="form-select"></select>
                         </div>
-                        <div>
-                            <label class="form-label small mb-0 me-1">Part No.</label>
-                            <input type="text" id="partSearch" class="form-control form-control-sm" placeholder="Search..." style="width: 120px;">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Part Number Search</label>
+                            <input type="text" id="partSearch" class="form-control" placeholder="Search by Part No...">
                         </div>
-                        <div class="align-self-end mb-0">
-                            <button onclick="loadDailyData()" class="btn btn-primary btn-sm">Show</button>
+                        <div class="col-md-3">
+                            <button onclick="loadDailyData()" class="btn btn-primary w-100">🔍 Filter Data</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0" id="dailyTable">
-                            <thead><tr id="dailyTableHeader"></tr></thead>
+                        <table class="table table-hover align-middle mb-0" id="dailyTable">
+                            <thead class="sticky-header"><tr id="dailyTableHeader"></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div id="dailyNoData" class="p-5 text-center text-muted">No data found</div>
+                    <div id="dailyNoData" class="p-5 text-center text-muted">
+                        <div class="display-1 opacity-25">📁</div>
+                        <p>No records found for the selected filters.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="tabContent3" class="tab-pane" style="display: none;">
             <div class="card">
-                <div class="card-header"><strong>Summary Database • Date Range</strong></div>
-                <div class="card-body">
+                <div class="card-header bg-white py-3">
                     <div class="row g-3 align-items-end">
-                        <div class="col-auto"><label class="form-label">From</label><input type="date" id="fromDate" class="form-control"></div>
-                        <div class="col-auto"><label class="form-label">To</label><input type="date" id="toDate" class="form-control"></div>
-                        <div class="col-auto"><button onclick="loadSummaryData()" class="btn btn-primary">Load Data</button></div>
-                        <div class="col text-end"><button onclick="exportToExcel()" class="btn btn-success">📤 Export CSV</button></div>
+                        <div class="col-auto"><label class="form-label small fw-bold">From</label><input type="date" id="fromDate" class="form-control"></div>
+                        <div class="col-auto"><label class="form-label small fw-bold">To</label><input type="date" id="toDate" class="form-control"></div>
+                        <div class="col-auto"><button onclick="loadSummaryData()" class="btn btn-primary">Load Range</button></div>
+                        <div class="col text-end"><button onclick="exportToExcel()" class="btn btn-outline-success">📤 Download CSV</button></div>
                     </div>
-                    <div class="table-responsive mt-4">
-                        <table class="table table-hover" id="summaryTable">
-                            <thead><tr id="summaryTableHeader"></tr></thead>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="summaryTable">
+                            <thead class="sticky-header"><tr id="summaryTableHeader"></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
@@ -166,26 +169,24 @@
             t.show();
         }
 
-        // Helper to convert HTML Date input (YYYY-MM-DD) to Sheet format (DD-MM-YY)
-        function formatDateToDMY(dateString) {
+        // Standardize YYYY-MM-DD to the D/M/YYYY format seen in your screenshots
+        function formatDateForSheet(dateString) {
             if (!dateString) return "";
-            const parts = dateString.split("-");
-            if (parts.length !== 3) return dateString;
-            return `${parts[2]}-${parts[1]}-${parts[0].slice(-2)}`;
+            const [y, m, d] = dateString.split("-");
+            return `${parseInt(d, 10)}/${parseInt(m, 10)}/${y}`;
         }
 
         async function fetchAllData() {
+            const refreshBtn = document.getElementById("refreshIcon");
+            refreshBtn.classList.add("fa-spin"); 
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=read`);
                 allData = await response.json();
                 populateMachineDropdown();
-                // If we are on Tab 2 or 3, refresh the current view
                 if (document.getElementById('tabContent2').style.display === 'block') loadDailyData();
                 if (document.getElementById('tabContent3').style.display === 'block') loadSummaryData();
-                return true;
             } catch (err) {
                 showToast("Connection failed", "danger");
-                return false;
             }
         }
 
@@ -206,7 +207,7 @@
             const ids = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
             const data = ids.map((id, index) => {
                 let val = document.getElementById(id).value;
-                if (index === 0 || index === 1) return formatDateToDMY(val);
+                if (index === 0 || index === 1) return formatDateForSheet(val);
                 return val;
             });
 
@@ -225,13 +226,15 @@
             const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
             currentPreviewRows = lines.map(line => {
                 let cols = line.split("\t").map(c => c.trim());
-                if (cols[0] && cols[0].includes("-") && cols[0].length > 8) cols[0] = formatDateToDMY(cols[0]);
-                if (cols[1] && cols[1].includes("-") && cols[1].length > 8) cols[1] = formatDateToDMY(cols[1]);
+                // Basic date check for columns 1 and 2 if they look like YYYY-MM-DD
+                if (cols[0] && cols[0].includes("-") && cols[0].length > 8) cols[0] = formatDateForSheet(cols[0]);
+                if (cols[1] && cols[1].includes("-") && cols[1].length > 8) cols[1] = formatDateForSheet(cols[1]);
                 return cols;
             });
             if (currentPreviewRows.some(r => r.length !== 11)) return showToast("Rows must have 11 columns", "warning");
+            
             const table = document.getElementById("previewTableBody");
-            table.innerHTML = `<thead class="table-light"><tr>${COLUMN_HEADERS.slice(1).map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${currentPreviewRows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>`;
+            table.innerHTML = `<thead><tr>${COLUMN_HEADERS.slice(1).map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${currentPreviewRows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>`;
             document.getElementById("pastePreview").style.display = "block";
             document.getElementById("pasteActions").style.display = "grid";
         }
@@ -254,7 +257,7 @@
         function populateMachineDropdown() {
             const select = document.getElementById("machineSelect");
             const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
-            select.innerHTML = `<option value="">All Machines</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
+            select.innerHTML = `<option value="">All</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
         }
 
         function renderTable(tableId, data) {
@@ -267,14 +270,14 @@
 
         function loadDailyData() {
             const m = document.getElementById("machineSelect").value;
-            const dRaw = document.getElementById("dailyDateInput").value; // e.g. "2026-04-09"
+            const dRaw = document.getElementById("dailyDateInput").value; 
             const partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
 
             let filtered = allData;
 
             // 1. Filter by Machine
             if (m) {
-                filtered = filtered.filter(r => String(r["Machine No."]) === String(m));
+                filtered = filtered.filter(r => String(r["Machine No."]).trim() === String(m).trim());
             }
 
             // 2. Filter by Part No.
@@ -282,43 +285,32 @@
                 filtered = filtered.filter(r => String(r["Part No."]).toLowerCase().includes(partQuery));
             }
 
-            // 3. Filter by Lasered Date (Fixing the Google Sheets format mismatch)
+            // 3. Filter by Lasered Date (Universal Matcher)
             if (dRaw) {
                 const parts = dRaw.split("-");
                 const yyyy = parts[0];
-                const mm = parts[1];
-                const dd = parts[2];
+                const mm = parts[1]; 
+                const dd = parts[2]; 
+                
+                const mmNoZero = parseInt(mm, 10).toString();
+                const ddNoZero = parseInt(dd, 10).toString();
                 const yy = yyyy.slice(-2);
                 
-                // Month array to check for "09-Apr-2026"
                 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 const monthName = months[parseInt(mm, 10) - 1];
 
-                // List all possible ways the sheet might be sending the date text back
                 const validFormats = [
-                    `${dd}-${mm}-${yy}`,         // e.g., 09-04-26
-                    `${dd}-${monthName}-${yyyy}`,// e.g., 09-Apr-2026
-                    `${dd}-${monthName}-${yy}`,  // e.g., 09-Apr-26
-                    `${yyyy}-${mm}-${dd}`,       // e.g., 2026-04-09
-                    `${mm}/${dd}/${yyyy}`        // e.g., 04/09/2026
+                    `${ddNoZero}/${mmNoZero}/${yyyy}`, // 26/1/2026
+                    `${dd}/${mm}/${yyyy}`,             // 26/01/2026
+                    `${dd}-${mm}-${yy}`,              // 26-01-26
+                    `${dd}-${monthName}-${yyyy}`,     // 26-Jan-2026
+                    `${yyyy}-${mm}-${dd}`             // 2026-01-26
                 ];
 
                 filtered = filtered.filter(r => {
-                    const rowDateStr = String(r["Lasered Date"]);
-                    
-                    // Check if the Sheet's date text includes any of our valid formats
-                    const isStringMatch = validFormats.some(format => rowDateStr.includes(format));
-                    
-                    // Fallback: Check if native Javascript date parsing works
-                    let isNativeMatch = false;
-                    const parsedDate = new Date(rowDateStr);
-                    if (!isNaN(parsedDate)) {
-                        isNativeMatch = (parsedDate.getFullYear() == yyyy && 
-                                        (parsedDate.getMonth() + 1) == parseInt(mm, 10) && 
-                                        parsedDate.getDate() == parseInt(dd, 10));
-                    }
-
-                    return isStringMatch || isNativeMatch;
+                    const rowDateStr = String(r["Lasered Date"]).trim();
+                    if (!rowDateStr) return false;
+                    return validFormats.some(format => rowDateStr === format);
                 });
             }
 
@@ -330,7 +322,6 @@
             const fromRaw = document.getElementById("fromDate").value;
             const toRaw = document.getElementById("toDate").value;
             
-            // Convert to strict timestamps for accurate mathematical comparison
             const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
             const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
 
@@ -338,22 +329,17 @@
                 const rowDateStr = r["Lasered Date"];
                 if (!rowDateStr) return false;
                 
-                let parsedDate = new Date(rowDateStr);
+                // Convert Row Date String to Object
+                let parts = rowDateStr.split(/[-/]/);
+                if (parts.length !== 3) return true;
                 
-                // If JS fails to parse "09-04-26", force format it to MM/DD/YYYY
-                if (isNaN(parsedDate) && rowDateStr.includes("-")) {
-                    const parts = rowDateStr.split("-");
-                    if (parts.length === 3) {
-                        let year = parts[2].length === 2 ? "20" + parts[2] : parts[2];
-                        parsedDate = new Date(`${parts[1]}/${parts[0]}/${year}`);
-                    }
-                }
-
-                // If it's a completely unreadable string, let it show up so data isn't lost
-                if (isNaN(parsedDate)) return true; 
-
-                const rowTime = parsedDate.getTime();
+                let day, month, year;
+                if (parts[0].length === 4) { [year, month, day] = parts; } 
+                else { [day, month, year] = parts; }
                 
+                if (year.length === 2) year = "20" + year;
+                const rowTime = new Date(year, month - 1, day).getTime();
+
                 if (fromTime && rowTime < fromTime) return false; 
                 if (toTime && rowTime > toTime) return false;
                 return true;
@@ -371,7 +357,7 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "Laser_Data.csv";
+            a.download = `Laser_Data_Export_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
         }
 
