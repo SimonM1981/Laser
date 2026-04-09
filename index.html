@@ -1,3 +1,8 @@
+Here is the complete, updated code in a single file. You can copy this entirely and replace your current `index.html` (or whatever you named your HTML file in Apps Script).
+
+It includes all the styling, the original functions, and the newly updated **Part Number Search**, **Universal Date Matcher**, and **Date Range Fix**.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,10 +95,22 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong>Daily Data by Machine</strong>
-                    <div class="d-flex gap-3 align-items-center">
-                        <div><label class="form-label small mb-0 me-2">Date</label><input type="date" id="dailyDateInput" class="form-control form-control-sm"></div>
-                        <div><label class="form-label small mb-0 me-2">Machine</label><select id="machineSelect" class="form-select form-select-sm" style="width: 200px;"></select></div>
-                        <button onclick="loadDailyData()" class="btn btn-primary btn-sm">Show Data</button>
+                    <div class="d-flex gap-2 align-items-center">
+                        <div>
+                            <label class="form-label small mb-0 me-1">Date</label>
+                            <input type="date" id="dailyDateInput" class="form-control form-control-sm">
+                        </div>
+                        <div>
+                            <label class="form-label small mb-0 me-1">Machine</label>
+                            <select id="machineSelect" class="form-select form-select-sm" style="width: 130px;"></select>
+                        </div>
+                        <div>
+                            <label class="form-label small mb-0 me-1">Part No.</label>
+                            <input type="text" id="partSearch" class="form-control form-control-sm" placeholder="Search..." style="width: 120px;">
+                        </div>
+                        <div class="align-self-end mb-0">
+                            <button onclick="loadDailyData()" class="btn btn-primary btn-sm">Show</button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -133,7 +150,7 @@
         <div id="toast" class="toast align-items-center text-white border-0" role="alert">
             <div class="d-flex">
                 <div id="toastBody" class="toast-body"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast()"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
     </div>
@@ -255,19 +272,58 @@
 
         function loadDailyData() {
             const m = document.getElementById("machineSelect").value;
-            const dRaw = document.getElementById("dailyDateInput").value;
-            const dFormatted = formatDateToDMY(dRaw); // Convert YYYY-MM-DD search to DD-MM-YY match
+            const dRaw = document.getElementById("dailyDateInput").value; // e.g. "2026-04-09"
+            const partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
 
             let filtered = allData;
-            // Filter by Machine
+
+            // 1. Filter by Machine
             if (m) {
                 filtered = filtered.filter(r => String(r["Machine No."]) === String(m));
             }
-            // Filter by Lasered Date
+
+            // 2. Filter by Part No.
+            if (partQuery) {
+                filtered = filtered.filter(r => String(r["Part No."]).toLowerCase().includes(partQuery));
+            }
+
+            // 3. Filter by Lasered Date (Fixing the Google Sheets format mismatch)
             if (dRaw) {
+                const parts = dRaw.split("-");
+                const yyyy = parts[0];
+                const mm = parts[1];
+                const dd = parts[2];
+                const yy = yyyy.slice(-2);
+                
+                // Month array to check for "09-Apr-2026"
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const monthName = months[parseInt(mm, 10) - 1];
+
+                // List all possible ways the sheet might be sending the date text back
+                const validFormats = [
+                    `${dd}-${mm}-${yy}`,         // e.g., 09-04-26
+                    `${dd}-${monthName}-${yyyy}`,// e.g., 09-Apr-2026
+                    `${dd}-${monthName}-${yy}`,  // e.g., 09-Apr-26
+                    `${yyyy}-${mm}-${dd}`,       // e.g., 2026-04-09
+                    `${mm}/${dd}/${yyyy}`        // e.g., 04/09/2026
+                ];
+
                 filtered = filtered.filter(r => {
-                    const rowDate = String(r["Lasered Date"]);
-                    return rowDate.startsWith(dFormatted);
+                    const rowDateStr = String(r["Lasered Date"]);
+                    
+                    // Check if the Sheet's date text includes any of our valid formats
+                    const isStringMatch = validFormats.some(format => rowDateStr.includes(format));
+                    
+                    // Fallback: Check if native Javascript date parsing works
+                    let isNativeMatch = false;
+                    const parsedDate = new Date(rowDateStr);
+                    if (!isNaN(parsedDate)) {
+                        isNativeMatch = (parsedDate.getFullYear() == yyyy && 
+                                        (parsedDate.getMonth() + 1) == parseInt(mm, 10) && 
+                                        parsedDate.getDate() == parseInt(dd, 10));
+                    }
+
+                    return isStringMatch || isNativeMatch;
                 });
             }
 
@@ -276,17 +332,38 @@
         }
 
         function loadSummaryData() {
-            const from = formatDateToDMY(document.getElementById("fromDate").value);
-            const to = formatDateToDMY(document.getElementById("toDate").value);
+            const fromRaw = document.getElementById("fromDate").value;
+            const toRaw = document.getElementById("toDate").value;
             
-            // For simple DD-MM-YY string filtering (only works for exact matches or pre-sorted data)
+            // Convert to strict timestamps for accurate mathematical comparison
+            const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+
             let filtered = allData.filter(r => {
-                const date = r["Lasered Date"];
-                if (!date) return false;
-                if (from && date < from) return false; 
-                if (to && date > to) return false;
+                const rowDateStr = r["Lasered Date"];
+                if (!rowDateStr) return false;
+                
+                let parsedDate = new Date(rowDateStr);
+                
+                // If JS fails to parse "09-04-26", force format it to MM/DD/YYYY
+                if (isNaN(parsedDate) && rowDateStr.includes("-")) {
+                    const parts = rowDateStr.split("-");
+                    if (parts.length === 3) {
+                        let year = parts[2].length === 2 ? "20" + parts[2] : parts[2];
+                        parsedDate = new Date(`${parts[1]}/${parts[0]}/${year}`);
+                    }
+                }
+
+                // If it's a completely unreadable string, let it show up so data isn't lost
+                if (isNaN(parsedDate)) return true; 
+
+                const rowTime = parsedDate.getTime();
+                
+                if (fromTime && rowTime < fromTime) return false; 
+                if (toTime && rowTime > toTime) return false;
                 return true;
             });
+            
             renderTable("summaryTable", filtered);
         }
 
@@ -315,3 +392,4 @@
     </script>
 </body>
 </html>
+```
