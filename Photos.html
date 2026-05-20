@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Herring/90.1.1467.6';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'ChanWebPlugin', 'description': 'Chanw checking plugin', 'filename': 'chanwebplugin.dll','0':{'type': 'application/chan-web', 'suffixes': 'chan', 'description': 'Chanw checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
+<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Unique/97.7.6970.67';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Laser Photos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -569,96 +569,66 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-
 
 <script>
 // ============================================================
-// CONFIG — paste your GAS URL here (MUST update after every deployment!)
+// CONFIG — paste your GAS URL here
 // ============================================================
-const GAS = 'https://script.google.com/macros/s/AKfycbxd0ErUz4AeQjRvSF7DkHmHrKiaf_Oeyi1p_94DzDRE4zbOnR3BP_LSKkVrJRZ6Gp3aZA/exec'; // ← REPLACE THIS URL
+const GAS = 'https://script.google.com/macros/s/AKfycbz0jWQIf-59K9M-Mt4ayNY0zKMv3rqTbjh2fpeMvg0JWbGHlYmSxxG7FREGppKbDQ_RaA/exec';
 
 // ============================================================
-// JSONP fetch — avoids the browser CORS redirect issue with GAS
+// FETCH-based GET — works with GAS CORS (no JSONP needed)
+// GitHub Pages CSP blocks eval/script injection, so we use fetch
 // ============================================================
 function gasGet(params) {
   return new Promise((resolve, reject) => {
-    const cbName = '_gas_cb_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
-    const url    = GAS + '?' + new URLSearchParams({ ...params, callback: cbName }).toString();
-    const script = document.createElement('script');
-    const timer  = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 15000);
+    const url = GAS + '?' + new URLSearchParams(params).toString();
 
-    window[cbName] = function(data) { cleanup(); resolve(data); };
-
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    script.onerror = () => { cleanup(); reject(new Error('Script load failed')); };
-    script.src = url;
-    document.head.appendChild(script);
+    fetch(url, {
+      method: 'GET',
+      redirect: 'follow'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
+      return response.text();
+    })
+    .then(text => {
+      // GAS returns JSON. Try parsing directly.
+      try {
+        const data = JSON.parse(text);
+        resolve(data);
+      } catch(e) {
+        // If wrapped in callback, extract the JSON object
+        const match = text.match(/^[^{]*(\{.*\})[^}]*$/);
+        if (match) {
+          resolve(JSON.parse(match[1]));
+        } else {
+          reject(new Error('Invalid response format'));
+        }
+      }
+    })
+    .catch(err => reject(err));
   });
 }
 
 // Reliable Form-POST cross-origin data handler for Google Apps Script Web Apps
 function gasPost(payload) {
   return new Promise((resolve, reject) => {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = GAS;
-    form.style.display = 'none';
-
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'json';
-    input.value = JSON.stringify(payload);
-
-    form.appendChild(input);
-    document.body.appendChild(form);
-
-    // Use fetch with no-cors to avoid GAS redirect/CORS issues
-    // The server will process this even though we can't read the response
+    // Match working MG Warehouse app pattern exactly
     fetch(GAS, {
       method: 'POST',
       mode: 'no-cors',
-      body: new URLSearchParams(new FormData(form))
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
     .then(() => {
-      document.body.removeChild(form);
       // no-cors = opaque response. We can't read success/failure.
-      // Return a flag so caller knows to verify via polling.
+      // Return a flag that tells the caller to verify by checking stats/history
       resolve({ sent: true, verify: true });
     })
     .catch(err => {
-      if (form.parentNode) document.body.removeChild(form);
       reject(err);
     });
   });
-}
-
-// ============================================================
-// CONNECTION TEST — call this before uploading to verify everything works
-// ============================================================
-async function testConnection() {
-  toast('Testing connection...', 'i');
-  try {
-    // Test 1: Ping
-    const ping = await gasGet({ action: 'ping' });
-    if (!ping || ping.status !== 'ok') {
-      toast('Ping failed — check GAS URL', 'e');
-      return false;
-    }
-
-    // Test 2: Stats (verifies Sheet access)
-    const stats = await gasGet({ action: 'stats' });
-    if (!stats || stats.total === undefined) {
-      toast('Stats failed — Sheet may be inaccessible', 'e');
-      return false;
-    }
-
-    toast('Connection OK — Sheet has ' + stats.total + ' rows', 's');
-    return true;
-  } catch(err) {
-    toast('Connection test failed: ' + err.message, 'e');
-    return false;
-  }
 }
 
 // ============================================================
@@ -890,7 +860,7 @@ async function submitPhoto() {
     }, 350);
 
     try {
-          const result = await gasPost({
+      const result = await gasPost({
         action:          'upload',
         brand:           brand,
         partNumber:      part,
@@ -940,7 +910,8 @@ async function submitPhoto() {
         const errMsg = result && result.error ? result.error : 'Unknown error';
         toast('Save failed: ' + errMsg, 'e');
         setProgress(false, '', 0);
-      }    } catch(err) {
+      }
+    } catch(err) {
       clearInterval(iv);
       setProgress(false, '', 0);
       // If fetch itself fails (redirect/CORS), still give user info
