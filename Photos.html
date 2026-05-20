@@ -475,6 +475,9 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-
         </div>
       </div>
 
+      <button id="btn-test" class="btn-sec" style="margin-bottom:10px;background:rgba(99,102,241,.15);border-color:var(--primary);color:var(--primary-light);">
+        <i class="fas fa-plug"></i> Test Connection First
+      </button>
       <button id="btn-submit" class="btn-primary">
         <i class="fas fa-cloud-upload-alt"></i> Submit & Save Photo
       </button>
@@ -568,7 +571,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-
 // ============================================================
 // CONFIG — paste your GAS URL here (MUST update after every deployment!)
 // ============================================================
-const GAS = 'https://script.google.com/macros/s/AKfycbxlsrZP8H_MxigbscrYowtbueQaPusFm4V8wxD75Pqktl4w23eOl6yWPvA2BkW4Dy07xQ/exec'; // ← REPLACE THIS URL
+const GAS = 'https://script.google.com/macros/s/AKfycbxd0ErUz4AeQjRvSF7DkHmHrKiaf_Oeyi1p_94DzDRE4zbOnR3BP_LSKkVrJRZ6Gp3aZA/exec'; // ← REPLACE THIS URL
 
 // ============================================================
 // JSONP fetch — avoids the browser CORS redirect issue with GAS
@@ -628,6 +631,34 @@ function gasPost(payload) {
       reject(err);
     });
   });
+}
+
+// ============================================================
+// CONNECTION TEST — call this before uploading to verify everything works
+// ============================================================
+async function testConnection() {
+  toast('Testing connection...', 'i');
+  try {
+    // Test 1: Ping
+    const ping = await gasGet({ action: 'ping' });
+    if (!ping || ping.status !== 'ok') {
+      toast('Ping failed — check GAS URL', 'e');
+      return false;
+    }
+
+    // Test 2: Stats (verifies Sheet access)
+    const stats = await gasGet({ action: 'stats' });
+    if (!stats || stats.total === undefined) {
+      toast('Stats failed — Sheet may be inaccessible', 'e');
+      return false;
+    }
+
+    toast('Connection OK — Sheet has ' + stats.total + ' rows', 's');
+    return true;
+  } catch(err) {
+    toast('Connection test failed: ' + err.message, 'e');
+    return false;
+  }
 }
 
 // ============================================================
@@ -1174,6 +1205,7 @@ document.addEventListener('click', function(ev) {
 
   // Form
   if (t.closest('#btn-submit'))     { submitPhoto(); return; }
+  if (t.closest('#btn-test'))       { testConnection(); return; }
   if (t.closest('#btn-retake'))     { resetForm(); if (captureMode === 'camera') startCam(); return; }
 
   // History
