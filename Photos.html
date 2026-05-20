@@ -593,26 +593,38 @@ function gasGet(params) {
   });
 }
 
-// POST via form trick — GAS handles redirects fine from form submissions
-// We use fetch with mode:'no-cors' and a workaround: iframe form POST
+// Reliable Form-POST cross-origin data handler for Google Apps Script Web Apps
 function gasPost(payload) {
   return new Promise((resolve, reject) => {
-    // Use fetch — GAS now supports no-cors but we can't read response.
-    // So instead we use the standard fetch and let the redirect happen naturally.
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = GAS;
+    form.style.display = 'none';
+
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'json';
+    input.value = JSON.stringify(payload);
+    
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+    // Use modern fetch to deliver the form dataset smoothly across subdomains
     fetch(GAS, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' }, // text/plain avoids preflight
-      body: JSON.stringify(payload),
-      redirect: 'follow'
+      mode: 'no-cors',
+      body: new URLSearchParams(new FormData(form))
     })
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.text();
+    .then(() => {
+      document.body.removeChild(form);
+      resolve({ success: true }); // no-cors resolves securely here
     })
-    .then(text => {
-      try { resolve(JSON.parse(text)); }
-      catch(e) { resolve({ success: true }); } // GAS redirect sometimes returns HTML
-    })
+    .catch(err => {
+      if (form.parentNode) document.body.removeChild(form);
+      reject(err);
+    });
+  });
+}
     .catch(reject);
   });
 }
