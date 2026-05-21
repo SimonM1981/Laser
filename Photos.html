@@ -1,1302 +1,1034 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' Unique/97.7.6970.67';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} },{'name':'BlockIt', 'description': 'Block it', 'filename': 'blockit.dll','0':{'type': 'application/block-it', 'suffixes': 'block', 'description': 'Block it'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Laser Photos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laser Photos — Parts Registry</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;
-  --accent:#f472b6;--accent-2:#22d3ee;
-  --bg:#0f172a;--surface:#1e293b;--surface-2:#334155;--surface-3:#475569;
-  --text:#f1f5f9;--text-muted:#94a3b8;--text-dim:#64748b;
-  --success:#34d399;--danger:#f87171;--warning:#fbbf24;
-  --glass:rgba(30,41,59,0.75);--glass-border:rgba(255,255,255,0.08);
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;}
-body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.bg-mesh::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(circle at 20% 80%,rgba(99,102,241,.12) 0%,transparent 50%),
-             radial-gradient(circle at 80% 20%,rgba(244,114,182,.08) 0%,transparent 50%);
-  animation:meshMove 20s ease-in-out infinite;}
-@keyframes meshMove{0%,100%{transform:translate(0,0);}50%{transform:translate(1%,-1%);}}
-.app{position:relative;z-index:2;max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:90px;}
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #1a1d24;
+    --border: #252830;
+    --accent: #f97316;
+    --accent2: #fbbf24;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --radius: 12px;
+  }
 
-/* HEADER */
-.app-header{position:sticky;top:0;z-index:40;padding:13px 18px;
-  background:linear-gradient(180deg,rgba(15,23,42,.96) 0%,rgba(15,23,42,.82) 100%);
-  backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
-.hdr{display:flex;align-items:center;justify-content:space-between;}
-.logo{display:flex;align-items:center;gap:9px;}
-.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));
-  border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;
-  box-shadow:0 4px 14px rgba(99,102,241,.4);}
-.logo-text{font-size:19px;font-weight:700;background:linear-gradient(135deg,var(--text),var(--primary-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.status-pill{display:flex;align-items:center;gap:5px;padding:5px 11px;background:var(--glass);
-  border:1px solid var(--glass-border);border-radius:20px;font-size:11px;color:var(--text-muted);}
-.sdot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);animation:pulse 2s infinite;}
-.sdot.off{background:var(--danger);box-shadow:0 0 6px var(--danger);}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* TABS */
-.tab{display:none;padding:0 15px;animation:tabIn .35s ease;}
-.tab.active{display:block;}
-@keyframes tabIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-/* HOME */
-.hero{padding:22px 4px 14px;}
-.hero h1{font-size:27px;font-weight:800;line-height:1.2;margin-bottom:3px;}
-.grad{background:linear-gradient(135deg,var(--primary-light),var(--accent),var(--accent-2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero p{color:var(--text-muted);font-size:13px;}
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(249,115,22,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249,115,22,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* USER BADGE */
-.user-badge{display:flex;align-items:center;gap:10px;padding:12px 15px;background:var(--glass);
-  border:1px solid var(--glass-border);border-radius:16px;margin-bottom:18px;cursor:pointer;backdrop-filter:blur(10px);}
-.u-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));
-  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
-.u-info{flex:1;}
-.u-name{font-size:14px;font-weight:600;}
-.u-hint{font-size:11px;color:var(--text-dim);margin-top:1px;}
-.u-edit{color:var(--text-dim);font-size:12px;}
+  /* ===== HEADER ===== */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px;}
-.stat-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:18px;
-  position:relative;overflow:hidden;backdrop-filter:blur(10px);}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--primary),var(--accent));opacity:.5;}
-.stat-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:10px;}
-.si-blue{background:rgba(99,102,241,.15);color:var(--primary-light);}
-.si-pink{background:rgba(244,114,182,.15);color:var(--accent);}
-.stat-val{font-size:30px;font-weight:800;line-height:1;margin-bottom:3px;}
-.sv-blue{color:var(--primary-light);}
-.sv-pink{color:var(--accent);}
-.stat-lbl{font-size:12px;color:var(--text-muted);font-weight:500;}
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-/* ACTION CARDS */
-.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
-.section-title{font-size:15px;font-weight:700;}
-.see-all{font-size:13px;color:var(--primary-light);font-weight:600;cursor:pointer;}
-.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px;}
-.action-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;padding:22px 14px;
-  text-align:center;cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);backdrop-filter:blur(10px);}
-.action-card:hover{transform:translateY(-3px) scale(1.02);border-color:rgba(99,102,241,.3);box-shadow:0 10px 36px rgba(99,102,241,.2);}
-.action-card:active{transform:scale(.97);}
-.ac-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 11px;}
-.ac-capture{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 6px 20px rgba(99,102,241,.4);}
-.ac-history{background:linear-gradient(135deg,var(--accent),#db2777);color:#fff;box-shadow:0 6px 20px rgba(244,114,182,.4);}
-.ac-lbl{font-size:13px;font-weight:600;}
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
 
-/* RECENT LIST */
-.recent-list{background:var(--glass);border:1px solid var(--glass-border);border-radius:18px;overflow:hidden;backdrop-filter:blur(10px);}
-.recent-item{display:flex;align-items:center;gap:13px;padding:13px 15px;border-bottom:1px solid var(--glass-border);cursor:pointer;transition:background .2s;}
-.recent-item:last-child{border-bottom:none;}
-.recent-item:hover{background:rgba(99,102,241,.05);}
-.r-thumb{width:50px;height:50px;border-radius:13px;object-fit:cover;border:2px solid var(--surface-2);flex-shrink:0;}
-.r-thumb-ph{width:50px;height:50px;border-radius:13px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:18px;flex-shrink:0;}
-.r-info{flex:1;min-width:0;}
-.r-brand{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.r-meta{font-size:11px;color:var(--text-dim);margin-top:2px;}
-.r-by{font-size:10px;color:var(--primary-light);margin-top:1px;}
-.empty-state{padding:36px 18px;text-align:center;color:var(--text-dim);}
-.empty-state i{font-size:38px;margin-bottom:10px;opacity:.4;display:block;}
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-/* CAPTURE TAB */
-.mode-bar{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0 12px;}
-.mode-btn{padding:11px;border-radius:13px;border:2px solid var(--surface-2);background:var(--glass);
-  color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;gap:7px;transition:all .3s;backdrop-filter:blur(10px);}
-.mode-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.4);}
+  nav {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
 
-/* CAMERA */
-.cam-wrap{position:relative;background:#000;border-radius:22px;overflow:hidden;margin-bottom:10px;aspect-ratio:3/4;box-shadow:0 18px 52px rgba(0,0,0,.55);}
-#cam-video{width:100%;height:100%;object-fit:cover;display:block;}
-.cam-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);pointer-events:none;}
-.cam-grid div{border:1px solid rgba(255,255,255,.1);}
-.cam-top{position:absolute;top:0;left:0;right:0;padding:14px;display:flex;justify-content:space-between;align-items:center;}
-.cam-bot{position:absolute;bottom:0;left:0;right:0;padding:20px 28px 28px;display:flex;justify-content:center;
-  align-items:center;gap:36px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);}
-.cam-btn{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:17px;cursor:pointer;transition:all .2s;}
-.cam-btn:hover{background:rgba(0,0,0,.65);}
-.shutter-ring{width:76px;height:76px;border-radius:50%;border:4px solid rgba(255,255,255,.85);
-  padding:4px;cursor:pointer;transition:transform .15s;-webkit-tap-highlight-color:transparent;}
-.shutter-ring:active{transform:scale(.9);}
-.shutter-core{width:100%;height:100%;border-radius:50%;background:#fff;transition:background .15s,transform .15s;}
-.shutter-ring:active .shutter-core{background:var(--accent);transform:scale(.82);}
-.cam-hint{text-align:center;font-size:12px;color:var(--text-dim);padding:4px 0 8px;}
-.cam-error{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
-  padding:32px;text-align:center;gap:12px;}
-.cam-error i{font-size:44px;color:var(--text-dim);}
-.cam-error p{color:var(--text-muted);font-size:13px;}
+  .nav-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
 
-/* UPLOAD ZONE */
-.upload-zone{border:2px dashed var(--surface-2);border-radius:20px;padding:44px 20px;text-align:center;
-  cursor:pointer;transition:all .3s;margin-bottom:10px;}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--primary);background:rgba(99,102,241,.06);}
-.upload-zone i{font-size:44px;color:var(--primary-light);margin-bottom:11px;display:block;}
-.upload-zone h3{font-size:15px;font-weight:600;margin-bottom:5px;}
-.upload-zone p{font-size:12px;color:var(--text-dim);}
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+  }
 
-/* PREVIEW / FORM */
-.card{background:var(--glass);border:1px solid var(--glass-border);border-radius:22px;padding:18px;margin-bottom:14px;backdrop-filter:blur(10px);}
-.card-hdr{display:flex;align-items:center;gap:7px;margin-bottom:14px;}
-.card-hdr i{color:var(--primary-light);font-size:15px;}
-.card-hdr h3{font-size:14px;font-weight:700;}
-.preview-pair{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px;}
-.pbox{position:relative;border-radius:14px;overflow:hidden;border:2px solid var(--surface-2);}
-.pbox img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
-.pbox-lbl{position:absolute;top:7px;left:7px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;
-  text-transform:uppercase;letter-spacing:.4px;background:rgba(0,0,0,.55);color:#fff;}
-.pbox-size{position:absolute;bottom:7px;right:7px;padding:3px 9px;border-radius:7px;font-size:10px;font-weight:700;backdrop-filter:blur(8px);}
-.pbox-size.orig{background:rgba(248,113,113,.8);color:#fff;}
-.pbox-size.comp{background:rgba(52,211,153,.8);color:#fff;}
-.compress-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px;
-  background:var(--surface);border-radius:10px;font-size:12px;}
-.compress-row .from{color:var(--danger);font-weight:600;}
-.compress-row .to{color:var(--success);font-weight:600;}
-.compress-row .saved{color:var(--accent-2);font-weight:700;}
+  .nav-btn:hover:not(.active) { color: var(--text); background: var(--surface2); }
 
-/* FORM INPUTS */
-.form-group{margin-bottom:14px;position:relative;}
-.form-group:last-child{margin-bottom:0;}
-.form-lbl{display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
-.req{color:var(--danger);}
-.form-input{width:100%;padding:13px 15px;background:var(--surface);border:2px solid var(--surface-2);
-  border-radius:13px;color:var(--text);font-size:15px;font-weight:500;transition:all .3s;outline:none;}
-.form-input::placeholder{color:var(--text-dim);}
-.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.14);background:var(--surface-2);}
-.form-input[readonly]{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.25);color:var(--primary-light);cursor:default;}
-.ac-list{position:absolute;top:calc(100% + 3px);left:0;right:0;background:var(--surface);border:1px solid var(--surface-2);
-  border-radius:13px;max-height:190px;overflow-y:auto;z-index:60;box-shadow:0 16px 36px rgba(0,0,0,.45);}
-.ac-item{padding:11px 15px;cursor:pointer;border-bottom:1px solid var(--surface-2);font-size:13px;transition:background .15s;}
-.ac-item:last-child{border-bottom:none;}
-.ac-item:hover{background:rgba(99,102,241,.1);}
-.fn-preview{background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(244,114,182,.08));
-  border:1px solid rgba(99,102,241,.18);border-radius:12px;padding:12px 14px;margin-top:7px;}
-.fn-lbl{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
-.fn-val{font-family:'SF Mono',monospace;font-size:11px;color:var(--primary-light);word-break:break-all;line-height:1.5;}
+  /* ===== MAIN ===== */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
 
-/* PROGRESS */
-.progress-wrap{margin:14px 0;}
-.progress-hdr{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;}
-.progress-lbl{color:var(--text-muted);}
-.progress-pct{color:var(--primary-light);font-weight:700;}
-.progress-track{height:7px;background:var(--surface);border-radius:4px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width .35s ease;}
+  .view { display: none; }
+  .view.active { display: block; animation: fadeUp 0.3s ease; }
 
-/* BUTTONS */
-.btn-primary{width:100%;padding:17px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  border:none;border-radius:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:9px;transition:all .3s;box-shadow:0 7px 28px rgba(99,102,241,.4);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 11px 36px rgba(99,102,241,.5);}
-.btn-primary:active{transform:scale(.97);}
-.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none;}
-.btn-sec{width:100%;padding:14px;background:var(--surface);border:2px solid var(--surface-2);border-radius:16px;
-  color:var(--text-muted);font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;transition:all .2s;}
-.btn-sec:hover{background:var(--surface-2);color:var(--text);}
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-/* HISTORY */
-.search-wrap{position:relative;margin-bottom:14px;}
-.search-wrap i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text-dim);}
-.search-inp{width:100%;padding:13px 15px 13px 44px;background:var(--glass);border:2px solid var(--glass-border);
-  border-radius:15px;color:var(--text);font-size:14px;outline:none;transition:all .3s;backdrop-filter:blur(10px);}
-.search-inp::placeholder{color:var(--text-dim);}
-.search-inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.14);background:var(--surface);}
-.filter-bar{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:3px;scrollbar-width:none;}
-.filter-bar::-webkit-scrollbar{display:none;}
-.f-chip{padding:7px 16px;border-radius:22px;font-size:12px;font-weight:600;cursor:pointer;
-  border:2px solid var(--surface-2);background:var(--glass);color:var(--text-muted);white-space:nowrap;transition:all .3s;}
-.f-chip.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-color:transparent;color:#fff;box-shadow:0 3px 12px rgba(99,102,241,.3);}
-.results-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
-.results-ct{font-size:12px;color:var(--text-dim);}
-.refresh-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:9px;background:var(--glass);
-  border:1px solid var(--glass-border);color:var(--primary-light);font-size:12px;font-weight:600;cursor:pointer;}
-.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;}
-.photo-card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;background:var(--surface);
-  border:1px solid var(--surface-2);transition:all .4s cubic-bezier(.16,1,.3,1);aspect-ratio:1;}
-.photo-card:hover{transform:translateY(-3px) scale(1.02);border-color:var(--primary);box-shadow:0 14px 44px rgba(99,102,241,.2);}
-.photo-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
-.photo-card:hover img{transform:scale(1.07);}
-.photo-card .ph-overlay{position:absolute;bottom:0;left:0;right:0;padding:36px 11px 11px;background:linear-gradient(to top,rgba(15,23,42,.95),transparent);}
-.ph-brand{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ph-meta{font-size:10px;color:var(--text-muted);margin-top:1px;}
-.ph-by{font-size:9px;color:var(--primary-light);margin-top:1px;}
-.ph-date{position:absolute;top:9px;right:9px;padding:3px 9px;border-radius:7px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);font-size:9px;font-weight:600;color:#fff;}
-.skel{aspect-ratio:1;border-radius:18px;background:var(--surface-2);animation:sk 1.5s ease-in-out infinite;}
-@keyframes sk{0%,100%{opacity:.4;}50%{opacity:.9;}}
-.load-more{width:100%;padding:14px;margin-top:14px;background:var(--glass);border:2px solid var(--glass-border);
-  border-radius:14px;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;}
-.load-more:hover{border-color:var(--primary);color:var(--primary-light);}
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 3px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
 
-/* LIGHTBOX */
-.lightbox{display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.98);flex-direction:column;}
-.lightbox.active{display:flex;}
-.lb-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;
-  background:rgba(15,23,42,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);}
-.lb-fn{font-family:'SF Mono',monospace;font-size:11px;color:var(--text-dim);flex:1;margin-right:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.lb-close{width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--surface-2);
-  color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .2s;flex-shrink:0;}
-.lb-close:hover{transform:rotate(90deg);}
-.lb-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;}
-.lb-img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center;transition:transform .08s;}
-.lb-ctrl{display:flex;justify-content:center;align-items:center;gap:16px;padding:12px;
-  background:rgba(15,23,42,.85);backdrop-filter:blur(20px);border-top:1px solid var(--glass-border);}
-.zoom-btn{width:42px;height:42px;border-radius:11px;background:var(--surface);border:1px solid var(--surface-2);
-  color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;}
-.zoom-btn:hover{border-color:var(--primary);color:var(--primary-light);}
-.zoom-lv{font-size:13px;font-weight:700;color:var(--text-muted);min-width:46px;text-align:center;}
-.lb-meta{padding:13px 18px;background:rgba(15,23,42,.92);}
-.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.meta-item{display:flex;flex-direction:column;gap:1px;}
-.meta-lbl{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
-.meta-val{font-size:12px;font-weight:600;color:var(--text);}
-.meta-val.fn{font-family:'SF Mono',monospace;font-size:10px;color:var(--primary-light);}
+  /* ===== FORM ===== */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+  }
 
-/* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(15,23,42,.88);
-  backdrop-filter:blur(22px);border-top:1px solid var(--glass-border);
-  padding:7px 0 calc(7px + env(safe-area-inset-bottom));}
-.nav-inner{max-width:480px;margin:0 auto;display:flex;justify-content:space-around;}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 22px;
-  border:none;background:none;color:var(--text-dim);cursor:pointer;transition:all .3s;position:relative;}
-.nav-btn i{font-size:21px;transition:transform .3s;}
-.nav-btn span{font-size:10px;font-weight:600;}
-.nav-btn.active{color:var(--primary-light);}
-.nav-btn.active i{transform:translateY(-2px);}
-.nav-btn.active::before{content:'';position:absolute;top:-7px;width:22px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--accent));}
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
 
-/* TOAST */
-.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(90px);
-  padding:13px 22px;border-radius:15px;background:var(--surface);border:1px solid var(--surface-2);
-  color:var(--text);font-size:13px;font-weight:600;z-index:2000;opacity:0;
-  transition:all .38s cubic-bezier(.16,1,.3,1);box-shadow:0 18px 36px rgba(0,0,0,.45);
-  backdrop-filter:blur(20px);display:flex;align-items:center;gap:9px;max-width:88%;}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.toast-ico{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.toast-ico.s{background:rgba(52,211,153,.15);color:var(--success);}
-.toast-ico.e{background:rgba(248,113,113,.15);color:var(--danger);}
-.toast-ico.i{background:rgba(99,102,241,.15);color:var(--primary-light);}
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group.full { grid-column: 1 / -1; }
 
-/* NAME MODAL */
-.modal-bg{display:none;position:fixed;inset:0;z-index:200;background:rgba(15,23,42,.92);
-  backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;}
-.modal-bg.active{display:flex;}
-.modal-box{background:var(--surface);border:1px solid var(--glass-border);border-radius:22px;padding:26px 22px;width:100%;max-width:350px;}
-.modal-box h3{font-size:17px;font-weight:700;margin-bottom:5px;}
-.modal-box p{color:var(--text-muted);font-size:13px;margin-bottom:18px;}
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
 
-/* SPINNER */
-.spinner{width:38px;height:38px;border:3px solid var(--surface-2);border-top-color:var(--primary);border-radius:50%;animation:spin .75s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.hidden{display:none!important;}
+  input, select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+
+  /* ===== PHOTO UPLOAD ===== */
+  .photo-zone {
+    background: var(--surface2);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-zone:hover, .photo-zone.drag { border-color: var(--accent); background: rgba(249,115,22,0.05); }
+
+  .photo-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .photo-icon { font-size: 40px; margin-bottom: 12px; }
+
+  .photo-zone p { font-size: 14px; color: var(--muted); }
+  .photo-zone strong { color: var(--accent); }
+
+  .photo-preview-wrap {
+    position: relative;
+    margin-top: 16px;
+    display: none;
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 240px;
+  }
+
+  .photo-preview-wrap img {
+    width: 100%; max-height: 240px; object-fit: cover; display: block;
+  }
+
+  .photo-remove {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--border);
+    color: var(--danger);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .photo-meta {
+    margin-top: 8px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  /* ===== SUBMIT ===== */
+  .btn-primary {
+    padding: 14px 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .form-actions { margin-top: 28px; display: flex; justify-content: flex-end; }
+
+  /* ===== TOAST ===== */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 9999;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+    max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  #toast.success { background: rgba(34,197,94,0.15); border: 1px solid var(--success); color: var(--success); display: flex; }
+  #toast.error   { background: rgba(239,68,68,0.15);  border: 1px solid var(--danger);  color: var(--danger);  display: flex; }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+  }
+
+  /* ===== HISTORY ===== */
+  .history-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-box {
+    flex: 1; min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+  }
+  .search-box:focus { border-color: var(--accent); }
+
+  .brand-filter {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    min-width: 160px;
+  }
+  .brand-filter:focus { border-color: var(--accent); }
+
+  .refresh-btn {
+    padding: 10px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .stats-bar {
+    display: flex; gap: 24px; margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+  /* ===== PHOTO GRID ===== */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .photo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+
+  .photo-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 40px rgba(249,115,22,0.12);
+  }
+
+  .photo-card-img {
+    width: 100%; height: 180px; object-fit: cover; display: block;
+    background: var(--surface2);
+  }
+
+  .no-photo {
+    width: 100%; height: 180px;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    color: var(--border);
+  }
+
+  .photo-card-body { padding: 14px 16px; }
+
+  .card-brand {
+    display: inline-block;
+    padding: 2px 10px;
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .card-part {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .card-meta {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex; flex-direction: column; gap: 2px;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ===== EMPTY STATE ===== */
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 56px; margin-bottom: 16px; }
+  .empty h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+
+  /* ===== LOADING ===== */
+  .loading {
+    text-align: center; padding: 60px;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== LIGHTBOX ===== */
+  #lightbox {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(8px);
+  }
+  #lightbox.open { display: flex; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .lb-close {
+    position: absolute; top: 20px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 20px;
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .lb-close:hover { background: var(--surface2); }
+
+  .lb-img-wrap {
+    position: relative;
+    max-width: 90vw; max-height: 75vh;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    cursor: zoom-in;
+  }
+
+  #lb-img {
+    display: block;
+    max-width: 90vw; max-height: 75vh;
+    object-fit: contain;
+    transform-origin: center;
+    transition: transform 0.2s ease;
+    user-select: none;
+  }
+
+  .lb-zoom-controls {
+    display: flex; gap: 8px; margin-top: 16px;
+  }
+
+  .lb-zoom-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .lb-zoom-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .lb-info {
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .lb-part {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .lb-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ===== PROGRESS ===== */
+  .progress-wrap { display: none; margin-top: 16px; }
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-label { font-size: 12px; color: var(--muted); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    header { padding: 0 16px; }
+    .logo-text { font-size: 20px; }
+    .nav-btn { padding: 8px 12px; font-size: 12px; }
+    main { padding: 20px 16px; }
+  }
 </style>
-<base target="_blank">
 </head>
 <body>
-<div class="bg-mesh"></div>
-<div class="app">
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <div class="hdr">
-      <div class="logo">
-        <div class="logo-icon"><i class="fas fa-camera-retro"></i></div>
-        <div class="logo-text">Laser Photos</div>
-      </div>
-      <div class="status-pill">
-        <div class="sdot" id="sdot"></div>
-        <span id="stext">Online</span>
-      </div>
-    </div>
-  </header>
+<header>
+  <div class="logo">
+    <div class="logo-icon">🔬</div>
+    <span class="logo-text">Laser Photos</span>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="switchView('entry')" id="nav-entry">
+      ✦ Entry
+    </button>
+    <button class="nav-btn" onclick="switchView('history')" id="nav-history">
+      ◈ History
+    </button>
+  </nav>
+</header>
 
-  <!-- HOME TAB -->
-  <div id="tab-home" class="tab active">
-    <div class="hero">
-      <h1>Capture &<br><span class="grad">Archive</span></h1>
-      <p>Professional laser documentation system</p>
-    </div>
+<main>
 
-    <div class="user-badge" id="user-badge">
-      <div class="u-avatar" id="u-av">?</div>
-      <div class="u-info">
-        <div class="u-name" id="u-name">Set your name</div>
-        <div class="u-hint">Tap to change · tagged on every photo</div>
-      </div>
-      <i class="fas fa-pen u-edit"></i>
-    </div>
+  <!-- ====== ENTRY VIEW ====== -->
+  <div class="view active" id="view-entry">
+    <div class="section-title">New Record</div>
+    <p class="section-sub">Capture and register a laser part photo to the database.</p>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon si-blue"><i class="fas fa-camera"></i></div>
-        <div class="stat-val sv-blue" id="stat-today">—</div>
-        <div class="stat-lbl">Photos Today</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon si-pink"><i class="fas fa-images"></i></div>
-        <div class="stat-val sv-pink" id="stat-total">—</div>
-        <div class="stat-lbl">Total Photos</div>
-      </div>
-    </div>
+    <div class="form-card">
+      <div class="form-grid">
 
-    <div class="section-hdr"><span class="section-title">Quick Actions</span></div>
-    <div class="action-grid">
-      <div class="action-card" data-go="capture">
-        <div class="ac-icon ac-capture"><i class="fas fa-camera"></i></div>
-        <div class="ac-lbl">Take Photo</div>
-      </div>
-      <div class="action-card" data-go="history">
-        <div class="ac-icon ac-history"><i class="fas fa-images"></i></div>
-        <div class="ac-lbl">View History</div>
-      </div>
-    </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="f-date">
+        </div>
 
-    <div class="section-hdr">
-      <span class="section-title">Recent Uploads</span>
-      <span class="see-all" id="see-all">See All</span>
-    </div>
-    <div class="recent-list" id="recent-list">
-      <div class="empty-state"><i class="fas fa-image"></i><div>No photos yet</div></div>
+        <div class="form-group">
+          <label>Brand</label>
+          <input type="text" id="f-brand" placeholder="e.g. Trumpf, IPG, Coherent…">
+        </div>
+
+        <div class="form-group">
+          <label>Part Number</label>
+          <input type="text" id="f-part" placeholder="e.g. P-00123">
+        </div>
+
+        <div class="form-group">
+          <label>Customer Number</label>
+          <input type="text" id="f-customer" placeholder="e.g. C-88421">
+        </div>
+
+        <div class="form-group">
+          <label>Record By</label>
+          <input type="text" id="f-recorder" placeholder="Your name">
+        </div>
+
+        <div class="form-group full">
+          <label>Photo</label>
+          <div class="photo-zone" id="photo-zone"
+               ondragover="event.preventDefault(); this.classList.add('drag')"
+               ondragleave="this.classList.remove('drag')"
+               ondrop="handleDrop(event)">
+            <input type="file" id="f-photo" accept="image/*" capture="environment" onchange="handlePhotoSelect(event)">
+            <div class="photo-icon">📷</div>
+            <p><strong>Tap to take photo or upload</strong></p>
+            <p style="margin-top:4px;">Drag & drop also works • JPEG, PNG, WEBP</p>
+          </div>
+
+          <div class="photo-preview-wrap" id="preview-wrap">
+            <img id="preview-img" src="" alt="Preview">
+            <button class="photo-remove" onclick="clearPhoto()">✕ Remove</button>
+          </div>
+          <div class="photo-meta" id="photo-meta"></div>
+
+          <div class="progress-wrap" id="progress-wrap">
+            <div class="progress-label" id="progress-label">Uploading…</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" onclick="submitRecord()" id="submit-btn">
+          <span>⬆</span> Save Record
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- CAPTURE TAB -->
-  <div id="tab-capture" class="tab">
-    <div class="mode-bar">
-      <button class="mode-btn active" id="mode-cam"><i class="fas fa-camera"></i> Camera</button>
-      <button class="mode-btn" id="mode-dev"><i class="fas fa-folder-open"></i> From Device</button>
+  <!-- ====== HISTORY VIEW ====== -->
+  <div class="view" id="view-history">
+    <div class="section-title">Photo History</div>
+    <p class="section-sub">Browse, filter and zoom all registered parts.</p>
+
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat"><div class="stat-val" id="stat-total">—</div><div class="stat-label">Total Records</div></div>
+      <div class="stat"><div class="stat-val" id="stat-brands">—</div><div class="stat-label">Brands</div></div>
+      <div class="stat"><div class="stat-val" id="stat-today">—</div><div class="stat-label">Today</div></div>
     </div>
 
-    <!-- Camera -->
-    <div id="cam-section">
-      <div class="cam-wrap">
-        <video id="cam-video" autoplay playsinline muted></video>
-        <canvas id="cam-canvas" class="hidden"></canvas>
-        <div class="cam-grid">
-          <div></div><div></div><div></div>
-          <div></div><div></div><div></div>
-          <div></div><div></div><div></div>
-        </div>
-        <div class="cam-top">
-          <button class="cam-btn" id="btn-flip"><i class="fas fa-sync-alt"></i></button>
-          <button class="cam-btn" id="btn-cam-gallery"><i class="fas fa-images"></i></button>
-        </div>
-        <div class="cam-bot">
-          <div style="width:44px"></div>
-          <div class="shutter-ring" id="btn-shutter">
-            <div class="shutter-core"></div>
-          </div>
-          <div style="width:44px"></div>
-        </div>
-      </div>
-      <p class="cam-hint"><i class="fas fa-hand-pointer" style="margin-right:5px"></i>Tap the white button to capture</p>
+    <div class="history-controls">
+      <input class="search-box" type="text" id="search-box" placeholder="🔍  Search part, customer…" oninput="filterCards()">
+      <select class="brand-filter" id="brand-filter" onchange="filterCards()">
+        <option value="">All Brands</option>
+      </select>
+      <button class="refresh-btn" onclick="loadHistory()" title="Refresh">⟳</button>
     </div>
 
-    <!-- Upload from device -->
-    <div id="dev-section" class="hidden">
-      <div class="upload-zone" id="upload-zone">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <h3>Tap to select a photo</h3>
-        <p>JPG · PNG · HEIC supported</p>
-      </div>
-    </div>
-
-    <input type="file" id="file-input" accept="image/*" class="hidden">
-
-    <!-- Form (after capture/select) -->
-    <div id="photo-form" class="hidden">
-      <!-- Preview -->
-      <div class="card">
-        <div class="card-hdr"><i class="fas fa-compress-arrows-alt"></i><h3>Compression Preview</h3></div>
-        <div class="preview-pair">
-          <div class="pbox">
-            <img id="prev-orig" src="" alt="">
-            <span class="pbox-lbl">Original</span>
-            <span class="pbox-size orig" id="sz-orig">—</span>
-          </div>
-          <div class="pbox">
-            <img id="prev-comp" src="" alt="">
-            <span class="pbox-lbl">Compressed</span>
-            <span class="pbox-size comp" id="sz-comp">—</span>
-          </div>
-        </div>
-        <div class="compress-row">
-          <span class="from" id="c-from">—</span>
-          <i class="fas fa-arrow-right" style="color:var(--success)"></i>
-          <span class="to" id="c-to">—</span>
-          <span class="saved" id="c-saved">—</span>
-        </div>
-      </div>
-
-      <!-- Fields -->
-      <div class="card">
-        <div class="form-group">
-          <label class="form-lbl">Record By</label>
-          <input type="text" id="inp-recordby" class="form-input" readonly placeholder="Set your name on Home screen">
-        </div>
-        <div class="form-group">
-          <label class="form-lbl">Brand <span class="req">*</span></label>
-          <input type="text" id="inp-brand" class="form-input" placeholder="e.g. Trumpf, Amada..." autocomplete="off">
-          <div id="ac-brand" class="ac-list hidden"></div>
-        </div>
-        <div class="form-group">
-          <label class="form-lbl">Part Number <span class="req">*</span></label>
-          <input type="text" id="inp-part" class="form-input" placeholder="e.g. LX2000, P-4521..." autocomplete="off">
-          <div id="ac-part" class="ac-list hidden"></div>
-        </div>
-        <div class="form-group">
-          <label class="form-lbl">Customer Number <span class="req">*</span></label>
-          <input type="text" id="inp-cust" class="form-input" placeholder="e.g. CUST-7823..." autocomplete="off">
-          <div id="ac-cust" class="ac-list hidden"></div>
-        </div>
-        <div class="fn-preview">
-          <div class="fn-lbl">Generated Filename</div>
-          <div class="fn-val" id="fn-val">—</div>
-        </div>
-      </div>
-
-      <!-- Progress -->
-      <div id="prog-wrap" class="hidden">
-        <div class="progress-wrap">
-          <div class="progress-hdr">
-            <span class="progress-lbl" id="prog-lbl">Uploading...</span>
-            <span class="progress-pct" id="prog-pct">0%</span>
-          </div>
-          <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-        </div>
-      </div>
-
-      <button id="btn-test" class="btn-sec" style="margin-bottom:10px;background:rgba(99,102,241,.15);border-color:var(--primary);color:var(--primary-light);">
-        <i class="fas fa-plug"></i> Test Connection First
-      </button>
-      <button id="btn-submit" class="btn-primary">
-        <i class="fas fa-cloud-upload-alt"></i> Submit & Save Photo
-      </button>
-      <button id="btn-retake" class="btn-sec">
-        <i class="fas fa-redo" style="margin-right:7px"></i>Retake / Choose Another
-      </button>
+    <div id="history-content">
+      <div class="loading"><div class="spinner"></div><p style="color:var(--muted)">Loading records…</p></div>
     </div>
   </div>
 
-  <!-- HISTORY TAB -->
-  <div id="tab-history" class="tab">
-    <div style="padding-top:14px">
-      <div class="search-wrap">
-        <i class="fas fa-search"></i>
-        <input type="text" id="h-search" class="search-inp" placeholder="Search brand, part, customer, name...">
-      </div>
-      <div class="filter-bar">
-        <button class="f-chip active" data-filter="all">All Photos</button>
-        <button class="f-chip" data-filter="today">Today</button>
-        <button class="f-chip" data-filter="week">This Week</button>
-        <button class="f-chip" data-filter="month">This Month</button>
-      </div>
-      <div class="results-row">
-        <span class="results-ct" id="results-ct">Loading...</span>
-        <button class="refresh-btn" id="btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
-      </div>
-      <div id="photo-grid" class="photo-grid"></div>
-      <button id="btn-loadmore" class="load-more hidden">Load More Photos</button>
-    </div>
-  </div>
-
-</div><!-- /app -->
+</main>
 
 <!-- LIGHTBOX -->
-<div id="lightbox" class="lightbox">
-  <div class="lb-hdr">
-    <div class="lb-fn" id="lb-fn">—</div>
-    <button class="lb-close" id="lb-close"><i class="fas fa-times"></i></button>
+<div id="lightbox" onclick="lbClickOutside(event)">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div class="lb-img-wrap" onclick="lbZoomCycle()">
+    <img id="lb-img" src="" alt="">
   </div>
-  <div class="lb-img-wrap" id="lb-img-wrap">
-    <img id="lb-img" class="lb-img" src="" alt="">
+  <div class="lb-zoom-controls">
+    <button class="lb-zoom-btn" onclick="lbZoom(-1)">−</button>
+    <button class="lb-zoom-btn" onclick="lbZoomReset()">↺</button>
+    <button class="lb-zoom-btn" onclick="lbZoom(1)">+</button>
   </div>
-  <div class="lb-ctrl">
-    <button class="zoom-btn" id="z-out"><i class="fas fa-minus"></i></button>
-    <span class="zoom-lv" id="z-lv">100%</span>
-    <button class="zoom-btn" id="z-rst"><i class="fas fa-compress-arrows-alt"></i></button>
-    <button class="zoom-btn" id="z-in"><i class="fas fa-plus"></i></button>
-  </div>
-  <div class="lb-meta">
-    <div class="meta-grid">
-      <div class="meta-item"><span class="meta-lbl">Brand</span><span class="meta-val" id="m-brand">—</span></div>
-      <div class="meta-item"><span class="meta-lbl">Part #</span><span class="meta-val" id="m-part">—</span></div>
-      <div class="meta-item"><span class="meta-lbl">Customer</span><span class="meta-val" id="m-cust">—</span></div>
-      <div class="meta-item"><span class="meta-lbl">Record By</span><span class="meta-val" id="m-by">—</span></div>
-      <div class="meta-item"><span class="meta-lbl">Date</span><span class="meta-val" id="m-date">—</span></div>
-      <div class="meta-item"><span class="meta-lbl">Size</span><span class="meta-val" id="m-size">—</span></div>
-      <div class="meta-item" style="grid-column:span 2"><span class="meta-lbl">Filename</span><span class="meta-val fn" id="m-file">—</span></div>
-    </div>
+  <div class="lb-info">
+    <div class="lb-part" id="lb-part"></div>
+    <div class="lb-meta" id="lb-meta"></div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <div class="nav-inner">
-    <button class="nav-btn active" data-tab="home"><i class="fas fa-home"></i><span>Home</span></button>
-    <button class="nav-btn" data-tab="capture"><i class="fas fa-camera"></i><span>Capture</span></button>
-    <button class="nav-btn" data-tab="history"><i class="fas fa-images"></i><span>History</span></button>
-  </div>
-</nav>
-
-<!-- TOAST -->
-<div id="toast" class="toast">
-  <div class="toast-ico" id="toast-ico"></div>
-  <span id="toast-msg"></span>
-</div>
-
-<!-- NAME MODAL -->
-<div class="modal-bg" id="name-modal">
-  <div class="modal-box">
-    <h3>Your Name</h3>
-    <p>Recorded on every photo you submit.</p>
-    <div class="form-group" style="margin-bottom:18px">
-      <input type="text" id="name-inp" class="form-input" placeholder="e.g. John Smith" maxlength="50">
-    </div>
-    <button class="btn-primary" id="btn-save-name" style="margin-bottom:9px">Save Name</button>
-    <button class="btn-sec" id="btn-cancel-name">Cancel</button>
-  </div>
-</div>
+<div id="toast"></div>
 
 <script>
-// ============================================================
-// CONFIG — paste your GAS URL here
-// ============================================================
-const GAS = 'https://script.google.com/macros/s/AKfycbz0jWQIf-59K9M-Mt4ayNY0zKMv3rqTbjh2fpeMvg0JWbGHlYmSxxG7FREGppKbDQ_RaA/exec';
+// =====================================================
+//  CONFIG — edit these if your IDs change
+// =====================================================
+const SHEET_ID   = '1B4lHkebj34KKPdka6r894VkjrnvzMSZVGzz7LAi0kdE';
+const FOLDER_ID  = '1qAIDxjJTWVWyayGSlOYqDbJZfluaP9eG';
+const SHEET_NAME = 'Photos';
 
-// ============================================================
-// FETCH-based GET — works with GAS CORS (no JSONP needed)
-// GitHub Pages CSP blocks eval/script injection, so we use fetch
-// ============================================================
-function gasGet(params) {
-  return new Promise((resolve, reject) => {
-    const url = GAS + '?' + new URLSearchParams(params).toString();
+// Replace with your deployed Apps Script Web App URL:
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKkjuehfetQNjHA2w_1fsbcR4kcMAEpUdCe7sG28nUbZrZqAi-WyS2bdojCTQCDPp2YA/exec';
 
-    fetch(url, {
-      method: 'GET',
-      redirect: 'follow'
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('HTTP ' + response.status);
-      }
-      return response.text();
-    })
-    .then(text => {
-      // GAS returns JSON. Try parsing directly.
-      try {
-        const data = JSON.parse(text);
-        resolve(data);
-      } catch(e) {
-        // If wrapped in callback, extract the JSON object
-        const match = text.match(/^[^{]*(\{.*\})[^}]*$/);
-        if (match) {
-          resolve(JSON.parse(match[1]));
-        } else {
-          reject(new Error('Invalid response format'));
-        }
-      }
-    })
-    .catch(err => reject(err));
-  });
+// =====================================================
+//  STATE
+// =====================================================
+let allRecords   = [];
+let compressedBlob = null;
+let compressedName = '';
+let lbScale      = 1;
+
+// =====================================================
+//  NAVIGATION
+// =====================================================
+function switchView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.getElementById('nav-' + v).classList.add('active');
+  if (v === 'history') loadHistory();
 }
 
-// Reliable Form-POST cross-origin data handler for Google Apps Script Web Apps
-function gasPost(payload) {
-  return new Promise((resolve, reject) => {
-    // Match working MG Warehouse app pattern exactly
-    fetch(GAS, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(() => {
-      // no-cors = opaque response. We can't read success/failure.
-      // Return a flag that tells the caller to verify by checking stats/history
-      resolve({ sent: true, verify: true });
-    })
-    .catch(err => {
-      reject(err);
-    });
-  });
+// =====================================================
+//  DATE DEFAULT
+// =====================================================
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+});
+
+// =====================================================
+//  PHOTO HANDLING
+// =====================================================
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('photo-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) processPhoto(file);
 }
 
-// ============================================================
-// STATE
-// ============================================================
-let stream        = null;
-let facing        = 'environment';
-let origDataUrl   = null;
-let compBlob      = null;
-let photoData     = [];
-let dispCount     = 0;
-let curFilter     = 'all';
-let searchQ       = '';
-let captureMode   = 'camera';
-let zoomLv        = 1;
-let panX = 0, panY = 0;
-let tsDist        = 0;
-const PAGE        = 20;
-
-// ============================================================
-// USER NAME
-// ============================================================
-const getUser  = () => localStorage.getItem('lp_user') || '';
-const saveUser = n => localStorage.setItem('lp_user', n);
-
-function refreshUserUI() {
-  const n = getUser();
-  document.getElementById('u-name').textContent = n || 'Set your name';
-  document.getElementById('u-av').textContent   = n ? n[0].toUpperCase() : '?';
-  const rb = document.getElementById('inp-recordby');
-  if (rb) rb.value = n;
+function handlePhotoSelect(e) {
+  const file = e.target.files[0];
+  if (file) processPhoto(file);
 }
 
-// ============================================================
-// TOAST
-// ============================================================
-function toast(msg, type) {
-  const el  = document.getElementById('toast');
-  const ico = document.getElementById('toast-ico');
-  document.getElementById('toast-msg').textContent = msg;
-  el.className = 'toast show';
-  const map = { s:'fas fa-check', e:'fas fa-exclamation-triangle', i:'fas fa-info-circle' };
-  const cls = { s:'s', e:'e', i:'i' };
-  const t   = type || 'i';
-  ico.className = 'toast-ico ' + (cls[t] || 'i');
-  ico.innerHTML = '<i class="' + (map[t] || map.i) + '"></i>';
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.classList.remove('show'), 3800);
-}
-
-// ============================================================
-// TAB NAVIGATION
-// ============================================================
-function goTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.nav-btn[data-tab="' + tab + '"]').classList.add('active');
-  if (tab === 'home')    loadStats();
-  if (tab === 'history') loadHistory();
-  if (tab === 'capture') { resetForm(); if (captureMode === 'camera') startCam(); }
-}
-
-// ============================================================
-// CAMERA
-// ============================================================
-function startCam() {
-  stopCam();
-  const video = document.getElementById('cam-video');
-  navigator.mediaDevices.getUserMedia({
-    video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
-    audio: false
-  })
-  .then(s => {
-    stream = s;
-    video.srcObject = s;
-    return video.play();
-  })
-  .catch(err => {
-    console.error('Camera:', err);
-    const wrap = document.querySelector('.cam-wrap');
-    wrap.innerHTML = '<div class="cam-error"><i class="fas fa-video-slash"></i><p>Camera unavailable.<br>Use "From Device" to upload a photo.</p></div>';
-  });
-}
-
-function stopCam() {
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  const v = document.getElementById('cam-video');
-  if (v) v.srcObject = null;
-}
-
-function flipCam() {
-  facing = facing === 'environment' ? 'user' : 'environment';
-  startCam();
-}
-
-function captureFrame() {
-  const video = document.getElementById('cam-video');
-  if (!video.videoWidth) { toast('Camera not ready yet', 'e'); return; }
-  const canvas = document.getElementById('cam-canvas');
-  canvas.width  = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext('2d');
-  if (facing === 'user') { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
-  ctx.drawImage(video, 0, 0);
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-  stopCam();
-  processImage(dataUrl);
-}
-
-// ============================================================
-// IMAGE PROCESSING + COMPRESSION
-// ============================================================
-function processImage(dataUrl) {
-  origDataUrl = dataUrl;
-  document.getElementById('prev-orig').src = dataUrl;
-
-  // Estimate size from base64
-  const origBytes = Math.round((dataUrl.length - (dataUrl.indexOf(',') + 1)) * 0.75);
-  document.getElementById('sz-orig').textContent  = fmtBytes(origBytes);
-  document.getElementById('c-from').textContent   = fmtBytes(origBytes);
-
-  const img = new Image();
-  img.onload = () => {
-    const MAX = 1200;
-    let w = img.width, h = img.height;
-    if (w > h && w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-    else if (h > MAX)     { w = Math.round(w * MAX / h); h = MAX; }
-
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-
-    canvas.toBlob(blob => {
-      compBlob = blob;
-      const compUrl = URL.createObjectURL(blob);
-      document.getElementById('prev-comp').src              = compUrl;
-      document.getElementById('sz-comp').textContent        = fmtBytes(blob.size);
-      document.getElementById('c-to').textContent           = fmtBytes(blob.size);
-      const pct = origBytes > 0 ? Math.round((1 - blob.size / origBytes) * 100) : 0;
-      document.getElementById('c-saved').textContent        = (pct > 0 ? '-' : '') + pct + '%';
-
-      // Show form
-      document.getElementById('cam-section').classList.add('hidden');
-      document.getElementById('dev-section').classList.add('hidden');
-      document.getElementById('photo-form').classList.remove('hidden');
-
-      document.getElementById('inp-recordby').value = getUser();
-      updateFilename();
-    }, 'image/jpeg', 0.72);
-  };
-  img.src = dataUrl;
-}
-
-function fmtBytes(b) {
-  if (b < 1024)        return b + ' B';
-  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
-  return (b / (1024 * 1024)).toFixed(2) + ' MB';
-}
-
-// ============================================================
-// FORM
-// ============================================================
-function updateFilename() {
-  const b  = document.getElementById('inp-brand').value.trim()  || 'Brand';
-  const p  = document.getElementById('inp-part').value.trim()   || 'Part';
-  const c  = document.getElementById('inp-cust').value.trim()   || 'Customer';
-  const now = new Date();
-  const ts  = now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate()) + '_' +
-              pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
-  document.getElementById('fn-val').textContent = b + '_' + p + '_' + c + '_' + ts + '.jpg';
-}
-
-function pad(n) { return String(n).padStart(2, '0'); }
-
-async function showAc(field, val) {
-  updateFilename();
-  const listEl = document.getElementById('ac-' + field);
-  if (!val || val.length < 1) { listEl.classList.add('hidden'); return; }
-  try {
-    const data = await gasGet({ action: 'autocomplete', field: field, q: val });
-    if (data.results && data.results.length > 0) {
-      listEl.innerHTML = data.results.map(r =>
-        '<div class="ac-item" data-field="' + field + '" data-val="' + xattr(r) + '">' + xhtml(r) + '</div>'
-      ).join('');
-      listEl.classList.remove('hidden');
-    } else {
-      listEl.classList.add('hidden');
-    }
-  } catch(e) { listEl.classList.add('hidden'); }
-}
-
-function pickAc(field, val) {
-  const map = { brand: 'inp-brand', part: 'inp-part', cust: 'inp-cust' };
-  document.getElementById(map[field]).value = val;
-  document.getElementById('ac-' + field).classList.add('hidden');
-  updateFilename();
-}
-
-// ============================================================
-// SUBMIT / UPLOAD
-// ============================================================
-async function submitPhoto() {
-  const brand    = document.getElementById('inp-brand').value.trim();
-  const part     = document.getElementById('inp-part').value.trim();
-  const cust     = document.getElementById('inp-cust').value.trim();
-  const recordBy = document.getElementById('inp-recordby').value.trim();
-
-  if (!brand || !part || !cust) {
-    toast('Please fill in Brand, Part Number and Customer Number', 'e');
-    return;
-  }
-  if (!compBlob) { toast('No photo to upload', 'e'); return; }
-
-  const btn = document.getElementById('btn-submit');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Saving...';
-  setProgress(true, 'Compressing & uploading...', 0);
-
+function processPhoto(file) {
   const reader = new FileReader();
-  reader.onloadend = async () => {
-    const b64 = reader.result.split(',')[1];
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      // Compress: max 1200px wide, quality 0.82
+      const MAX = 1200;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        compressedBlob = blob;
+        const origKB = Math.round(file.size / 1024);
+        const newKB  = Math.round(blob.size  / 1024);
+        document.getElementById('photo-meta').textContent =
+          `Original: ${origKB} KB → Compressed: ${newKB} KB  |  ${w}×${h}px`;
 
-    // Animate progress bar
-    let prog = 0;
-    const iv = setInterval(() => {
-      prog = Math.min(prog + 5, 88);
-      setProgress(true, 'Uploading to Google Drive...', prog);
-    }, 350);
-
-    try {
-      const result = await gasPost({
-        action:          'upload',
-        brand:           brand,
-        partNumber:      part,
-        customerNumber:  cust,
-        recordBy:        recordBy,
-        imageData:       b64,
-        mimeType:        'image/jpeg',
-        originalSize:    origDataUrl ? Math.round((origDataUrl.length - origDataUrl.indexOf(',') - 1) * 0.75) : 0,
-        compressedSize:  compBlob.size
-      });
-
-      clearInterval(iv);
-      setProgress(true, 'Verifying...', 95);
-
-      // With no-cors, result.sent=true means request was dispatched.
-      // We verify by checking if stats show new data after a short delay.
-      if (result && result.sent) {
-        let verified = false;
-        for (let attempt = 0; attempt < 6; attempt++) {
-          await new Promise(r => setTimeout(r, 1500));
-          try {
-            const stats = await gasGet({ action: 'stats' });
-            if (stats && stats.total > 0) {
-              verified = true;
-              break;
-            }
-          } catch(e) { /* ignore polling errors */ }
-        }
-
-        setProgress(true, 'Done!', 100);
-        if (verified) {
-          toast('Photo saved to Drive & Sheet!', 's');
-          setTimeout(() => {
-            setProgress(false, '', 0);
-            resetForm();
-            goTab('home');
-          }, 900);
-        } else {
-          toast('Upload sent — check History to confirm', 'i');
-          setTimeout(() => {
-            setProgress(false, '', 0);
-            resetForm();
-            goTab('history');
-          }, 1200);
-        }
-      } else {
-        const errMsg = result && result.error ? result.error : 'Unknown error';
-        toast('Save failed: ' + errMsg, 'e');
-        setProgress(false, '', 0);
-      }
-    } catch(err) {
-      clearInterval(iv);
-      setProgress(false, '', 0);
-      // If fetch itself fails (redirect/CORS), still give user info
-      if (err.message && err.message.includes('Failed to fetch')) {
-        toast('Network blocked — check GAS deployment is "Anyone" access', 'e');
-      } else {
-        toast('Error: ' + err.message, 'e');
-      }
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Submit & Save Photo';
-    }
+        const url = URL.createObjectURL(blob);
+        document.getElementById('preview-img').src = url;
+        document.getElementById('preview-wrap').style.display = 'block';
+      }, 'image/jpeg', 0.82);
+    };
+    img.src = ev.target.result;
   };
-  reader.readAsDataURL(compBlob);
+  reader.readAsDataURL(file);
 }
 
-function setProgress(show, lbl, pct) {
-  document.getElementById('prog-wrap').classList.toggle('hidden', !show);
-  document.getElementById('prog-lbl').textContent   = lbl;
-  document.getElementById('prog-pct').textContent   = pct + '%';
-  document.getElementById('prog-fill').style.width  = pct + '%';
+function clearPhoto() {
+  compressedBlob = null;
+  document.getElementById('f-photo').value = '';
+  document.getElementById('preview-wrap').style.display = 'none';
+  document.getElementById('photo-meta').textContent = '';
+}
+
+// =====================================================
+//  SUBMIT
+// =====================================================
+async function submitRecord() {
+  const date     = document.getElementById('f-date').value.trim();
+  const brand    = document.getElementById('f-brand').value.trim();
+  const part     = document.getElementById('f-part').value.trim();
+  const customer = document.getElementById('f-customer').value.trim();
+  const recorder = document.getElementById('f-recorder').value.trim();
+
+  if (!date || !brand || !part || !customer || !recorder) {
+    showToast('Please fill in all fields.', 'error'); return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '⏳ Saving…';
+
+  const pw = document.getElementById('progress-wrap');
+  const pf = document.getElementById('progress-fill');
+  const pl = document.getElementById('progress-label');
+  pw.style.display = 'block';
+
+  try {
+    let photoBase64 = '';
+    let photoName   = '';
+
+    if (compressedBlob) {
+      pl.textContent = 'Encoding photo…'; pf.style.width = '20%';
+      photoBase64 = await blobToBase64(compressedBlob);
+      photoName   = `${sanitize(part)}_${sanitize(customer)}.jpg`;
+    }
+
+    pl.textContent = 'Sending to Google Sheets…'; pf.style.width = '60%';
+
+    const payload = { date, brand, part, customer, recorder, photoBase64, photoName, folderId: FOLDER_ID };
+
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    pf.style.width = '100%'; pl.textContent = 'Done!';
+
+    const json = await res.json();
+    if (json.status === 'ok') {
+      showToast('✔ Record saved successfully!', 'success');
+      resetForm();
+    } else {
+      throw new Error(json.message || 'Unknown error');
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<span>⬆</span> Save Record';
+    setTimeout(() => { pw.style.display = 'none'; pf.style.width = '0%'; }, 1500);
+  }
+}
+
+function sanitize(s) { return s.replace(/[^a-zA-Z0-9\-_]/g, '_'); }
+
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
 }
 
 function resetForm() {
-  compBlob = null; origDataUrl = null;
-  document.getElementById('photo-form').classList.add('hidden');
-  document.getElementById('inp-brand').value = '';
-  document.getElementById('inp-part').value  = '';
-  document.getElementById('inp-cust').value  = '';
-  document.getElementById('fn-val').textContent = '—';
-  setProgress(false, '', 0);
-
-  if (captureMode === 'camera') {
-    document.getElementById('cam-section').classList.remove('hidden');
-  } else {
-    document.getElementById('dev-section').classList.remove('hidden');
-  }
+  document.getElementById('f-brand').value    = '';
+  document.getElementById('f-part').value     = '';
+  document.getElementById('f-customer').value = '';
+  document.getElementById('f-recorder').value = '';
+  document.getElementById('f-date').value     = new Date().toISOString().split('T')[0];
+  clearPhoto();
 }
 
-// ============================================================
-// HOME STATS
-// ============================================================
-async function loadStats() {
-  try {
-    const data = await gasGet({ action: 'stats' });
-    document.getElementById('stat-today').textContent = data.today ?? '—';
-    document.getElementById('stat-total').textContent = data.total ?? '—';
-
-    const list = document.getElementById('recent-list');
-    if (data.recent && data.recent.length > 0) {
-      list.innerHTML = data.recent.map(p => {
-        const thumb = p.thumbnail || p.url || '';
-        const thumbHtml = thumb
-          ? '<img src="' + xattr(thumb) + '" class="r-thumb" alt="" onerror="this.style.display=\'none\'">'
-          : '<div class="r-thumb-ph"><i class="fas fa-image"></i></div>';
-        return '<div class="recent-item" data-id="' + xattr(p.id||'') + '">' +
-          thumbHtml +
-          '<div class="r-info">' +
-            '<div class="r-brand">' + xhtml(p.brand||'') + ' — ' + xhtml(p.partNumber||'') + '</div>' +
-            '<div class="r-meta">' + xhtml(p.customerNumber||'') + ' · ' + fmtDate(p.date) + '</div>' +
-            (p.recordBy ? '<div class="r-by"><i class="fas fa-user" style="margin-right:3px;font-size:9px"></i>' + xhtml(p.recordBy) + '</div>' : '') +
-          '</div>' +
-          '<i class="fas fa-chevron-right" style="color:var(--text-dim);font-size:11px"></i></div>';
-      }).join('');
-    } else {
-      list.innerHTML = '<div class="empty-state"><i class="fas fa-image"></i><div>No photos yet</div></div>';
-    }
-  } catch(e) {
-    console.error('Stats:', e);
-    document.getElementById('stat-today').textContent = '—';
-    document.getElementById('stat-total').textContent = '—';
-  }
-}
-
-// ============================================================
-// HISTORY
-// ============================================================
+// =====================================================
+//  HISTORY
+// =====================================================
 async function loadHistory() {
-  dispCount = 0; photoData = [];
-  document.getElementById('photo-grid').innerHTML =
-    '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
-  await fetchPhotos();
-}
+  document.getElementById('history-content').innerHTML =
+    '<div class="loading"><div class="spinner"></div><p style="color:var(--muted)">Loading records…</p></div>';
 
-async function refreshHistory() {
-  dispCount = 0; photoData = [];
-  document.getElementById('results-ct').textContent = 'Refreshing...';
-  document.getElementById('photo-grid').innerHTML =
-    '<div style="grid-column:span 2;text-align:center;padding:36px 0">' +
-    '<div class="spinner" style="margin:0 auto 14px"></div>' +
-    '<p style="color:var(--text-dim);font-size:13px">Loading photos...</p></div>';
-  await fetchPhotos();
-}
-
-async function fetchPhotos() {
   try {
-    const params = { action: 'list', start: dispCount, limit: PAGE };
-    if (searchQ)              params.search = searchQ;
-    if (curFilter !== 'all')  params.filter = curFilter;
+    const url = `${APPS_SCRIPT_URL}?action=get&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    const res  = await fetch(url);
+    const json = await res.json();
 
-    const data = await gasGet(params);
-
-    if (dispCount === 0) photoData = [];
-    if (data.photos && data.photos.length > 0) {
-      photoData = photoData.concat(data.photos);
-      renderGrid(dispCount === 0);
-      dispCount += data.photos.length;
-      document.getElementById('results-ct').textContent =
-        (data.total || photoData.length) + ' photo' + ((data.total || photoData.length) !== 1 ? 's' : '');
-      document.getElementById('btn-loadmore').classList.toggle('hidden', !data.hasMore);
-    } else {
-      if (dispCount === 0) {
-        document.getElementById('photo-grid').innerHTML =
-          '<div style="grid-column:span 2;text-align:center;padding:36px 0">' +
-          '<i class="fas fa-image" style="font-size:38px;color:var(--surface-2);display:block;margin-bottom:10px"></i>' +
-          '<p style="color:var(--text-dim);font-size:13px">No photos found</p></div>';
-      }
-      document.getElementById('results-ct').textContent = '0 photos';
-      document.getElementById('btn-loadmore').classList.add('hidden');
-    }
-  } catch(e) {
-    console.error('History:', e);
-    document.getElementById('photo-grid').innerHTML =
-      '<div style="grid-column:span 2;text-align:center;padding:36px 0">' +
-      '<i class="fas fa-exclamation-circle" style="font-size:38px;color:var(--danger);display:block;margin-bottom:10px;opacity:.5"></i>' +
-      '<p style="color:var(--danger);font-size:13px">Failed to load — check your GAS URL</p></div>';
-    document.getElementById('results-ct').textContent = 'Error';
+    if (!json.records) throw new Error('No records field');
+    allRecords = json.records;
+    buildStats();
+    buildBrandFilter();
+    renderCards(allRecords);
+  } catch(err) {
+    document.getElementById('history-content').innerHTML =
+      `<div class="empty"><div class="empty-icon">⚠️</div><h3>Could not load records</h3><p>${err.message}</p></div>`;
   }
 }
 
-function renderGrid(clear) {
-  const grid = document.getElementById('photo-grid');
-  if (clear) grid.innerHTML = '';
-  const from = clear ? 0 : grid.querySelectorAll('.photo-card').length;
-  photoData.slice(from).forEach((p, i) => {
-    const card  = document.createElement('div');
-    card.className    = 'photo-card';
-    card.dataset.idx  = from + i;
-    const thumb = p.thumbnail || p.url || '';
-    card.innerHTML =
-      (thumb ? '<img src="' + xattr(thumb) + '" loading="lazy" alt="" onerror="this.style.background=\'var(--surface-2)\'">' : '<div style="width:100%;height:100%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--text-dim)"><i class="fas fa-image" style="font-size:28px"></i></div>') +
-      '<div class="ph-overlay">' +
-        '<div class="ph-brand">' + xhtml(p.brand||'') + '</div>' +
-        '<div class="ph-meta">' + xhtml(p.partNumber||'') + '</div>' +
-        (p.recordBy ? '<div class="ph-by"><i class="fas fa-user" style="margin-right:2px"></i>' + xhtml(p.recordBy) + '</div>' : '') +
-      '</div>' +
-      '<div class="ph-date">' + fmtShort(p.date) + '</div>';
-    grid.appendChild(card);
+function buildStats() {
+  const today = new Date().toISOString().split('T')[0];
+  const brands = new Set(allRecords.map(r => r.brand).filter(Boolean));
+  const todayCount = allRecords.filter(r => r.date === today).length;
+  document.getElementById('stat-total').textContent  = allRecords.length;
+  document.getElementById('stat-brands').textContent = brands.size;
+  document.getElementById('stat-today').textContent  = todayCount;
+}
+
+function buildBrandFilter() {
+  const sel    = document.getElementById('brand-filter');
+  const brands = [...new Set(allRecords.map(r => r.brand).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">All Brands</option>';
+  brands.forEach(b => {
+    const o = document.createElement('option');
+    o.value = b; o.textContent = b;
+    sel.appendChild(o);
   });
 }
 
-// ============================================================
-// LIGHTBOX
-// ============================================================
-function openLb(idx) {
-  const p = photoData[idx]; if (!p) return;
-  document.getElementById('lb-img').src         = p.url || p.thumbnail || '';
-  document.getElementById('lb-fn').textContent  = p.filename || 'photo.jpg';
-  document.getElementById('m-brand').textContent = p.brand          || '—';
-  document.getElementById('m-part').textContent  = p.partNumber     || '—';
-  document.getElementById('m-cust').textContent  = p.customerNumber || '—';
-  document.getElementById('m-by').textContent    = p.recordBy       || '—';
-  document.getElementById('m-date').textContent  = fmtDate(p.date);
-  document.getElementById('m-size').textContent  = p.size ? fmtBytes(p.size) : '—';
-  document.getElementById('m-file').textContent  = p.filename       || '—';
-  resetZoom();
-  document.getElementById('lightbox').classList.add('active');
+function filterCards() {
+  const q   = document.getElementById('search-box').value.toLowerCase();
+  const brand = document.getElementById('brand-filter').value;
+  const filtered = allRecords.filter(r => {
+    const matchBrand = !brand || r.brand === brand;
+    const matchQ = !q ||
+      (r.part     && r.part.toLowerCase().includes(q)) ||
+      (r.customer && r.customer.toLowerCase().includes(q)) ||
+      (r.recorder && r.recorder.toLowerCase().includes(q));
+    return matchBrand && matchQ;
+  });
+  renderCards(filtered);
+}
+
+function renderCards(records) {
+  if (!records.length) {
+    document.getElementById('history-content').innerHTML =
+      `<div class="empty"><div class="empty-icon">📂</div><h3>No records found</h3><p>Try adjusting your search or filters.</p></div>`;
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'photo-grid';
+
+  records.slice().reverse().forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'photo-card';
+    card.onclick = () => openLightbox(r);
+
+    const photoHtml = r.photoUrl
+      ? `<img class="photo-card-img" src="${r.photoUrl}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<div class=no-photo>🖼</div>'">`
+      : `<div class="no-photo">🖼</div>`;
+
+    card.innerHTML = `
+      ${photoHtml}
+      <div class="photo-card-body">
+        <div class="card-brand">${r.brand || '—'}</div>
+        <div class="card-part">${r.part || '—'}</div>
+        <div class="card-meta">
+          <span>👤 ${r.customer || '—'}</span>
+          <span>📅 ${r.date || '—'}</span>
+          <span>✍️ ${r.recorder || '—'}</span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('history-content').innerHTML = '';
+  document.getElementById('history-content').appendChild(grid);
+}
+
+// =====================================================
+//  LIGHTBOX
+// =====================================================
+function openLightbox(r) {
+  document.getElementById('lb-img').src  = r.photoUrl || '';
+  document.getElementById('lb-part').textContent = `${r.part || ''} / ${r.customer || ''}`;
+  document.getElementById('lb-meta').textContent =
+    `Brand: ${r.brand || '—'}  |  Date: ${r.date || '—'}  |  By: ${r.recorder || '—'}`;
+  lbScale = 1;
+  document.getElementById('lb-img').style.transform = 'scale(1)';
+  document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function closeLb() {
-  document.getElementById('lightbox').classList.remove('active');
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
 }
-function zoom(d) { zoomLv = Math.max(.5, Math.min(5, zoomLv + d)); applyZoom(); }
-function resetZoom() { zoomLv = 1; panX = 0; panY = 0; applyZoom(); }
-function applyZoom() {
-  document.getElementById('lb-img').style.transform =
-    'translate(' + panX + 'px,' + panY + 'px) scale(' + zoomLv + ')';
-  document.getElementById('z-lv').textContent = Math.round(zoomLv * 100) + '%';
-}
-function onTouchStart(e) {
-  if (e.touches.length === 2)
-    tsDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-}
-function onTouchMove(e) {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    const d = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-    zoomLv = Math.max(.5, Math.min(5, zoomLv * (d / tsDist)));
-    tsDist = d;
-    applyZoom();
-  }
+
+function lbClickOutside(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
 }
 
-// ============================================================
-// UTILITIES
-// ============================================================
-function fmtDate(s) {
-  if (!s) return '—';
-  const d = new Date(s);
-  return isNaN(d) ? s : d.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+function lbZoom(dir) {
+  lbScale = Math.min(5, Math.max(0.5, lbScale + dir * 0.5));
+  document.getElementById('lb-img').style.transform = `scale(${lbScale})`;
 }
-function fmtShort(s) {
-  if (!s) return '';
-  const d = new Date(s);
-  return isNaN(d) ? '' : d.toLocaleDateString('en-GB', {day:'2-digit',month:'short'});
-}
-function xhtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function xattr(s) { return String(s).replace(/"/g,'&quot;'); }
-function checkNet() {
-  const on = navigator.onLine;
-  document.getElementById('sdot').className  = 'sdot' + (on ? '' : ' off');
-  document.getElementById('stext').textContent = on ? 'Online' : 'Offline';
-}
+function lbZoomReset() { lbScale = 1; document.getElementById('lb-img').style.transform = 'scale(1)'; }
+function lbZoomCycle() { lbScale = lbScale >= 3 ? 1 : lbScale + 0.75; document.getElementById('lb-img').style.transform = `scale(${lbScale})`; }
 
-// ============================================================
-// EVENT DELEGATION
-// ============================================================
-document.addEventListener('click', function(ev) {
-  const t = ev.target;
-
-  // Nav
-  const nb = t.closest('.nav-btn');
-  if (nb && nb.dataset.tab) { goTab(nb.dataset.tab); return; }
-
-  // Action cards
-  const ac = t.closest('.action-card');
-  if (ac && ac.dataset.go) { goTab(ac.dataset.go); return; }
-
-  // See all
-  if (t.closest('#see-all')) { goTab('history'); return; }
-
-  // Mode buttons
-  if (t.closest('#mode-cam')) {
-    captureMode = 'camera';
-    document.getElementById('mode-cam').classList.add('active');
-    document.getElementById('mode-dev').classList.remove('active');
-    document.getElementById('cam-section').classList.remove('hidden');
-    document.getElementById('dev-section').classList.add('hidden');
-    document.getElementById('photo-form').classList.add('hidden');
-    startCam();
-    return;
-  }
-  if (t.closest('#mode-dev')) {
-    captureMode = 'device';
-    document.getElementById('mode-dev').classList.add('active');
-    document.getElementById('mode-cam').classList.remove('active');
-    document.getElementById('dev-section').classList.remove('hidden');
-    document.getElementById('cam-section').classList.add('hidden');
-    document.getElementById('photo-form').classList.add('hidden');
-    stopCam();
-    return;
-  }
-
-  // Camera controls
-  if (t.closest('#btn-flip'))       { flipCam(); return; }
-  if (t.closest('#btn-cam-gallery') || t.closest('#btn-cam-gallery i')) { document.getElementById('file-input').click(); return; }
-  if (t.closest('#btn-shutter'))    { captureFrame(); return; }
-
-  // Upload zone
-  if (t.closest('#upload-zone'))    { document.getElementById('file-input').click(); return; }
-
-  // Form
-  if (t.closest('#btn-submit'))     { submitPhoto(); return; }
-  if (t.closest('#btn-test'))       { testConnection(); return; }
-  if (t.closest('#btn-retake'))     { resetForm(); if (captureMode === 'camera') startCam(); return; }
-
-  // History
-  if (t.closest('#btn-refresh'))    { refreshHistory(); return; }
-  if (t.closest('#btn-loadmore'))   { fetchPhotos(); return; }
-
-  // Filter chips
-  const fc = t.closest('.f-chip');
-  if (fc) {
-    curFilter = fc.dataset.filter;
-    document.querySelectorAll('.f-chip').forEach(c => c.classList.remove('active'));
-    fc.classList.add('active');
-    dispCount = 0; photoData = [];
-    document.getElementById('photo-grid').innerHTML = '';
-    fetchPhotos();
-    return;
-  }
-
-  // Autocomplete items
-  const ai = t.closest('.ac-item');
-  if (ai) { pickAc(ai.dataset.field, ai.dataset.val); return; }
-
-  // Photo cards
-  const pc = t.closest('.photo-card');
-  if (pc) { openLb(parseInt(pc.dataset.idx)); return; }
-
-  // Recent items
-  const ri = t.closest('.recent-item');
-  if (ri) {
-    // Recent items are from stats — load history and open
-    const id = ri.dataset.id;
-    if (id) {
-      const idx = photoData.findIndex(p => p.id === id);
-      if (idx >= 0) openLb(idx);
-    }
-    return;
-  }
-
-  // Lightbox
-  if (t.closest('#lb-close') || t === document.getElementById('lightbox')) { closeLb(); return; }
-  if (t.closest('#z-out'))  { zoom(-.5); return; }
-  if (t.closest('#z-rst'))  { resetZoom(); return; }
-  if (t.closest('#z-in'))   { zoom(.5); return; }
-
-  // Name badge / modal
-  if (t.closest('#user-badge'))     { openNameModal(); return; }
-  if (t.closest('#btn-save-name'))  { saveName(); return; }
-  if (t.closest('#btn-cancel-name') || t === document.getElementById('name-modal')) { closeNameModal(); return; }
-
-  // Close autocomplete
-  if (!t.closest('.form-group')) {
-    document.querySelectorAll('.ac-list').forEach(l => l.classList.add('hidden'));
-  }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === '+' || e.key === '=') lbZoom(1);
+  if (e.key === '-') lbZoom(-1);
 });
 
-// Form input listeners
-document.getElementById('inp-brand').addEventListener('input', function() { showAc('brand', this.value); });
-document.getElementById('inp-part').addEventListener('input',  function() { showAc('part',  this.value); });
-document.getElementById('inp-cust').addEventListener('input',  function() { showAc('cust',  this.value); });
-
-// File input
-document.getElementById('file-input').addEventListener('change', function(e) {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => processImage(ev.target.result);
-  reader.readAsDataURL(file);
-  e.target.value = '';
-});
-
-// Search
-document.getElementById('h-search').addEventListener('input', function() {
-  searchQ = this.value; dispCount = 0; photoData = [];
-  document.getElementById('photo-grid').innerHTML = '';
-  fetchPhotos();
-});
-
-// Lightbox wheel + touch
-document.getElementById('lb-img-wrap').addEventListener('wheel', function(e) {
-  e.preventDefault(); zoom(e.deltaY > 0 ? -.2 : .2);
-}, { passive: false });
-document.getElementById('lb-img-wrap').addEventListener('touchstart', onTouchStart, { passive: true });
-document.getElementById('lb-img-wrap').addEventListener('touchmove',  onTouchMove,  { passive: false });
-
-// Name modal keyboard
-document.getElementById('name-inp').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') saveName();
-});
-
-// Name modal
-function openNameModal() {
-  document.getElementById('name-inp').value = getUser();
-  document.getElementById('name-modal').classList.add('active');
-  setTimeout(() => document.getElementById('name-inp').focus(), 120);
+// =====================================================
+//  TOAST
+// =====================================================
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = type;
+  setTimeout(() => { t.className = ''; }, 3500);
 }
-function closeNameModal() { document.getElementById('name-modal').classList.remove('active'); }
-function saveName() {
-  const n = document.getElementById('name-inp').value.trim();
-  if (!n) { toast('Please enter your name', 'e'); return; }
-  saveUser(n); refreshUserUI(); closeNameModal();
-  toast('Name saved: ' + n, 's');
-}
-
-// ============================================================
-// INIT
-// ============================================================
-window.addEventListener('DOMContentLoaded', function() {
-  refreshUserUI();
-  if (!getUser()) setTimeout(openNameModal, 700);
-  loadStats();
-  startCam();
-  checkNet();
-  setInterval(checkNet, 5000);
-  window.addEventListener('online',  () => toast('Back online', 's'));
-  window.addEventListener('offline', () => toast('You are offline', 'e'));
-});
-
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden) stopCam();
-  else if (document.querySelector('#tab-capture.active') && captureMode === 'camera') startCam();
-});
 </script>
+
+<!-- ================================================
+     GOOGLE APPS SCRIPT — paste this in your project
+     ================================================
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss   = SpreadsheetApp.openById('SHEET_ID_HERE');
+    var sh   = ss.getSheetByName('Photos');
+
+    var photoUrl = '';
+    if (data.photoBase64) {
+      var folder   = DriveApp.getFolderById(data.folderId);
+      var bytes    = Utilities.base64Decode(data.photoBase64);
+      var blob     = Utilities.newBlob(bytes, 'image/jpeg', data.photoName);
+      var file     = folder.createFile(blob);
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      var fileId   = file.getId();
+      photoUrl     = 'https://drive.google.com/uc?export=view&id=' + fileId;
+    }
+
+    sh.appendRow([data.date, data.brand, data.part, data.customer, photoUrl, data.recorder]);
+    return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+                         .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:'error',message:err.message}))
+                         .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  var ss  = SpreadsheetApp.openById('SHEET_ID_HERE');
+  var sh  = ss.getSheetByName('Photos');
+  var rows = sh.getDataRange().getValues();
+  var records = [];
+  for (var i = 1; i < rows.length; i++) {
+    records.push({
+      date: rows[i][0], brand: rows[i][1], part: rows[i][2],
+      customer: rows[i][3], photoUrl: rows[i][4], recorder: rows[i][5]
+    });
+  }
+  return ContentService.createTextOutput(JSON.stringify({records:records}))
+                       .setMimeType(ContentService.MimeType.JSON);
+}
+
+================================================ -->
+
 </body>
 </html>
