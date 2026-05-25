@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' AtContent/95.5.5439.50';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'REST Tester', 'description': 'ReST Tester', 'filename': 'resttester.dll','0':{'type': 'application/rest-test', 'suffixes': 'rest', 'description': 'ReST Tester'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laser Data Management • Live System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --primary-rgb: 13, 110, 253;
+            --success: #198754;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --border: #dee2e6;
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --table-header-bg: #f8f9fa;
+            --table-hover: rgba(13,110,253,0.04);
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --input-border: #475569;
+            --table-header-bg: #1e293b;
+            --table-hover: rgba(56,189,248,0.06);
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        * { transition: background-color 0.3s ease, color 0.2s ease, border-color 0.3s ease; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), #0a58ca);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .app-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .app-header .subtitle {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+
+        /* Nav Tabs */
+        .nav-tabs-container {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: 1rem 0;
+            padding: 0.5rem;
+        }
+
+        .nav-tabs {
+            border: none;
+            gap: 0.3rem;
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: 600;
+            color: var(--text-muted);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1.2rem;
+            font-size: 0.9rem;
+            position: relative;
+            transition: all 0.25s;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.08);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: white;
+            background: linear-gradient(135deg, var(--primary), #0a58ca);
+            box-shadow: 0 4px 12px rgba(13,110,253,0.3);
+        }
+
+        .nav-tabs .nav-link i {
+            margin-right: 6px;
+            font-size: 1rem;
+        }
+
+        /* Cards */
+        .card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            background: var(--card-bg);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            padding: 1rem 1.25rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header i {
+            font-size: 1.1rem;
+        }
+
+        /* Excel-like Grid */
+        .excel-grid-container {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--card-bg);
+        }
+
+        .excel-grid {
+            min-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        .excel-grid thead th {
+            background: var(--table-header-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.6rem 0.5rem;
+            border-bottom: 2px solid var(--border);
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .excel-grid thead th:last-child { border-right: none; }
+
+        .excel-grid tbody td {
+            padding: 0;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .excel-grid tbody td:last-child { border-right: none; }
+
+        .excel-grid tbody tr:last-child td { border-bottom: none; }
+
+        .excel-grid input, .excel-grid select {
+            width: 100%;
+            border: none;
+            padding: 0.5rem 0.6rem;
+            font-size: 0.85rem;
+            background: transparent;
+            color: var(--text);
+            outline: none;
+            min-height: 38px;
+        }
+
+        .excel-grid input:focus, .excel-grid select:focus {
+            background: rgba(var(--primary-rgb), 0.06);
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+
+        .excel-grid tbody tr:hover {
+            background: var(--table-hover);
+        }
+
+        .excel-grid tbody tr:hover input,
+        .excel-grid tbody tr:hover select {
+            background: transparent;
+        }
+
+        .excel-grid tbody tr:hover input:focus,
+        .excel-grid tbody tr:hover select:focus {
+            background: rgba(var(--primary-rgb), 0.06);
+        }
+
+        .excel-grid .row-num {
+            background: var(--table-header-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-align: center;
+            width: 40px;
+            min-width: 40px;
+            border-right: 1px solid var(--border);
+            vertical-align: middle;
+            user-select: none;
+        }
+
+        .excel-grid .row-num .delete-row-btn {
+            display: none;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 1px 5px;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .excel-grid tbody tr:hover .row-num .row-num-text { display: none; }
+        .excel-grid tbody tr:hover .row-num .delete-row-btn { display: inline-block; }
+
+        /* Action Buttons */
+        .btn-action {
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.6rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-action:active { transform: translateY(0); }
+
+        .btn-add-row {
+            background: linear-gradient(135deg, var(--success), #146c43);
+            color: white;
+        }
+
+        .btn-save-all {
+            background: linear-gradient(135deg, var(--primary), #0a58ca);
+            color: white;
+        }
+
+        .btn-clear {
+            background: var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-clear:hover { background: var(--danger); color: white; }
+
+        /* Stats Cards */
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover { transform: translateY(-3px); }
+
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        /* Tables (Daily/Summary) */
+        .data-table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .data-table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table thead th {
+            background: var(--table-header-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .data-table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text);
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--table-hover);
+        }
+
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        /* Empty State */
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .filter-bar .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .filter-bar .form-control,
+        .filter-bar .form-select {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text);
+            font-size: 0.85rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .filter-bar .form-control:focus,
+        .filter-bar .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+            background: var(--input-bg);
+            color: var(--text);
+        }
+
+        /* Toast */
+        .toast-container { z-index: 9999; }
+        .toast { border-radius: var(--radius-sm) !important; border: none !important; }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .app-header h1 { font-size: 1.1rem; }
+            .nav-tabs .nav-link { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
+            .nav-tabs .nav-link span { display: none; }
+            .excel-grid { min-width: 1000px; }
+            .stat-card { padding: 0.8rem; }
+            .stat-card .stat-value { font-size: 1.2rem; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; opacity: 0.5; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text); }
+
+        [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #475569; }
+        [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="app-header">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="bi bi-laser-pointer"></i> Laser Data Management</h1>
+                    <div class="subtitle">Connected to <strong>Laser Data</strong> → Sheet1</div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+                        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                        <span id="themeText">Dark</span>
+                    </button>
+                    <button onclick="fetchAllData()" class="theme-toggle" title="Refresh Database">
+                        <i class="bi bi-arrow-clockwise" id="refreshIcon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-3 px-3 px-md-4">
+        <!-- Tabs -->
+        <div class="nav-tabs-container">
+            <ul class="nav nav-tabs" id="mainTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="switchTab(1)" id="tab1">
+                        <i class="bi bi-pencil-square"></i><span>Data Entry</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchTab(2)" id="tab2">
+                        <i class="bi bi-calendar-day"></i><span>Daily Display</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchTab(3)" id="tab3">
+                        <i class="bi bi-graph-up"></i><span>Summary & Export</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- TAB 1: Data Entry -->
+        <div id="tabContent1" class="tab-pane animate-in">
+            <!-- Quick Stats -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(13,110,253,0.1); color: var(--primary);">
+                            <i class="bi bi-table"></i>
+                        </div>
+                        <div class="stat-value" id="statTotalRecords">0</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(25,135,84,0.1); color: var(--success);">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="stat-value" id="statTodayRecords">0</div>
+                        <div class="stat-label">Today Entries</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(255,193,7,0.1); color: var(--warning);">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-value" id="statActiveMachines">0</div>
+                        <div class="stat-label">Active Machines</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(220,53,69,0.1); color: var(--danger);">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="stat-value" id="statTotalQty">0</div>
+                        <div class="stat-label">Total Qty</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-grid-3x3" style="color: var(--primary);"></i>
+                    Excel-Style Grid Entry
+                    <span class="badge bg-primary ms-2" id="pendingCount">0 pending</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="excel-grid-container">
+                        <table class="excel-grid" id="entryGrid">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;">#</th>
+                                    <th>Received Date</th>
+                                    <th>Lasered Date</th>
+                                    <th>Customer</th>
+                                    <th>Brand</th>
+                                    <th>P/I No.</th>
+                                    <th>Part No.</th>
+                                    <th>Lot Received</th>
+                                    <th>Qty</th>
+                                    <th>Laser Lot No.</th>
+                                    <th>Laser by</th>
+                                    <th>Machine No.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entryGridBody">
+                                <!-- Rows inserted by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top" style="padding: 1rem 1.25rem;">
+                    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                        <div class="d-flex gap-2">
+                            <button onclick="addGridRow()" class="btn btn-action btn-add-row">
+                                <i class="bi bi-plus-lg"></i> Add Row
+                            </button>
+                            <button onclick="addGridRows(5)" class="btn btn-action" style="background: var(--border); color: var(--text-muted);">
+                                <i class="bi bi-plus-lg"></i> +5 Rows
+                            </button>
+                            <button onclick="clearAllRows()" class="btn btn-action btn-clear">
+                                <i class="bi bi-trash"></i> Clear All
+                            </button>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button onclick="saveAllGridRows()" class="btn btn-action btn-save-all" id="saveAllBtn">
+                                <i class="bi bi-cloud-upload"></i> Save All to Sheet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Daily Display -->
+        <div id="tabContent2" class="tab-pane" style="display: none;">
+            <div class="filter-bar">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-3">
+                        <label class="form-label">Lasered Date</label>
+                        <input type="date" id="dailyDateInput" class="form-control">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">Machine</label>
+                        <select id="machineSelect" class="form-select">
+                            <option value="">All Machines</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label">Part Number</label>
+                        <input type="text" id="partSearch" class="form-control" placeholder="Search Part No...">
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label class="form-label">Laser By</label>
+                        <input type="text" id="laserBySearch" class="form-control" placeholder="Search operator...">
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button onclick="loadDailyData()" class="btn btn-primary w-100" style="border-radius: var(--radius-sm); font-weight: 600;">
+                            <i class="bi bi-search"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-list-ul" style="color: var(--primary);"></i> Daily Records</span>
+                    <span class="badge bg-secondary" id="dailyCountBadge">0 records</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="data-table-container" style="max-height: 65vh; overflow-y: auto;">
+                        <table class="data-table" id="dailyTable">
+                            <thead>
+                                <tr id="dailyTableHeader"></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="dailyNoData" class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <h5>No records found</h5>
+                        <p class="small">Adjust your filters and try again.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Summary & Export -->
+        <div id="tabContent3" class="tab-pane" style="display: none;">
+            <div class="filter-bar">
+                <div class="row g-3 align-items-end">
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">From Date</label>
+                        <input type="date" id="fromDate" class="form-control">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">To Date</label>
+                        <input type="date" id="toDate" class="form-control">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">Machine</label>
+                        <select id="summaryMachineSelect" class="form-select">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">Customer</label>
+                        <input type="text" id="summaryCustomerSearch" class="form-control" placeholder="Search...">
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button onclick="loadSummaryData()" class="btn btn-primary w-100" style="border-radius: var(--radius-sm); font-weight: 600;">
+                            <i class="bi bi-search"></i> Load
+                        </button>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button onclick="exportToExcel()" class="btn btn-outline-success w-100" style="border-radius: var(--radius-sm); font-weight: 600;">
+                            <i class="bi bi-download"></i> CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="row g-3 mb-3" id="summaryStats" style="display:none;">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(13,110,253,0.1); color: var(--primary);">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <div class="stat-value" id="sumTotalRecords">0</div>
+                        <div class="stat-label">Records in Range</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(25,135,84,0.1); color: var(--success);">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                        <div class="stat-value" id="sumTotalQty">0</div>
+                        <div class="stat-label">Total Quantity</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(255,193,7,0.1); color: var(--warning);">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="stat-value" id="sumUniqueOperators">0</div>
+                        <div class="stat-label">Unique Operators</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(220,53,69,0.1); color: var(--danger);">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div class="stat-value" id="sumUniqueCustomers">0</div>
+                        <div class="stat-label">Unique Customers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-graph-up" style="color: var(--primary);"></i> Summary Report</span>
+                    <span class="badge bg-secondary" id="summaryCountBadge">0 records</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="data-table-container" style="max-height: 55vh; overflow-y: auto;">
+                        <table class="data-table" id="summaryTable">
+                            <thead>
+                                <tr id="summaryTableHeader"></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="summaryNoData" class="empty-state" style="display:none;">
+                        <i class="bi bi-inbox"></i>
+                        <h5>No records in range</h5>
+                        <p class="small">Select a date range and click Load.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-white border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i id="toastIcon" class="bi bi-check-circle-fill"></i>
+                    <span id="toastBody"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby14tJjbf_aJ_V5RhgUXjWl9lVs3IN94vK8V9RW2uFmq2NzpdEtt-ITjLaLO4cRaCiJ/exec";
+        const COLUMN_HEADERS = ["Timestamp", "Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
+        const DATA_FIELDS = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
+        const DATA_LABELS = ["Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
+        const DATA_TYPES = ["date", "date", "text", "text", "text", "text", "text", "number", "text", "text", "text"];
+
+        let allData = [];
+        let gridRowCount = 0;
+        let currentTab = 1;
+
+        // ─── Theme ───
+        function initTheme() {
+            const saved = localStorage.getItem('laserTheme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                updateThemeUI(true);
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('laserTheme', 'light');
+                updateThemeUI(false);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('laserTheme', 'dark');
+                updateThemeUI(true);
+            }
+        }
+
+        function updateThemeUI(isDark) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (isDark) {
+                icon.className = 'bi bi-sun-fill';
+                text.textContent = 'Light';
+            } else {
+                icon.className = 'bi bi-moon-stars-fill';
+                text.textContent = 'Dark';
+            }
+        }
+
+        // ─── Loading ───
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        // ─── Toast ───
+        function showToast(message, type = "success") {
+            const toastEl = document.getElementById("toast");
+            const icon = document.getElementById("toastIcon");
+            const body = document.getElementById("toastBody");
+            const icons = { success: "bi-check-circle-fill", danger: "bi-x-circle-fill", warning: "bi-exclamation-triangle-fill", info: "bi-info-circle-fill" };
+            icon.className = `bi ${icons[type] || icons.success}`;
+            body.textContent = message;
+            toastEl.className = `toast align-items-center text-white border-0 bg-${type}`;
+            const t = new bootstrap.Toast(toastEl, { delay: 3000 });
+            t.show();
+        }
+
+        // ─── Date Formatting ───
+        function formatDateForSheet(dateString) {
+            if (!dateString) return "";
+            const [y, m, d] = dateString.split("-");
+            return `${parseInt(d, 10)}/${parseInt(m, 10)}/${y}`;
+        }
+
+        function formatDateDisplay(dateStr) {
+            if (!dateStr) return "";
+            // Handle various formats
+            if (dateStr.includes("T")) {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('en-GB');
+            }
+            return dateStr;
+        }
+
+        function parseSheetDate(dateStr) {
+            if (!dateStr) return null;
+            // Try D/M/YYYY
+            let parts = dateStr.split(/[-\/]/);
+            if (parts.length === 3) {
+                let day, month, year;
+                if (parts[0].length === 4) {
+                    [year, month, day] = parts;
+                } else {
+                    [day, month, year] = parts;
+                }
+                if (year.length === 2) year = "20" + year;
+                return new Date(year, month - 1, day);
+            }
+            return new Date(dateStr);
+        }
+
+        function todayStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // ─── Grid System ───
+        function createGridRowHTML(rowNum) {
+            const inputs = DATA_FIELDS.map((field, i) => {
+                const type = DATA_TYPES[i];
+                const placeholder = DATA_LABELS[i];
+                if (type === 'date') {
+                    return `<td><input type="date" class="grid-input" data-field="${field}" data-row="${rowNum}" placeholder="${placeholder}"></td>`;
+                } else if (type === 'number') {
+                    return `<td><input type="number" class="grid-input" data-field="${field}" data-row="${rowNum}" placeholder="${placeholder}" min="0"></td>`;
+                } else {
+                    return `<td><input type="text" class="grid-input" data-field="${field}" data-row="${rowNum}" placeholder="${placeholder}" autocomplete="off"></td>`;
+                }
+            }).join('');
+            return `<tr id="gridRow${rowNum}">
+                <td class="row-num">
+                    <span class="row-num-text">${rowNum}</span>
+                    <button class="delete-row-btn" onclick="deleteGridRow(${rowNum})" title="Delete row">×</button>
+                </td>
+                ${inputs}
+            </tr>`;
+        }
+
+        function addGridRow() {
+            gridRowCount++;
+            const tbody = document.getElementById('entryGridBody');
+            const temp = document.createElement('tbody');
+            temp.innerHTML = createGridRowHTML(gridRowCount);
+            tbody.appendChild(temp.firstElementChild);
+            updatePendingCount();
+
+            // Auto-focus first empty cell of new row
+            const newRow = document.getElementById(`gridRow${gridRowCount}`);
+            const firstInput = newRow.querySelector('input');
+            if (firstInput) firstInput.focus();
+        }
+
+        function addGridRows(count) {
+            for (let i = 0; i < count; i++) addGridRow();
+        }
+
+        function deleteGridRow(rowNum) {
+            const row = document.getElementById(`gridRow${rowNum}`);
+            if (row) {
+                row.remove();
+                updatePendingCount();
+            }
+        }
+
+        function clearAllRows() {
+            if (gridRowCount > 0 && !confirm('Clear all rows? This cannot be undone.')) return;
+            document.getElementById('entryGridBody').innerHTML = '';
+            gridRowCount = 0;
+            addGridRows(5);
+            updatePendingCount();
+            showToast('Grid cleared. 5 new rows ready.', 'info');
+        }
+
+        function updatePendingCount() {
+            const filled = getGridData().length;
+            document.getElementById('pendingCount').textContent = `${filled} pending`;
+            document.getElementById('pendingCount').className = filled > 0 ? 'badge bg-warning ms-2' : 'badge bg-secondary ms-2';
+        }
+
+        function getGridData() {
+            const rows = [];
+            for (let i = 1; i <= gridRowCount; i++) {
+                const rowEl = document.getElementById(`gridRow${i}`);
+                if (!rowEl) continue;
+                const inputs = rowEl.querySelectorAll('.grid-input');
+                const rowData = [];
+                let hasValue = false;
+                inputs.forEach((input, idx) => {
+                    let val = input.value.trim();
+                    if (DATA_TYPES[idx] === 'date' && val) {
+                        val = formatDateForSheet(val);
+                    }
+                    if (val) hasValue = true;
+                    rowData.push(val);
+                });
+                if (hasValue) rows.push(rowData);
+            }
+            return rows;
+        }
+
+        function validateGridRows(rows) {
+            const errors = [];
+            rows.forEach((row, idx) => {
+                const emptyIndices = [];
+                row.forEach((cell, i) => {
+                    if (!cell) emptyIndices.push(DATA_LABELS[i]);
+                });
+                if (emptyIndices.length > 0) {
+                    errors.push(`Row ${idx + 1}: Missing ${emptyIndices.join(', ')}`);
+                }
+            });
+            return errors;
+        }
+
+        async function saveAllGridRows() {
+            const rows = getGridData();
+            if (rows.length === 0) {
+                showToast('No data to save. Fill at least one row.', 'warning');
+                return;
+            }
+
+            const errors = validateGridRows(rows);
+            if (errors.length > 0) {
+                showToast(errors[0], 'warning');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                const result = await saveToSheet(rows);
+                if (result.success) {
+                    showToast(`${rows.length} row(s) saved successfully!`, 'success');
+                    // Clear saved rows but keep empty ones
+                    document.getElementById('entryGridBody').innerHTML = '';
+                    gridRowCount = 0;
+                    addGridRows(5);
+                    updatePendingCount();
+                    fetchAllData();
+                } else {
+                    showToast(result.error || 'Save failed', 'danger');
+                }
+            } catch (err) {
+                showToast('Connection error: ' + err.message, 'danger');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ─── API ───
+        async function fetchAllData() {
+            const refreshIcon = document.getElementById('refreshIcon');
+            refreshIcon.classList.add('fa-spin');
+            showLoading(true);
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=read`);
+                allData = await response.json();
+                updateStats();
+                populateMachineDropdown();
+                populateSummaryMachineDropdown();
+                if (currentTab === 2) loadDailyData();
+                if (currentTab === 3) loadSummaryData();
+            } catch (err) {
+                showToast('Failed to refresh data', 'danger');
+            } finally {
+                showLoading(false);
+                refreshIcon.classList.remove('fa-spin');
+            }
+        }
+
+        async function saveToSheet(rows) {
+            const response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(rows)
+            });
+            return await response.json();
+        }
+
+        // ─── Stats ───
+        function updateStats() {
+            document.getElementById('statTotalRecords').textContent = allData.length.toLocaleString();
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const todayRecords = allData.filter(r => {
+                const ts = r['Timestamp'];
+                if (!ts) return false;
+                let d;
+                if (ts instanceof Date) d = ts;
+                else {
+                    // Parse dd-MM-yy HH:mm:ss
+                    const parts = ts.split(' ');
+                    if (parts.length >= 1) {
+                        const dp = parts[0].split('-');
+                        if (dp.length === 3) {
+                            const yy = dp[2].length === 2 ? '20' + dp[2] : dp[2];
+                            d = new Date(yy, dp[1]-1, dp[0]);
+                        }
+                    }
+                }
+                if (!d) return false;
+                return d.toDateString() === today.toDateString();
+            });
+            document.getElementById('statTodayRecords').textContent = todayRecords.length;
+
+            const machines = new Set(allData.map(r => r['Machine No.']).filter(Boolean));
+            document.getElementById('statActiveMachines').textContent = machines.size;
+
+            const totalQty = allData.reduce((sum, r) => sum + (parseFloat(r['Qty']) || 0), 0);
+            document.getElementById('statTotalQty').textContent = totalQty.toLocaleString();
+        }
+
+        // ─── Dropdowns ───
+        function populateMachineDropdown() {
+            const select = document.getElementById("machineSelect");
+            const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
+            const current = select.value;
+            select.innerHTML = `<option value="">All Machines</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
+            select.value = current;
+        }
+
+        function populateSummaryMachineDropdown() {
+            const select = document.getElementById("summaryMachineSelect");
+            const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
+            const current = select.value;
+            select.innerHTML = `<option value="">All</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
+            select.value = current;
+        }
+
+        // ─── Table Rendering ───
+        function renderTable(tableId, data) {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            const thead = document.querySelector(`#${tableId} thead tr`);
+            thead.innerHTML = COLUMN_HEADERS.map(h => `<th>${h}</th>`).join("");
+            tbody.innerHTML = data.map(row => `<tr>${COLUMN_HEADERS.map(h => `<td>${row[h] || ""}</td>`).join("")}</tr>`).join("");
+            return data.length;
+        }
+
+        // ─── Daily Tab ───
+        function loadDailyData() {
+            const m = document.getElementById("machineSelect").value;
+            const dRaw = document.getElementById("dailyDateInput").value;
+            const partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
+            const laserByQuery = document.getElementById("laserBySearch").value.toLowerCase().trim();
+
+            let filtered = allData;
+
+            if (m) filtered = filtered.filter(r => String(r["Machine No."]).trim() === String(m).trim());
+            if (partQuery) filtered = filtered.filter(r => String(r["Part No."]).toLowerCase().includes(partQuery));
+            if (laserByQuery) filtered = filtered.filter(r => String(r["Laser by"]).toLowerCase().includes(laserByQuery));
+
+            if (dRaw) {
+                const parts = dRaw.split("-");
+                const yyyy = parts[0], mm = parts[1], dd = parts[2];
+                const mmNoZero = parseInt(mm, 10).toString();
+                const ddNoZero = parseInt(dd, 10).toString();
+                const yy = yyyy.slice(-2);
+                const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                const monthName = months[parseInt(mm, 10) - 1];
+                const validFormats = [
+                    `${ddNoZero}/${mmNoZero}/${yyyy}`, `${dd}/${mm}/${yyyy}`,
+                    `${dd}-${mm}-${yy}`, `${dd}-${monthName}-${yyyy}`, `${yyyy}-${mm}-${dd}`
+                ];
+                filtered = filtered.filter(r => {
+                    const rowDateStr = String(r["Lasered Date"]).trim();
+                    if (!rowDateStr) return false;
+                    return validFormats.some(format => rowDateStr === format);
+                });
+            }
+
+            const count = renderTable("dailyTable", filtered);
+            document.getElementById("dailyNoData").style.display = count > 0 ? "none" : "block";
+            document.getElementById("dailyCountBadge").textContent = `${count} records`;
+        }
+
+        // ─── Summary Tab ───
+        function loadSummaryData() {
+            const fromRaw = document.getElementById("fromDate").value;
+            const toRaw = document.getElementById("toDate").value;
+            const machine = document.getElementById("summaryMachineSelect").value;
+            const customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
+
+            const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+
+            let filtered = allData.filter(r => {
+                const rowDateStr = r["Lasered Date"];
+                if (!rowDateStr) return false;
+                let parts = rowDateStr.split(/[-\/]/);
+                if (parts.length !== 3) return true;
+                let day, month, year;
+                if (parts[0].length === 4) { [year, month, day] = parts; }
+                else { [day, month, year] = parts; }
+                if (year.length === 2) year = "20" + year;
+                const rowTime = new Date(year, month - 1, day).getTime();
+                if (fromTime && rowTime < fromTime) return false;
+                if (toTime && rowTime > toTime) return false;
+                return true;
+            });
+
+            if (machine) filtered = filtered.filter(r => String(r["Machine No."]).trim() === machine);
+            if (customerQuery) filtered = filtered.filter(r => String(r["Customer"]).toLowerCase().includes(customerQuery));
+
+            const count = renderTable("summaryTable", filtered);
+            document.getElementById("summaryNoData").style.display = count > 0 ? "none" : "block";
+            document.getElementById("summaryCountBadge").textContent = `${count} records`;
+
+            // Update summary stats
+            if (count > 0) {
+                document.getElementById('summaryStats').style.display = 'flex';
+                document.getElementById('sumTotalRecords').textContent = count;
+                const totalQty = filtered.reduce((sum, r) => sum + (parseFloat(r['Qty']) || 0), 0);
+                document.getElementById('sumTotalQty').textContent = totalQty.toLocaleString();
+                const operators = new Set(filtered.map(r => r['Laser by']).filter(Boolean));
+                document.getElementById('sumUniqueOperators').textContent = operators.size;
+                const customers = new Set(filtered.map(r => r['Customer']).filter(Boolean));
+                document.getElementById('sumUniqueCustomers').textContent = customers.size;
+            } else {
+                document.getElementById('summaryStats').style.display = 'none';
+            }
+        }
+
+        // ─── Export ───
+        function exportToExcel() {
+            const fromRaw = document.getElementById("fromDate").value;
+            const toRaw = document.getElementById("toDate").value;
+            const machine = document.getElementById("summaryMachineSelect").value;
+            const customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
+
+            const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+
+            let filtered = allData.filter(r => {
+                const rowDateStr = r["Lasered Date"];
+                if (!rowDateStr) return false;
+                let parts = rowDateStr.split(/[-\/]/);
+                if (parts.length !== 3) return true;
+                let day, month, year;
+                if (parts[0].length === 4) { [year, month, day] = parts; }
+                else { [day, month, year] = parts; }
+                if (year.length === 2) year = "20" + year;
+                const rowTime = new Date(year, month - 1, day).getTime();
+                if (fromTime && rowTime < fromTime) return false;
+                if (toTime && rowTime > toTime) return false;
+                return true;
+            });
+
+            if (machine) filtered = filtered.filter(r => String(r["Machine No."]).trim() === machine);
+            if (customerQuery) filtered = filtered.filter(r => String(r["Customer"]).toLowerCase().includes(customerQuery));
+
+            let csv = COLUMN_HEADERS.join(",") + "\n";
+            filtered.forEach(row => {
+                csv += COLUMN_HEADERS.map(h => `"${(row[h] || "").toString().replace(/"/g, '""')}"`).join(",") + "\n";
+            });
+            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const dateStr = new Date().toISOString().slice(0,10);
+            a.download = `Laser_Data_${dateStr}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showToast(`Exported ${filtered.length} records to CSV`, 'success');
+        }
+
+        // ─── Tab Switching ───
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll(".tab-pane").forEach(el => {
+                el.style.display = "none";
+                el.classList.remove('animate-in');
+            });
+            const target = document.getElementById(`tabContent${tab}`);
+            target.style.display = "block";
+            target.classList.add('animate-in');
+
+            document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+            document.getElementById(`tab${tab}`).classList.add("active");
+
+            if (tab > 1) fetchAllData();
+        }
+
+        // ─── Keyboard Shortcuts ───
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Enter to save all in tab 1
+            if (e.ctrlKey && e.key === 'Enter' && currentTab === 1) {
+                e.preventDefault();
+                saveAllGridRows();
+            }
+            // Tab navigation in grid: auto-add row when tabbing from last cell of last row
+            if (e.key === 'Tab' && currentTab === 1) {
+                const active = document.activeElement;
+                if (active && active.classList.contains('grid-input')) {
+                    const rowNum = parseInt(active.dataset.row);
+                    const isLastCell = active.parentElement === active.parentElement.parentElement.lastElementChild;
+                    if (isLastCell && rowNum === gridRowCount && !e.shiftKey) {
+                        // Small delay to let tab complete
+                        setTimeout(() => {
+                            addGridRow();
+                        }, 50);
+                    }
+                }
+            }
+        });
+
+        // ─── Init ───
+        window.onload = function() {
+            initTheme();
+            addGridRows(5);
+            // Set default dates
+            document.getElementById('dailyDateInput').value = todayStr();
+            fetchAllData();
+        };
+    </script>
+</body>
+</html>
