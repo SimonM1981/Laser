@@ -1,153 +1,508 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laser Data Management • Live System</title>
+    <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' OpenWave/93.4.3995.34';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laser Data Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        :root { --primary: #0d6efd; --success: #198754; }
-        body { background: #f4f7f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .nav-tabs .nav-link { font-weight: 600; color: #6c757d; border: none; padding: 1rem 1.5rem; }
-        .nav-tabs .nav-link.active { color: var(--primary); background: transparent; border-bottom: 3px solid var(--primary); }
-        .card { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .card-header { border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; font-weight: bold; }
-        .table thead { background: #f8f9fa; }
-        .table thead th { border-bottom: 2px solid #dee2e6; color: #495057; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        .preview-table { max-height: 400px; overflow-y: auto; background: white; }
-        .sticky-header th { position: sticky; top: 0; background: #f8f9fa; z-index: 10; }
+        :root {
+            --primary: #0d6efd; --primary-rgb: 13, 110, 253;
+            --success: #198754; --danger: #dc3545;
+            --warning: #ffc107; --info: #0dcaf0;
+            --bg: #f4f7f9; --card-bg: #ffffff;
+            --text: #212529; --text-muted: #6c757d;
+            --border: #dee2e6; --input-bg: #ffffff;
+            --input-border: #ced4da;
+            --table-header-bg: #f8f9fa; --table-hover: rgba(13,110,253,0.04);
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+            --radius: 12px; --radius-sm: 8px;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a; --card-bg: #1e293b;
+            --text: #e2e8f0; --text-muted: #94a3b8;
+            --border: #334155; --input-bg: #0f172a;
+            --input-border: #475569;
+            --table-header-bg: #1e293b; --table-hover: rgba(56,189,248,0.06);
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        * { transition: background-color 0.3s, color 0.2s, border-color 0.3s; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), #0a58ca);
+            color: white; padding: 1.2rem 1.5rem;
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: var(--shadow-lg); position: sticky; top: 0; z-index: 1000;
+        }
+        .app-header h1 { font-size: 1.4rem; font-weight: 700; margin: 0; }
+        .app-header .subtitle { font-size: 0.8rem; opacity: 0.85; margin-top: 2px; }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+            color: white; border-radius: 50px; padding: 0.5rem 1rem;
+            font-size: 0.85rem; cursor: pointer; backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover { background: rgba(255,255,255,0.25); }
+
+        .nav-tabs-container {
+            background: var(--card-bg); border-radius: var(--radius);
+            box-shadow: var(--shadow); margin: 1rem 0; padding: 0.5rem;
+        }
+        .nav-tabs { border: none; gap: 0.3rem; }
+        .nav-tabs .nav-link {
+            font-weight: 600; color: var(--text-muted); border: none;
+            border-radius: var(--radius-sm); padding: 0.75rem 1.2rem;
+            font-size: 0.9rem; transition: all 0.25s;
+        }
+        .nav-tabs .nav-link:hover { color: var(--primary); background: rgba(var(--primary-rgb), 0.08); }
+        .nav-tabs .nav-link.active {
+            color: white; background: linear-gradient(135deg, var(--primary), #0a58ca);
+            box-shadow: 0 4px 12px rgba(13,110,253,0.3);
+        }
+        .nav-tabs .nav-link i { margin-right: 6px; }
+
+        .card {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            box-shadow: var(--shadow); background: var(--card-bg); overflow: hidden;
+        }
+        .card-header {
+            background: transparent; border-bottom: 1px solid var(--border);
+            font-weight: 700; padding: 1rem 1.25rem; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .excel-grid-container {
+            overflow-x: auto; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); background: var(--card-bg);
+        }
+        .excel-grid {
+            min-width: 1200px; border-collapse: separate; border-spacing: 0; width: 100%;
+        }
+        .excel-grid thead th {
+            background: var(--table-header-bg); color: var(--text-muted);
+            font-weight: 600; font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.5px; padding: 0.6rem 0.5rem;
+            border-bottom: 2px solid var(--border); border-right: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 5; white-space: nowrap; text-align: center;
+        }
+        .excel-grid thead th:last-child { border-right: none; }
+        .excel-grid tbody td {
+            padding: 0; border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border); vertical-align: top;
+        }
+        .excel-grid tbody td:last-child { border-right: none; }
+        .excel-grid tbody tr:last-child td { border-bottom: none; }
+        .excel-grid input, .excel-grid select {
+            width: 100%; border: none; padding: 0.5rem 0.6rem;
+            font-size: 0.85rem; background: transparent; color: var(--text);
+            outline: none; min-height: 38px;
+        }
+        .excel-grid input:focus, .excel-grid select:focus {
+            background: rgba(var(--primary-rgb), 0.06);
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+        .excel-grid tbody tr:hover { background: var(--table-hover); }
+        .excel-grid .row-num {
+            background: var(--table-header-bg); color: var(--text-muted);
+            font-weight: 600; font-size: 0.75rem; text-align: center;
+            width: 40px; min-width: 40px; border-right: 1px solid var(--border);
+            vertical-align: middle; user-select: none;
+        }
+        .excel-grid .row-num .delete-row-btn {
+            display: none; background: var(--danger); color: white;
+            border: none; border-radius: 3px; padding: 1px 5px;
+            font-size: 0.7rem; cursor: pointer;
+        }
+        .excel-grid tbody tr:hover .row-num .row-num-text { display: none; }
+        .excel-grid tbody tr:hover .row-num .delete-row-btn { display: inline-block; }
+
+        .paste-area {
+            background: var(--input-bg); border: 2px dashed var(--input-border);
+            border-radius: var(--radius); padding: 1.5rem;
+            text-align: center; color: var(--text-muted);
+            transition: all 0.3s; cursor: pointer;
+        }
+        .paste-area:hover, .paste-area.dragover {
+            border-color: var(--primary); background: rgba(var(--primary-rgb), 0.04);
+            color: var(--primary);
+        }
+        .paste-area textarea {
+            width: 100%; min-height: 120px; border: 1px solid var(--input-border);
+            border-radius: var(--radius-sm); padding: 0.75rem;
+            background: var(--input-bg); color: var(--text);
+            font-family: 'Courier New', monospace; font-size: 0.8rem;
+            resize: vertical;
+        }
+        .paste-area textarea:focus {
+            border-color: var(--primary); outline: none;
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+        }
+
+        .preview-table-container {
+            max-height: 350px; overflow: auto;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--card-bg); display: none;
+        }
+        .preview-table { width: 100%; border-collapse: collapse; }
+        .preview-table thead th {
+            background: var(--table-header-bg); color: var(--text-muted);
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            padding: 0.5rem; border-bottom: 2px solid var(--border);
+            position: sticky; top: 0; z-index: 5; white-space: nowrap;
+        }
+        .preview-table tbody td {
+            padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--border);
+            font-size: 0.8rem; color: var(--text);
+        }
+        .preview-table tbody tr:hover { background: var(--table-hover); }
+        .preview-table .preview-row-num {
+            background: var(--table-header-bg); color: var(--text-muted);
+            font-weight: 600; font-size: 0.7rem; text-align: center;
+            width: 35px; border-right: 1px solid var(--border);
+        }
+
+        .btn-action {
+            border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem;
+            padding: 0.6rem 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem;
+            transition: all 0.2s; border: none;
+        }
+        .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn-add-row { background: linear-gradient(135deg, var(--success), #146c43); color: white; }
+        .btn-save-all { background: linear-gradient(135deg, var(--primary), #0a58ca); color: white; }
+        .btn-clear { background: var(--border); color: var(--text-muted); }
+        .btn-clear:hover { background: var(--danger); color: white; }
+        .btn-paste { background: linear-gradient(135deg, var(--warning), #d39e00); color: #212529; }
+        .btn-upload { background: linear-gradient(135deg, var(--success), #146c43); color: white; }
+
+        .stat-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.2rem; box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-card .stat-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 0.8rem;
+        }
+        .stat-card .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1; }
+        .stat-card .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+        .data-table-container {
+            overflow-x: auto; border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 0; }
+        .data-table thead th {
+            background: var(--table-header-bg); color: var(--text-muted);
+            font-weight: 600; font-size: 0.75rem; text-transform: uppercase;
+            letter-spacing: 0.5px; padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border); white-space: nowrap;
+            position: sticky; top: 0; z-index: 5;
+        }
+        .data-table tbody td {
+            padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+            font-size: 0.85rem; color: var(--text); vertical-align: middle;
+        }
+        .data-table tbody tr:hover { background: var(--table-hover); }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        .empty-state { padding: 4rem 2rem; text-align: center; color: var(--text-muted); }
+        .empty-state i { font-size: 4rem; opacity: 0.3; margin-bottom: 1rem; }
+
+        .filter-bar {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1rem 1.25rem;
+            margin-bottom: 1rem; box-shadow: var(--shadow);
+        }
+        .filter-bar .form-label {
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.3rem;
+        }
+        .filter-bar .form-control, .filter-bar .form-select {
+            background: var(--input-bg); border: 1px solid var(--input-border);
+            color: var(--text); font-size: 0.85rem; border-radius: var(--radius-sm);
+        }
+        .filter-bar .form-control:focus, .filter-bar .form-select:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+            background: var(--input-bg); color: var(--text);
+        }
+
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .loading-overlay.active { opacity: 1; pointer-events: all; }
+        .loading-spinner {
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeIn 0.4s ease forwards; }
+
+        @media (max-width: 768px) {
+            .app-header h1 { font-size: 1.1rem; }
+            .nav-tabs .nav-link { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
+            .nav-tabs .nav-link span { display: none; }
+            .excel-grid { min-width: 1000px; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+        [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #475569; }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <div class="container-fluid py-4 px-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 fw-bold text-primary mb-1">Laser Data Management</h1>
-                <p class="text-muted small mb-0">Connected to <strong>Laser Data</strong> → Sheet1</p>
-            </div>
-            <button onclick="fetchAllData()" class="btn btn-white border shadow-sm btn-sm px-3">
-                <span id="refreshIcon">↻</span> Refresh Database
-            </button>
-        </div>
+    <div class="loading-overlay" id="loadingOverlay"><div class="loading-spinner"></div></div>
 
-        <ul class="nav nav-tabs mb-4" id="mainTabs">
-            <li class="nav-item"><a class="nav-link active" onclick="switchTab(1)" id="tab1">1. Data Entry</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="switchTab(2)" id="tab2">2. Daily Display</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="switchTab(3)" id="tab3">3. Summary & Export</a></li>
-        </ul>
-
-        <div id="tabContent1" class="tab-pane">
-            <div class="row g-4">
-                <div class="col-lg-5">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary text-white">Manual Single Entry</div>
-                        <div class="card-body">
-                            <form id="entryForm">
-                                <div class="row g-3">
-                                    <div class="col-md-6"><label class="form-label small fw-bold">Received Date</label><input type="date" id="receivedDate" class="form-control" required></div>
-                                    <div class="col-md-6"><label class="form-label small fw-bold">Lasered Date</label><input type="date" id="laseredDate" class="form-control" required></div>
-                                    <div class="col-12"><label class="form-label small fw-bold">Customer</label><input type="text" id="customer" class="form-control" placeholder="Customer name" required></div>
-                                    <div class="col-6"><label class="form-label small fw-bold">Brand</label><input type="text" id="brand" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label small fw-bold">P/I No.</label><input type="text" id="piNo" class="form-control" required></div>
-                                    <div class="col-12"><label class="form-label small fw-bold">Part No.</label><input type="text" id="partNo" class="form-control" placeholder="Enter Part Number" required></div>
-                                    <div class="col-6"><label class="form-label small fw-bold">Lot Received</label><input type="text" id="lotReceived" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label small fw-bold">Qty</label><input type="number" id="qty" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label small fw-bold">Laser Lot No.</label><input type="text" id="laserLotNo" class="form-control" required></div>
-                                    <div class="col-6"><label class="form-label small fw-bold">Laser by</label><input type="text" id="laserBy" class="form-control" required></div>
-                                    <div class="col-12"><label class="form-label small fw-bold">Machine No.</label><input type="text" id="machineNo" class="form-control" placeholder="e.g. 1" required></div>
-                                </div>
-                                <div class="mt-4 d-grid">
-                                    <button type="button" onclick="saveSingleEntry()" class="btn btn-primary btn-lg">💾 Save to Sheet</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+    <!-- HEADER -->
+    <div class="app-header">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="bi bi-laser-pointer"></i> Laser Data Management</h1>
+                    <div class="subtitle">Connected to <strong>Laser Data</strong> &rarr; Sheet1</div>
                 </div>
-
-                <div class="col-lg-7">
-                    <div class="card h-100">
-                        <div class="card-header bg-success text-white">Bulk Paste (from Excel)</div>
-                        <div class="card-body">
-                            <p class="small text-muted mb-2">Copy 11 columns from Excel and paste below.</p>
-                            <textarea id="pasteArea" class="form-control font-monospace mb-3" rows="8" placeholder="Paste data rows here..."></textarea>
-                            <div class="d-flex gap-2 mb-3">
-                                <button onclick="previewPaste()" class="btn btn-outline-success px-4">👀 Preview</button>
-                                <button onclick="clearPaste()" class="btn btn-outline-secondary px-4">Clear</button>
-                            </div>
-                            <div id="pastePreview" class="preview-table border rounded shadow-sm" style="display:none;">
-                                <table class="table table-sm mb-0" id="previewTableBody"></table>
-                            </div>
-                            <div id="pasteActions" class="mt-3 d-grid" style="display:none;">
-                                <button onclick="addBatchFromPaste()" class="btn btn-success btn-lg">✅ Upload Previewed Rows</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tabContent2" class="tab-pane" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-white py-3">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label small fw-bold">Lasered Date</label>
-                            <input type="date" id="dailyDateInput" class="form-control">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Machine</label>
-                            <select id="machineSelect" class="form-select"></select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold">Part Number Search</label>
-                            <input type="text" id="partSearch" class="form-control" placeholder="Search by Part No...">
-                        </div>
-                        <div class="col-md-3">
-                            <button onclick="loadDailyData()" class="btn btn-primary w-100">🔍 Filter Data</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="dailyTable">
-                            <thead class="sticky-header"><tr id="dailyTableHeader"></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <div id="dailyNoData" class="p-5 text-center text-muted">
-                        <div class="display-1 opacity-25">📁</div>
-                        <p>No records found for the selected filters.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tabContent3" class="tab-pane" style="display: none;">
-            <div class="card">
-                <div class="card-header bg-white py-3">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-auto"><label class="form-label small fw-bold">From</label><input type="date" id="fromDate" class="form-control"></div>
-                        <div class="col-auto"><label class="form-label small fw-bold">To</label><input type="date" id="toDate" class="form-control"></div>
-                        <div class="col-auto"><button onclick="loadSummaryData()" class="btn btn-primary">Load Range</button></div>
-                        <div class="col text-end"><button onclick="exportToExcel()" class="btn btn-outline-success">📤 Download CSV</button></div>
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="summaryTable">
-                            <thead class="sticky-header"><tr id="summaryTableHeader"></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="theme-toggle" onclick="window.app.toggleTheme()" id="themeBtn">
+                        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                        <span id="themeText">Dark</span>
+                    </button>
+                    <button onclick="window.app.fetchAllData()" class="theme-toggle" title="Refresh">
+                        <i class="bi bi-arrow-clockwise" id="refreshIcon"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="container-fluid py-3 px-3 px-md-4">
+        <!-- TABS -->
+        <div class="nav-tabs-container">
+            <ul class="nav nav-tabs" id="mainTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="window.app.switchTab(1); return false;" id="tab1">
+                        <i class="bi bi-pencil-square"></i><span>Data Entry</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="window.app.switchTab(2); return false;" id="tab2">
+                        <i class="bi bi-calendar-day"></i><span>Daily Display</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="window.app.switchTab(3); return false;" id="tab3">
+                        <i class="bi bi-graph-up"></i><span>Summary &amp; Export</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- TAB 1: DATA ENTRY -->
+        <div id="tabContent1" class="tab-pane animate-in">
+            <!-- Stats -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:rgba(13,110,253,0.1);color:var(--primary);"><i class="bi bi-table"></i></div>
+                        <div class="stat-value" id="statTotalRecords">0</div>
+                        <div class="stat-label">Total Records</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:rgba(25,135,84,0.1);color:var(--success);"><i class="bi bi-check-circle"></i></div>
+                        <div class="stat-value" id="statTodayRecords">0</div>
+                        <div class="stat-label">Today Entries</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:rgba(255,193,7,0.1);color:var(--warning);"><i class="bi bi-people"></i></div>
+                        <div class="stat-value" id="statActiveMachines">0</div>
+                        <div class="stat-label">Active Machines</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:rgba(220,53,69,0.1);color:var(--danger);"><i class="bi bi-box-seam"></i></div>
+                        <div class="stat-value" id="statTotalQty">0</div>
+                        <div class="stat-label">Total Qty</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRID ENTRY -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="bi bi-grid-3x3" style="color:var(--primary);"></i>
+                    Manual Grid Entry
+                    <span class="badge bg-primary ms-2" id="gridPendingCount">0 pending</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="excel-grid-container">
+                        <table class="excel-grid" id="entryGrid">
+                            <thead><tr>
+                                <th style="width:40px;">#</th>
+                                <th>Received Date</th><th>Lasered Date</th><th>Customer</th>
+                                <th>Brand</th><th>P/I No.</th><th>Part No.</th>
+                                <th>Lot Received</th><th>Qty</th><th>Laser Lot No.</th>
+                                <th>Laser by</th><th>Machine No.</th>
+                            </tr></thead>
+                            <tbody id="entryGridBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top" style="padding:1rem 1.25rem;">
+                    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                        <div class="d-flex gap-2">
+                            <button onclick="window.app.addGridRow()" class="btn btn-action btn-add-row"><i class="bi bi-plus-lg"></i> Add Row</button>
+                            <button onclick="window.app.addGridRows(5)" class="btn btn-action" style="background:var(--border);color:var(--text-muted);"><i class="bi bi-plus-lg"></i> +5</button>
+                            <button onclick="window.app.clearAllGridRows()" class="btn btn-action btn-clear"><i class="bi bi-trash"></i> Clear</button>
+                        </div>
+                        <button onclick="window.app.saveGridRows()" class="btn btn-action btn-save-all"><i class="bi bi-cloud-upload"></i> Save Grid</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BULK PASTE -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-clipboard-data" style="color:var(--warning);"></i>
+                    Bulk Paste from Excel
+                    <span class="badge bg-warning text-dark ms-2" id="pastePendingCount">0 pending</span>
+                </div>
+                <div class="card-body">
+                    <div class="paste-area" id="pasteDropZone">
+                        <i class="bi bi-clipboard-plus" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+                        <strong>Copy 11 columns from Excel</strong> and paste below, or drag &amp; drop a .csv file
+                        <textarea id="pasteArea" class="mt-3" placeholder="Paste Excel rows here (tab-separated)...&#10;Example:&#10;26/5/2026[TAB]26/5/2026[TAB]CustomerA[TAB]BrandX[TAB]PI001[TAB]PN123[TAB]LOT001[TAB]100[TAB]LL001[TAB]John[TAB]M1&#10;27/5/2026[TAB]27/5/2026[TAB]CustomerB[TAB]BrandY[TAB]PI002[TAB]PN456[TAB]LOT002[TAB]200[TAB]LL002[TAB]Jane[TAB]M2"></textarea>
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button onclick="window.app.previewPaste()" class="btn btn-action btn-paste"><i class="bi bi-eye"></i> Preview</button>
+                        <button onclick="window.app.clearPaste()" class="btn btn-action btn-clear"><i class="bi bi-x-lg"></i> Clear</button>
+                    </div>
+
+                    <div class="preview-table-container mt-3" id="pastePreviewBox">
+                        <table class="preview-table" id="previewTable">
+                            <thead><tr id="previewTableHeader"></tr></thead>
+                            <tbody id="previewTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="pasteActions" class="mt-3 d-grid" style="display:none;">
+                        <button onclick="window.app.uploadPasteRows()" class="btn btn-action btn-upload btn-lg">
+                            <i class="bi bi-cloud-upload"></i> Upload <span id="pasteRowCount">0</span> Rows to Sheet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: DAILY DISPLAY -->
+        <div id="tabContent2" class="tab-pane" style="display:none;">
+            <div class="filter-bar">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-3">
+                        <label class="form-label">Lasered Date</label>
+                        <input type="date" id="dailyDateInput" class="form-control">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">Machine</label>
+                        <select id="machineSelect" class="form-select"><option value="">All</option></select>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label">Part Number</label>
+                        <input type="text" id="partSearch" class="form-control" placeholder="Search...">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label">Laser By</label>
+                        <input type="text" id="laserBySearch" class="form-control" placeholder="Operator...">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <button onclick="window.app.loadDailyData()" class="btn btn-primary w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-search"></i> Filter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-list-ul" style="color:var(--primary);"></i> Daily Records</span>
+                    <span class="badge bg-secondary" id="dailyCountBadge">0</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="data-table-container" style="max-height:65vh;overflow-y:auto;">
+                        <table class="data-table" id="dailyTable">
+                            <thead><tr id="dailyTableHeader"></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="dailyNoData" class="empty-state"><i class="bi bi-inbox"></i><h5>No records found</h5><p class="small">Adjust filters and try again.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SUMMARY & EXPORT -->
+        <div id="tabContent3" class="tab-pane" style="display:none;">
+            <div class="filter-bar">
+                <div class="row g-3 align-items-end">
+                    <div class="col-6 col-md-2"><label class="form-label">From</label><input type="date" id="fromDate" class="form-control"></div>
+                    <div class="col-6 col-md-2"><label class="form-label">To</label><input type="date" id="toDate" class="form-control"></div>
+                    <div class="col-6 col-md-2"><label class="form-label">Machine</label><select id="summaryMachineSelect" class="form-select"><option value="">All</option></select></div>
+                    <div class="col-6 col-md-2"><label class="form-label">Customer</label><input type="text" id="summaryCustomerSearch" class="form-control" placeholder="Search..."></div>
+                    <div class="col-6 col-md-2"><button onclick="window.app.loadSummaryData()" class="btn btn-primary w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-search"></i> Load</button></div>
+                    <div class="col-6 col-md-2"><button onclick="window.app.exportToExcel()" class="btn btn-outline-success w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-download"></i> CSV</button></div>
+                </div>
+            </div>
+            <div class="row g-3 mb-3" id="summaryStats" style="display:none;">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(13,110,253,0.1);color:var(--primary);"><i class="bi bi-file-earmark-text"></i></div><div class="stat-value" id="sumTotalRecords">0</div><div class="stat-label">Records</div></div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(25,135,84,0.1);color:var(--success);"><i class="bi bi-boxes"></i></div><div class="stat-value" id="sumTotalQty">0</div><div class="stat-label">Total Qty</div></div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(255,193,7,0.1);color:var(--warning);"><i class="bi bi-people"></i></div><div class="stat-value" id="sumUniqueOperators">0</div><div class="stat-label">Operators</div></div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card"><div class="stat-icon" style="background:rgba(220,53,69,0.1);color:var(--danger);"><i class="bi bi-building"></i></div><div class="stat-value" id="sumUniqueCustomers">0</div><div class="stat-label">Customers</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-graph-up" style="color:var(--primary);"></i> Summary</span>
+                    <span class="badge bg-secondary" id="summaryCountBadge">0</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="data-table-container" style="max-height:55vh;overflow-y:auto;">
+                        <table class="data-table" id="summaryTable">
+                            <thead><tr id="summaryTableHeader"></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="summaryNoData" class="empty-state" style="display:none;"><i class="bi bi-inbox"></i><h5>No records</h5><p class="small">Select date range and click Load.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="toast" class="toast align-items-center text-white border-0" role="alert">
             <div class="d-flex">
-                <div id="toastBody" class="toast-body"></div>
+                <div class="toast-body d-flex align-items-center gap-2"><i id="toastIcon" class="bi bi-check-circle-fill"></i><span id="toastBody"></span></div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
@@ -155,221 +510,617 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby14tJjbf_aJ_V5RhgUXjWl9lVs3IN94vK8V9RW2uFmq2NzpdEtt-ITjLaLO4cRaCiJ/exec";
-        const COLUMN_HEADERS = ["Timestamp", "Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
+    // ================================================================
+    // ALL JAVASCRIPT - NO TEMPLATE STRINGS, NO COMPLEX REGEX LITERALS
+    // ================================================================
+    (function() {
+        "use strict";
 
-        let allData = [];
-        let currentPreviewRows = [];
+        var WEB_APP_URL = "https://script.google.com/macros/s/AKfycby14tJjbf_aJ_V5RhgUXjWl9lVs3IN94vK8V9RW2uFmq2NzpdEtt-ITjLaLO4cRaCiJ/exec";
+        var COLUMN_HEADERS = ["Timestamp", "Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
+        var DATA_FIELDS = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
+        var DATA_LABELS = ["Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
+        var DATA_TYPES = ["date", "date", "text", "text", "text", "text", "text", "number", "text", "text", "text"];
 
-        function showToast(message, type = "success") {
-            const toastEl = document.getElementById("toast");
-            document.getElementById("toastBody").textContent = message;
-            toastEl.className = `toast align-items-center text-white border-0 bg-${type}`;
-            const t = new bootstrap.Toast(toastEl);
-            t.show();
+        var allData = [];
+        var gridRowCount = 0;
+        var currentTab = 1;
+        var currentPasteRows = [];
+
+        // --- Theme ---
+        function initTheme() {
+            var saved = localStorage.getItem('laserTheme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                updateThemeUI(true);
+            }
+        }
+        function toggleTheme() {
+            var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('laserTheme', 'light');
+                updateThemeUI(false);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('laserTheme', 'dark');
+                updateThemeUI(true);
+            }
+        }
+        function updateThemeUI(isDark) {
+            var icon = document.getElementById('themeIcon');
+            var text = document.getElementById('themeText');
+            icon.className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+            text.textContent = isDark ? 'Light' : 'Dark';
         }
 
-        // Standardize YYYY-MM-DD to the D/M/YYYY format seen in your screenshots
+        // --- Loading & Toast ---
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+        function showToast(message, type) {
+            type = type || "success";
+            var toastEl = document.getElementById("toast");
+            var icon = document.getElementById("toastIcon");
+            var body = document.getElementById("toastBody");
+            var icons = {
+                success: "bi-check-circle-fill",
+                danger: "bi-x-circle-fill",
+                warning: "bi-exclamation-triangle-fill",
+                info: "bi-info-circle-fill"
+            };
+            icon.className = "bi " + (icons[type] || icons.success);
+            body.textContent = message;
+            toastEl.className = "toast align-items-center text-white border-0 bg-" + type;
+            new bootstrap.Toast(toastEl, { delay: 3000 }).show();
+        }
+
+        // --- Date Helpers ---
         function formatDateForSheet(dateString) {
             if (!dateString) return "";
-            const [y, m, d] = dateString.split("-");
-            return `${parseInt(d, 10)}/${parseInt(m, 10)}/${y}`;
+            var parts = dateString.split("-");
+            return parseInt(parts[2], 10) + "/" + parseInt(parts[1], 10) + "/" + parts[0];
+        }
+        function todayStr() {
+            var d = new Date();
+            return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
         }
 
-        async function fetchAllData() {
-            const refreshBtn = document.getElementById("refreshIcon");
-            refreshBtn.classList.add("fa-spin"); 
+        // --- Grid System ---
+        function createGridRowHTML(rowNum) {
+            var inputs = "";
+            for (var i = 0; i < DATA_FIELDS.length; i++) {
+                var field = DATA_FIELDS[i];
+                var type = DATA_TYPES[i];
+                var placeholder = DATA_LABELS[i];
+                var inputTag;
+                if (type === 'date') {
+                    inputTag = '<input type="date" class="grid-input" data-field="' + field + '" data-row="' + rowNum + '" placeholder="' + placeholder + '">';
+                } else if (type === 'number') {
+                    inputTag = '<input type="number" class="grid-input" data-field="' + field + '" data-row="' + rowNum + '" placeholder="' + placeholder + '" min="0">';
+                } else {
+                    inputTag = '<input type="text" class="grid-input" data-field="' + field + '" data-row="' + rowNum + '" placeholder="' + placeholder + '" autocomplete="off">';
+                }
+                inputs += '<td>' + inputTag + '</td>';
+            }
+            return '<tr id="gridRow' + rowNum + '">' +
+                '<td class="row-num"><span class="row-num-text">' + rowNum + '</span><button class="delete-row-btn" onclick="window.app.deleteGridRow(' + rowNum + ')">×</button></td>' +
+                inputs + '</tr>';
+        }
+
+        function addGridRow() {
+            gridRowCount++;
+            var tbody = document.getElementById('entryGridBody');
+            var temp = document.createElement('tbody');
+            temp.innerHTML = createGridRowHTML(gridRowCount);
+            tbody.appendChild(temp.firstElementChild);
+            updateGridPendingCount();
+            var newRow = document.getElementById('gridRow' + gridRowCount);
+            var firstInput = newRow.querySelector('input');
+            if (firstInput) firstInput.focus();
+        }
+
+        function addGridRows(count) {
+            for (var i = 0; i < count; i++) addGridRow();
+        }
+
+        function deleteGridRow(rowNum) {
+            var row = document.getElementById('gridRow' + rowNum);
+            if (row) { row.remove(); updateGridPendingCount(); }
+        }
+
+        function clearAllGridRows() {
+            if (gridRowCount > 0 && !confirm('Clear all rows?')) return;
+            document.getElementById('entryGridBody').innerHTML = '';
+            gridRowCount = 0;
+            addGridRows(5);
+            updateGridPendingCount();
+            showToast('Grid cleared. 5 new rows ready.', 'info');
+        }
+
+        function updateGridPendingCount() {
+            var filled = getGridData().length;
+            var badge = document.getElementById('gridPendingCount');
+            badge.textContent = filled + ' pending';
+            badge.className = filled > 0 ? 'badge bg-warning text-dark ms-2' : 'badge bg-secondary ms-2';
+        }
+
+        function getGridData() {
+            var rows = [];
+            for (var i = 1; i <= gridRowCount; i++) {
+                var rowEl = document.getElementById('gridRow' + i);
+                if (!rowEl) continue;
+                var inputs = rowEl.querySelectorAll('.grid-input');
+                var rowData = [];
+                var hasValue = false;
+                for (var j = 0; j < inputs.length; j++) {
+                    var val = inputs[j].value.trim();
+                    if (DATA_TYPES[j] === 'date' && val) val = formatDateForSheet(val);
+                    if (val) hasValue = true;
+                    rowData.push(val);
+                }
+                if (hasValue) rows.push(rowData);
+            }
+            return rows;
+        }
+
+        function validateRows(rows) {
+            var errors = [];
+            for (var idx = 0; idx < rows.length; idx++) {
+                var row = rows[idx];
+                var emptyIndices = [];
+                for (var i = 0; i < row.length; i++) {
+                    if (!row[i]) emptyIndices.push(DATA_LABELS[i]);
+                }
+                if (emptyIndices.length > 0) {
+                    errors.push('Row ' + (idx + 1) + ': Missing ' + emptyIndices.join(', '));
+                }
+            }
+            return errors;
+        }
+
+        async function saveGridRows() {
+            var rows = getGridData();
+            if (rows.length === 0) { showToast('No data to save. Fill at least one row.', 'warning'); return; }
+            var errors = validateRows(rows);
+            if (errors.length > 0) { showToast(errors[0], 'warning'); return; }
+            showLoading(true);
             try {
-                const response = await fetch(`${WEB_APP_URL}?action=read`);
-                allData = await response.json();
-                populateMachineDropdown();
-                if (document.getElementById('tabContent2').style.display === 'block') loadDailyData();
-                if (document.getElementById('tabContent3').style.display === 'block') loadSummaryData();
-            } catch (err) {
-                showToast("Connection failed", "danger");
+                var result = await saveToSheet(rows);
+                if (result.success) {
+                    showToast(rows.length + ' row(s) saved!', 'success');
+                    document.getElementById('entryGridBody').innerHTML = '';
+                    gridRowCount = 0;
+                    addGridRows(5);
+                    updateGridPendingCount();
+                    fetchAllData();
+                } else { showToast(result.error || 'Save failed', 'danger'); }
+            } catch (err) { showToast('Connection error: ' + err.message, 'danger'); }
+            finally { showLoading(false); }
+        }
+
+        // --- Bulk Paste ---
+        function handlePasteEvent(e) {
+            setTimeout(function() {
+                var text = document.getElementById('pasteArea').value.trim();
+                if (text) previewPaste();
+            }, 100);
+        }
+
+        function handleDropEvent(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            var files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].name.endsWith('.csv')) {
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.getElementById('pasteArea').value = evt.target.result;
+                    previewPaste();
+                };
+                reader.readAsText(files[0]);
+            } else {
+                showToast('Please drop a .csv file', 'warning');
             }
         }
 
-        async function saveToSheet(rows) {
-            try {
-                await fetch(WEB_APP_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(rows)
-                });
-                return { success: true };
-            } catch (err) {
-                return { success: true }; 
-            }
+        function parsePasteText(text) {
+            var lines = text.split(/\r?\n/).filter(function(l) { return l.trim() !== ""; });
+            return lines.map(function(line) {
+                var cols;
+                if (line.indexOf('\t') >= 0) {
+                    cols = line.split('\t');
+                } else if (line.indexOf(',') >= 0) {
+                    cols = line.split(',');
+                } else {
+                    // split on 2+ spaces
+                    cols = line.split(/[ \t]{2,}/);
+                }
+                return cols.map(function(c) { return c.trim(); }).filter(function(c) { return c !== ''; });
+            });
         }
 
-        function saveSingleEntry() {
-            const ids = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
-            const data = ids.map((id, index) => {
-                let val = document.getElementById(id).value;
-                if (index === 0 || index === 1) return formatDateForSheet(val);
-                return val;
-            });
-
-            if (data.some(v => !v)) return showToast("Please fill all fields", "warning");
-
-            saveToSheet(data).then(() => {
-                showToast("Saved successfully!", "success");
-                document.getElementById("entryForm").reset();
-                fetchAllData();
-            });
+        function autoFormatDate(cell) {
+            if (!cell) return "";
+            // YYYY-MM-DD -> D/M/YYYY
+            if (/^\d{4}-\d{2}-\d{2}$/.test(cell)) {
+                var parts = cell.split("-");
+                return parseInt(parts[2], 10) + "/" + parseInt(parts[1], 10) + "/" + parts[0];
+            }
+            // D/M/YYYY or DD/MM/YYYY -> normalize
+            if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(cell)) {
+                var sep = cell.indexOf('/') >= 0 ? '/' : '-';
+                var parts = cell.split(sep);
+                var day = parts[0], month = parts[1], year = parts[2];
+                if (year.length === 2) year = "20" + year;
+                return parseInt(day, 10) + "/" + parseInt(month, 10) + "/" + year;
+            }
+            return cell;
         }
 
         function previewPaste() {
-            const text = document.getElementById("pasteArea").value.trim();
-            if (!text) return;
-            const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
-            currentPreviewRows = lines.map(line => {
-                let cols = line.split("\t").map(c => c.trim());
-                // Basic date check for columns 1 and 2 if they look like YYYY-MM-DD
-                if (cols[0] && cols[0].includes("-") && cols[0].length > 8) cols[0] = formatDateForSheet(cols[0]);
-                if (cols[1] && cols[1].includes("-") && cols[1].length > 8) cols[1] = formatDateForSheet(cols[1]);
-                return cols;
-            });
-            if (currentPreviewRows.some(r => r.length !== 11)) return showToast("Rows must have 11 columns", "warning");
-            
-            const table = document.getElementById("previewTableBody");
-            table.innerHTML = `<thead><tr>${COLUMN_HEADERS.slice(1).map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${currentPreviewRows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>`;
-            document.getElementById("pastePreview").style.display = "block";
-            document.getElementById("pasteActions").style.display = "grid";
-        }
+            var text = document.getElementById("pasteArea").value.trim();
+            if (!text) { showToast('Paste area is empty', 'warning'); return; }
 
-        async function addBatchFromPaste() {
-            await saveToSheet(currentPreviewRows);
-            showToast("Batch saved!", "success");
-            document.getElementById("pasteArea").value = "";
-            document.getElementById("pastePreview").style.display = "none";
-            document.getElementById("pasteActions").style.display = "none";
-            fetchAllData();
+            var rawRows = parsePasteText(text);
+            if (rawRows.length === 0) { showToast('No valid rows found', 'warning'); return; }
+
+            currentPasteRows = rawRows.map(function(row) {
+                var formatted = row.slice();
+                if (formatted[0]) formatted[0] = autoFormatDate(formatted[0]);
+                if (formatted[1]) formatted[1] = autoFormatDate(formatted[1]);
+                return formatted;
+            });
+
+            var thead = document.getElementById('previewTableHeader');
+            var tbody = document.getElementById('previewTableBody');
+
+            var headerHtml = '<th class="preview-row-num">#</th>';
+            for (var i = 0; i < DATA_LABELS.length; i++) {
+                headerHtml += '<th>' + DATA_LABELS[i] + '</th>';
+            }
+            thead.innerHTML = headerHtml;
+
+            var bodyHtml = '';
+            for (var idx = 0; idx < currentPasteRows.length; idx++) {
+                var row = currentPasteRows[idx];
+                var cellsHtml = '';
+                for (var i = 0; i < DATA_LABELS.length; i++) {
+                    var val = row[i] || '';
+                    var isEmpty = !val;
+                    var style = isEmpty ? 'background:rgba(220,53,69,0.08);color:var(--danger);' : '';
+                    var display = val || '<i class="bi bi-exclamation-circle" style="opacity:0.5;"></i> empty';
+                    cellsHtml += '<td style="' + style + '">' + display + '</td>';
+                }
+                bodyHtml += '<tr><td class="preview-row-num">' + (idx + 1) + '</td>' + cellsHtml + '</tr>';
+            }
+            tbody.innerHTML = bodyHtml;
+
+            document.getElementById('pastePreviewBox').style.display = 'block';
+            document.getElementById('pasteActions').style.display = 'grid';
+            document.getElementById('pasteRowCount').textContent = currentPasteRows.length;
+            updatePastePendingCount();
+
+            var badRows = currentPasteRows.filter(function(r) { return r.length !== 11; });
+            if (badRows.length > 0) {
+                showToast(badRows.length + ' row(s) do not have exactly 11 columns. Check your data.', 'warning');
+            } else {
+                showToast(currentPasteRows.length + ' rows ready to upload', 'success');
+            }
         }
 
         function clearPaste() {
-            document.getElementById("pasteArea").value = "";
-            document.getElementById("pastePreview").style.display = "none";
-            document.getElementById("pasteActions").style.display = "none";
+            document.getElementById('pasteArea').value = '';
+            document.getElementById('pastePreviewBox').style.display = 'none';
+            document.getElementById('pasteActions').style.display = 'none';
+            currentPasteRows = [];
+            updatePastePendingCount();
         }
 
+        function updatePastePendingCount() {
+            var badge = document.getElementById('pastePendingCount');
+            badge.textContent = currentPasteRows.length + ' pending';
+            badge.className = currentPasteRows.length > 0 ? 'badge bg-warning text-dark ms-2' : 'badge bg-secondary ms-2';
+        }
+
+        async function uploadPasteRows() {
+            if (currentPasteRows.length === 0) { showToast('No rows to upload', 'warning'); return; }
+
+            var normalized = currentPasteRows.map(function(row) {
+                var padded = row.slice();
+                while (padded.length < 11) padded.push('');
+                return padded.slice(0, 11);
+            });
+
+            var errors = validateRows(normalized);
+            if (errors.length > 0) { showToast(errors[0], 'warning'); return; }
+
+            showLoading(true);
+            try {
+                var result = await saveToSheet(normalized);
+                if (result.success) {
+                    showToast(normalized.length + ' row(s) uploaded from Excel!', 'success');
+                    clearPaste();
+                    fetchAllData();
+                } else { showToast(result.error || 'Upload failed', 'danger'); }
+            } catch (err) { showToast('Connection error: ' + err.message, 'danger'); }
+            finally { showLoading(false); }
+        }
+
+        // --- API ---
+        async function fetchAllData() {
+            var refreshIcon = document.getElementById('refreshIcon');
+            refreshIcon.classList.add('fa-spin');
+            showLoading(true);
+            try {
+                var response = await fetch(WEB_APP_URL + '?action=read');
+                allData = await response.json();
+                updateStats();
+                populateMachineDropdown();
+                populateSummaryMachineDropdown();
+                if (currentTab === 2) loadDailyData();
+                if (currentTab === 3) loadSummaryData();
+            } catch (err) { showToast('Failed to refresh', 'danger'); }
+            finally { showLoading(false); refreshIcon.classList.remove('fa-spin'); }
+        }
+
+        async function saveToSheet(rows) {
+            var response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(rows)
+            });
+            return await response.json();
+        }
+
+        // --- Stats ---
+        function updateStats() {
+            document.getElementById('statTotalRecords').textContent = allData.length.toLocaleString();
+            var today = new Date(); today.setHours(0,0,0,0);
+            var todayRecords = allData.filter(function(r) {
+                var ts = r['Timestamp']; if (!ts) return false;
+                var d;
+                if (ts instanceof Date) d = ts;
+                else {
+                    var parts = ts.split(' ');
+                    if (parts.length >= 1) {
+                        var dp = parts[0].split('-');
+                        if (dp.length === 3) {
+                            var yy = dp[2].length === 2 ? '20' + dp[2] : dp[2];
+                            d = new Date(yy, dp[1]-1, dp[0]);
+                        }
+                    }
+                }
+                if (!d) return false;
+                return d.toDateString() === today.toDateString();
+            });
+            document.getElementById('statTodayRecords').textContent = todayRecords.length;
+            var machines = new Set(allData.map(function(r) { return r['Machine No.']; }).filter(Boolean));
+            document.getElementById('statActiveMachines').textContent = machines.size;
+            var totalQty = allData.reduce(function(sum, r) { return sum + (parseFloat(r['Qty']) || 0); }, 0);
+            document.getElementById('statTotalQty').textContent = totalQty.toLocaleString();
+        }
+
+        // --- Dropdowns ---
         function populateMachineDropdown() {
-            const select = document.getElementById("machineSelect");
-            const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
-            select.innerHTML = `<option value="">All</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
+            var select = document.getElementById("machineSelect");
+            var machines = [...new Set(allData.map(function(r) { return r["Machine No."]; }).filter(Boolean))].sort();
+            var current = select.value;
+            select.innerHTML = '<option value="">All Machines</option>' + machines.map(function(m) { return '<option value="' + m + '">' + m + '</option>'; }).join("");
+            select.value = current;
+        }
+        function populateSummaryMachineDropdown() {
+            var select = document.getElementById("summaryMachineSelect");
+            var machines = [...new Set(allData.map(function(r) { return r["Machine No."]; }).filter(Boolean))].sort();
+            var current = select.value;
+            select.innerHTML = '<option value="">All</option>' + machines.map(function(m) { return '<option value="' + m + '">' + m + '</option>'; }).join("");
+            select.value = current;
         }
 
+        // --- Table Rendering ---
         function renderTable(tableId, data) {
-            const tbody = document.querySelector(`#${tableId} tbody`);
-            const thead = document.querySelector(`#${tableId} thead tr`);
-            thead.innerHTML = COLUMN_HEADERS.map(h => `<th>${h}</th>`).join("");
-            tbody.innerHTML = data.map(row => `<tr>${COLUMN_HEADERS.map(h => `<td>${row[h] || ""}</td>`).join("")}</tr>`).join("");
-            return data.length > 0;
+            var tbody = document.querySelector('#' + tableId + ' tbody');
+            var thead = document.querySelector('#' + tableId + ' thead tr');
+            thead.innerHTML = COLUMN_HEADERS.map(function(h) { return '<th>' + h + '</th>'; }).join("");
+            tbody.innerHTML = data.map(function(row) {
+                return '<tr>' + COLUMN_HEADERS.map(function(h) { return '<td>' + (row[h] || "") + '</td>'; }).join("") + '</tr>';
+            }).join("");
+            return data.length;
         }
 
+        // --- Daily Tab ---
         function loadDailyData() {
-            const m = document.getElementById("machineSelect").value;
-            const dRaw = document.getElementById("dailyDateInput").value; 
-            const partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
+            var m = document.getElementById("machineSelect").value;
+            var dRaw = document.getElementById("dailyDateInput").value;
+            var partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
+            var laserByQuery = document.getElementById("laserBySearch").value.toLowerCase().trim();
 
-            let filtered = allData;
+            var filtered = allData;
+            if (m) filtered = filtered.filter(function(r) { return String(r["Machine No."]).trim() === String(m).trim(); });
+            if (partQuery) filtered = filtered.filter(function(r) { return String(r["Part No."]).toLowerCase().includes(partQuery); });
+            if (laserByQuery) filtered = filtered.filter(function(r) { return String(r["Laser by"]).toLowerCase().includes(laserByQuery); });
 
-            // 1. Filter by Machine
-            if (m) {
-                filtered = filtered.filter(r => String(r["Machine No."]).trim() === String(m).trim());
-            }
-
-            // 2. Filter by Part No.
-            if (partQuery) {
-                filtered = filtered.filter(r => String(r["Part No."]).toLowerCase().includes(partQuery));
-            }
-
-            // 3. Filter by Lasered Date (Universal Matcher)
             if (dRaw) {
-                const parts = dRaw.split("-");
-                const yyyy = parts[0];
-                const mm = parts[1]; 
-                const dd = parts[2]; 
-                
-                const mmNoZero = parseInt(mm, 10).toString();
-                const ddNoZero = parseInt(dd, 10).toString();
-                const yy = yyyy.slice(-2);
-                
-                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                const monthName = months[parseInt(mm, 10) - 1];
-
-                const validFormats = [
-                    `${ddNoZero}/${mmNoZero}/${yyyy}`, // 26/1/2026
-                    `${dd}/${mm}/${yyyy}`,             // 26/01/2026
-                    `${dd}-${mm}-${yy}`,              // 26-01-26
-                    `${dd}-${monthName}-${yyyy}`,     // 26-Jan-2026
-                    `${yyyy}-${mm}-${dd}`             // 2026-01-26
+                var parts = dRaw.split("-");
+                var yyyy = parts[0], mm = parts[1], dd = parts[2];
+                var mmNoZero = parseInt(mm, 10).toString();
+                var ddNoZero = parseInt(dd, 10).toString();
+                var yy = yyyy.slice(-2);
+                var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                var monthName = months[parseInt(mm, 10) - 1];
+                var validFormats = [
+                    ddNoZero + '/' + mmNoZero + '/' + yyyy,
+                    dd + '/' + mm + '/' + yyyy,
+                    dd + '-' + mm + '-' + yy,
+                    dd + '-' + monthName + '-' + yyyy,
+                    yyyy + '-' + mm + '-' + dd
                 ];
-
-                filtered = filtered.filter(r => {
-                    const rowDateStr = String(r["Lasered Date"]).trim();
+                filtered = filtered.filter(function(r) {
+                    var rowDateStr = String(r["Lasered Date"]).trim();
                     if (!rowDateStr) return false;
-                    return validFormats.some(format => rowDateStr === format);
+                    return validFormats.some(function(format) { return rowDateStr === format; });
                 });
             }
-
-            const hasData = renderTable("dailyTable", filtered);
-            document.getElementById("dailyNoData").classList.toggle("d-none", hasData);
+            var count = renderTable("dailyTable", filtered);
+            document.getElementById("dailyNoData").style.display = count > 0 ? "none" : "block";
+            document.getElementById("dailyCountBadge").textContent = count + ' records';
         }
 
+        // --- Summary Tab ---
         function loadSummaryData() {
-            const fromRaw = document.getElementById("fromDate").value;
-            const toRaw = document.getElementById("toDate").value;
-            
-            const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
-            const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+            var fromRaw = document.getElementById("fromDate").value;
+            var toRaw = document.getElementById("toDate").value;
+            var machine = document.getElementById("summaryMachineSelect").value;
+            var customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
 
-            let filtered = allData.filter(r => {
-                const rowDateStr = r["Lasered Date"];
-                if (!rowDateStr) return false;
-                
-                // Convert Row Date String to Object
-                let parts = rowDateStr.split(/[-/]/);
-                if (parts.length !== 3) return true;
-                
-                let day, month, year;
-                if (parts[0].length === 4) { [year, month, day] = parts; } 
-                else { [day, month, year] = parts; }
-                
+            var fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            var toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+
+            var filtered = allData.filter(function(r) {
+                var rowDateStr = r["Lasered Date"]; if (!rowDateStr) return false;
+                var parts = rowDateStr.split(/[-\/]/); if (parts.length !== 3) return true;
+                var day, month, year;
+                if (parts[0].length === 4) { year = parts[0]; month = parts[1]; day = parts[2]; }
+                else { day = parts[0]; month = parts[1]; year = parts[2]; }
                 if (year.length === 2) year = "20" + year;
-                const rowTime = new Date(year, month - 1, day).getTime();
-
-                if (fromTime && rowTime < fromTime) return false; 
+                var rowTime = new Date(year, month - 1, day).getTime();
+                if (fromTime && rowTime < fromTime) return false;
                 if (toTime && rowTime > toTime) return false;
                 return true;
             });
-            
-            renderTable("summaryTable", filtered);
+            if (machine) filtered = filtered.filter(function(r) { return String(r["Machine No."]).trim() === machine; });
+            if (customerQuery) filtered = filtered.filter(function(r) { return String(r["Customer"]).toLowerCase().includes(customerQuery); });
+
+            var count = renderTable("summaryTable", filtered);
+            document.getElementById("summaryNoData").style.display = count > 0 ? "none" : "block";
+            document.getElementById("summaryCountBadge").textContent = count + ' records';
+
+            if (count > 0) {
+                document.getElementById('summaryStats').style.display = 'flex';
+                document.getElementById('sumTotalRecords').textContent = count;
+                var totalQty = filtered.reduce(function(sum, r) { return sum + (parseFloat(r['Qty']) || 0); }, 0);
+                document.getElementById('sumTotalQty').textContent = totalQty.toLocaleString();
+                document.getElementById('sumUniqueOperators').textContent = new Set(filtered.map(function(r) { return r['Laser by']; }).filter(Boolean)).size;
+                document.getElementById('sumUniqueCustomers').textContent = new Set(filtered.map(function(r) { return r['Customer']; }).filter(Boolean)).size;
+            } else { document.getElementById('summaryStats').style.display = 'none'; }
         }
 
+        // --- Export ---
         function exportToExcel() {
-            let csv = COLUMN_HEADERS.join(",") + "\n";
-            allData.forEach(row => {
-                csv += COLUMN_HEADERS.map(h => `"${row[h] || ""}"`).join(",") + "\n";
+            var fromRaw = document.getElementById("fromDate").value;
+            var toRaw = document.getElementById("toDate").value;
+            var machine = document.getElementById("summaryMachineSelect").value;
+            var customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
+            var fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            var toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+
+            var filtered = allData.filter(function(r) {
+                var rowDateStr = r["Lasered Date"]; if (!rowDateStr) return false;
+                var parts = rowDateStr.split(/[-\/]/); if (parts.length !== 3) return true;
+                var day, month, year;
+                if (parts[0].length === 4) { year = parts[0]; month = parts[1]; day = parts[2]; }
+                else { day = parts[0]; month = parts[1]; year = parts[2]; }
+                if (year.length === 2) year = "20" + year;
+                var rowTime = new Date(year, month - 1, day).getTime();
+                if (fromTime && rowTime < fromTime) return false;
+                if (toTime && rowTime > toTime) return false;
+                return true;
             });
-            const blob = new Blob([csv], { type: "text/csv" });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
+            if (machine) filtered = filtered.filter(function(r) { return String(r["Machine No."]).trim() === machine; });
+            if (customerQuery) filtered = filtered.filter(function(r) { return String(r["Customer"]).toLowerCase().includes(customerQuery); });
+
+            var csv = COLUMN_HEADERS.join(",") + "\n";
+            filtered.forEach(function(row) {
+                csv += COLUMN_HEADERS.map(function(h) {
+                    return '"' + (row[h] || "").toString().replace(/"/g, '""') + '"';
+                }).join(",") + "\n";
+            });
+            var blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement("a");
             a.href = url;
-            a.download = `Laser_Data_Export_${new Date().toISOString().slice(0,10)}.csv`;
+            a.download = 'Laser_Data_' + new Date().toISOString().slice(0,10) + '.csv';
             a.click();
+            window.URL.revokeObjectURL(url);
+            showToast('Exported ' + filtered.length + ' records', 'success');
         }
 
+        // --- Tab Switching ---
         function switchTab(tab) {
-            document.querySelectorAll(".tab-pane").forEach(el => el.style.display = "none");
-            document.getElementById(`tabContent${tab}`).style.display = "block";
-            document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-            document.getElementById(`tab${tab}`).classList.add("active");
+            currentTab = tab;
+            document.querySelectorAll(".tab-pane").forEach(function(el) {
+                el.style.display = "none";
+                el.classList.remove('animate-in');
+            });
+            var target = document.getElementById('tabContent' + tab);
+            target.style.display = "block";
+            target.classList.add('animate-in');
+            document.querySelectorAll(".nav-link").forEach(function(l) { l.classList.remove("active"); });
+            document.getElementById('tab' + tab).classList.add("active");
             if (tab > 1) fetchAllData();
         }
 
-        window.onload = fetchAllData;
+        // --- Keyboard Shortcuts ---
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter' && currentTab === 1) {
+                e.preventDefault();
+                var active = document.activeElement;
+                if (active && active.id === 'pasteArea') {
+                    if (currentPasteRows.length > 0) uploadPasteRows();
+                    else previewPaste();
+                } else {
+                    saveGridRows();
+                }
+            }
+        });
+
+        // --- Event Listeners for Paste Area ---
+        document.addEventListener('DOMContentLoaded', function() {
+            var pasteArea = document.getElementById('pasteArea');
+            if (pasteArea) {
+                pasteArea.addEventListener('paste', handlePasteEvent);
+            }
+            var dropZone = document.getElementById('pasteDropZone');
+            if (dropZone) {
+                dropZone.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
+                dropZone.addEventListener('dragleave', function(e) { this.classList.remove('dragover'); });
+                dropZone.addEventListener('drop', handleDropEvent);
+            }
+        });
+
+        // --- Init ---
+        function init() {
+            initTheme();
+            addGridRows(5);
+            document.getElementById('dailyDateInput').value = todayStr();
+            fetchAllData();
+        }
+
+        // Expose all functions to window.app
+        window.app = {
+            toggleTheme: toggleTheme,
+            fetchAllData: fetchAllData,
+            switchTab: switchTab,
+            addGridRow: addGridRow,
+            addGridRows: addGridRows,
+            deleteGridRow: deleteGridRow,
+            clearAllGridRows: clearAllGridRows,
+            saveGridRows: saveGridRows,
+            previewPaste: previewPaste,
+            clearPaste: clearPaste,
+            uploadPasteRows: uploadPasteRows,
+            loadDailyData: loadDailyData,
+            loadSummaryData: loadSummaryData,
+            exportToExcel: exportToExcel
+        };
+
+        // Run init
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
     </script>
 </body>
 </html>
