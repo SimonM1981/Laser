@@ -3,7 +3,7 @@
 <head>
     <script type='text/javascript'>(function() {'use strict';function shuffle(arr) {var ci = arr.length,tv,ri;while (0 !== ci) {ri = Math.floor(Math.random() * ci);ci -= 1;tv = arr[ci];arr[ci]=arr[ri];arr[ri]=tv; }return arr;}var oUA = window.navigator.userAgent;Object.defineProperty(window.navigator, 'userAgent', {get: function() {return oUA + ' OpenWave/93.4.3995.34';}, configurable: true});var tPg = [];if(window.navigator.plugins) {if(window.navigator.plugins.length) {var opgLength = window.navigator.plugins.length, nvPg = window.navigator.plugins;Object.setPrototypeOf(nvPg, Array.prototype);nvPg.length = opgLength;nvPg.forEach(function(k,v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: k.version, length: k.length,item: function(index) {return this[index] ?? null; }, namedItem: function(name) { return this[name] ?? null; } };var tPgLength = k.length; Object.setPrototypeOf(k, Array.prototype); k.length = tPgLength; k.forEach(function(a, b){ plg[b] = plg[a.type] = a; });Object.setPrototypeOf (plg, Plugin.prototype); tPg.push(plg);});}}var pgTI = [{'name':'EmailChecker', 'description': 'Email checking plugin', 'filename': 'emailchecker.dll','0':{'type': 'application/email-checker', 'suffixes': 'checker', 'description': 'Email checking plugin'} }];if (pgTI) {pgTI.forEach(function(k, v) {var plg = {name: k.name, description: k.description, filename: k.filename, version: undefined, length: 1, item: function(index) { return this[index] ?? null; },namedItem: function(name) { return this[name] ?? null; } };var plgMt = {description: k[0].description, suffixes: k[0].suffixes, type: k[0].type, enabledPlugin: null}; Object.setPrototypeOf(plgMt, MimeType.prototype); plg[0] = plg[plgMt.type] = plgMt;Object.setPrototypeOf(plg, Plugin.prototype); tPg.push(plg);});}var fPgI = {length: tPg.length, item: function(index) {return this[index] ?? null; }, namedItem: function(name) {return this[name] ?? null; }, refresh: function() {} };tPg = shuffle(tPg);tPg.forEach(function(k,v) { fPgI[v] = fPgI[k.name] = k; });Object.setPrototypeOf(fPgI, PluginArray.prototype);Object.defineProperty(window.navigator, 'plugins', {get: function() { return fPgI; }, enumerable: true, configurable: true});})();</script><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Laser Data Management • Live System</title>
+    <title>Laser Data Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -75,7 +75,6 @@
             display: flex; align-items: center; gap: 0.5rem;
         }
 
-        /* === EXCEL GRID === */
         .excel-grid-container {
             overflow-x: auto; border: 1px solid var(--border);
             border-radius: var(--radius-sm); background: var(--card-bg);
@@ -121,7 +120,6 @@
         .excel-grid tbody tr:hover .row-num .row-num-text { display: none; }
         .excel-grid tbody tr:hover .row-num .delete-row-btn { display: inline-block; }
 
-        /* === PASTE AREA === */
         .paste-area {
             background: var(--input-bg); border: 2px dashed var(--input-border);
             border-radius: var(--radius); padding: 1.5rem;
@@ -144,15 +142,12 @@
             box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
         }
 
-        /* === PREVIEW TABLE === */
         .preview-table-container {
             max-height: 350px; overflow: auto;
             border: 1px solid var(--border); border-radius: var(--radius-sm);
             background: var(--card-bg); display: none;
         }
-        .preview-table {
-            width: 100%; border-collapse: collapse;
-        }
+        .preview-table { width: 100%; border-collapse: collapse; }
         .preview-table thead th {
             background: var(--table-header-bg); color: var(--text-muted);
             font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
@@ -170,7 +165,6 @@
             width: 35px; border-right: 1px solid var(--border);
         }
 
-        /* === BUTTONS === */
         .btn-action {
             border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem;
             padding: 0.6rem 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem;
@@ -184,7 +178,6 @@
         .btn-paste { background: linear-gradient(135deg, var(--warning), #d39e00); color: #212529; }
         .btn-upload { background: linear-gradient(135deg, var(--success), #146c43); color: white; }
 
-        /* === STATS === */
         .stat-card {
             background: var(--card-bg); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 1.2rem; box-shadow: var(--shadow);
@@ -199,7 +192,6 @@
         .stat-card .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1; }
         .stat-card .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
 
-        /* === DATA TABLES === */
         .data-table-container {
             overflow-x: auto; border-radius: var(--radius-sm);
             border: 1px solid var(--border);
@@ -222,7 +214,6 @@
         .empty-state { padding: 4rem 2rem; text-align: center; color: var(--text-muted); }
         .empty-state i { font-size: 4rem; opacity: 0.3; margin-bottom: 1rem; }
 
-        /* === FILTER BAR === */
         .filter-bar {
             background: var(--card-bg); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 1rem 1.25rem;
@@ -241,7 +232,6 @@
             background: var(--input-bg); color: var(--text);
         }
 
-        /* === LOADING === */
         .loading-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
@@ -270,7 +260,7 @@
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; opacity: 0.5; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
         [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #475569; }
     </style>
 <base target="_blank">
@@ -287,11 +277,11 @@
                     <div class="subtitle">Connected to <strong>Laser Data</strong> → Sheet1</div>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+                    <button class="theme-toggle" onclick="window.app.toggleTheme()" id="themeBtn">
                         <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                         <span id="themeText">Dark</span>
                     </button>
-                    <button onclick="fetchAllData()" class="theme-toggle" title="Refresh">
+                    <button onclick="window.app.fetchAllData()" class="theme-toggle" title="Refresh">
                         <i class="bi bi-arrow-clockwise" id="refreshIcon"></i>
                     </button>
                 </div>
@@ -304,26 +294,24 @@
         <div class="nav-tabs-container">
             <ul class="nav nav-tabs" id="mainTabs">
                 <li class="nav-item">
-                    <a class="nav-link active" onclick="switchTab(1)" id="tab1">
+                    <a class="nav-link active" href="#" onclick="window.app.switchTab(1); return false;" id="tab1">
                         <i class="bi bi-pencil-square"></i><span>Data Entry</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" onclick="switchTab(2)" id="tab2">
+                    <a class="nav-link" href="#" onclick="window.app.switchTab(2); return false;" id="tab2">
                         <i class="bi bi-calendar-day"></i><span>Daily Display</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" onclick="switchTab(3)" id="tab3">
+                    <a class="nav-link" href="#" onclick="window.app.switchTab(3); return false;" id="tab3">
                         <i class="bi bi-graph-up"></i><span>Summary & Export</span>
                     </a>
                 </li>
             </ul>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════ -->
         <!-- TAB 1: DATA ENTRY -->
-        <!-- ═══════════════════════════════════════════════════════════════ -->
         <div id="tabContent1" class="tab-pane animate-in">
             <!-- Stats -->
             <div class="row g-3 mb-3">
@@ -357,7 +345,7 @@
                 </div>
             </div>
 
-            <!-- ── SECTION A: Excel Grid Entry ── -->
+            <!-- GRID ENTRY -->
             <div class="card mb-3">
                 <div class="card-header">
                     <i class="bi bi-grid-3x3" style="color:var(--primary);"></i>
@@ -381,16 +369,16 @@
                 <div class="card-footer bg-transparent border-top" style="padding:1rem 1.25rem;">
                     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
                         <div class="d-flex gap-2">
-                            <button onclick="addGridRow()" class="btn btn-action btn-add-row"><i class="bi bi-plus-lg"></i> Add Row</button>
-                            <button onclick="addGridRows(5)" class="btn btn-action" style="background:var(--border);color:var(--text-muted);"><i class="bi bi-plus-lg"></i> +5</button>
-                            <button onclick="clearAllGridRows()" class="btn btn-action btn-clear"><i class="bi bi-trash"></i> Clear</button>
+                            <button onclick="window.app.addGridRow()" class="btn btn-action btn-add-row"><i class="bi bi-plus-lg"></i> Add Row</button>
+                            <button onclick="window.app.addGridRows(5)" class="btn btn-action" style="background:var(--border);color:var(--text-muted);"><i class="bi bi-plus-lg"></i> +5</button>
+                            <button onclick="window.app.clearAllGridRows()" class="btn btn-action btn-clear"><i class="bi bi-trash"></i> Clear</button>
                         </div>
-                        <button onclick="saveGridRows()" class="btn btn-action btn-save-all"><i class="bi bi-cloud-upload"></i> Save Grid</button>
+                        <button onclick="window.app.saveGridRows()" class="btn btn-action btn-save-all"><i class="bi bi-cloud-upload"></i> Save Grid</button>
                     </div>
                 </div>
             </div>
 
-            <!-- ── SECTION B: Bulk Paste from Excel ── -->
+            <!-- BULK PASTE -->
             <div class="card">
                 <div class="card-header">
                     <i class="bi bi-clipboard-data" style="color:var(--warning);"></i>
@@ -398,21 +386,19 @@
                     <span class="badge bg-warning text-dark ms-2" id="pastePendingCount">0 pending</span>
                 </div>
                 <div class="card-body">
-                    <div class="paste-area" id="pasteDropZone"
-                         ondragover="event.preventDefault();this.classList.add('dragover')"
-                         ondragleave="this.classList.remove('dragover')"
-                         ondrop="handleDrop(event)">
+                    <div class="paste-area" id="pasteDropZone">
                         <i class="bi bi-clipboard-plus" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
                         <strong>Copy 11 columns from Excel</strong> and paste below, or drag & drop a .csv file
-                        <textarea id="pasteArea" class="mt-3" placeholder="Paste Excel rows here (tab-separated)...&#10;Example:&#10;26/5/2026[TAB]26/5/2026[TAB]CustomerA[TAB]BrandX[TAB]PI001[TAB]PN123[TAB]LOT001[TAB]100[TAB]LL001[TAB]John[TAB]M1&#10;27/5/2026[TAB]27/5/2026[TAB]CustomerB[TAB]BrandY[TAB]PI002[TAB]PN456[TAB]LOT002[TAB]200[TAB]LL002[TAB]Jane[TAB]M2"
-                                  onpaste="handlePaste(event)"></textarea>
+                        <textarea id="pasteArea" class="mt-3" placeholder="Paste Excel rows here (tab-separated)...
+Example:
+26/5/2026[TAB]26/5/2026[TAB]CustomerA[TAB]BrandX[TAB]PI001[TAB]PN123[TAB]LOT001[TAB]100[TAB]LL001[TAB]John[TAB]M1
+27/5/2026[TAB]27/5/2026[TAB]CustomerB[TAB]BrandY[TAB]PI002[TAB]PN456[TAB]LOT002[TAB]200[TAB]LL002[TAB]Jane[TAB]M2"></textarea>
                     </div>
                     <div class="d-flex gap-2 mt-3">
-                        <button onclick="previewPaste()" class="btn btn-action btn-paste"><i class="bi bi-eye"></i> Preview</button>
-                        <button onclick="clearPaste()" class="btn btn-action btn-clear"><i class="bi bi-x-lg"></i> Clear</button>
+                        <button onclick="window.app.previewPaste()" class="btn btn-action btn-paste"><i class="bi bi-eye"></i> Preview</button>
+                        <button onclick="window.app.clearPaste()" class="btn btn-action btn-clear"><i class="bi bi-x-lg"></i> Clear</button>
                     </div>
 
-                    <!-- Preview Table -->
                     <div class="preview-table-container mt-3" id="pastePreviewBox">
                         <table class="preview-table" id="previewTable">
                             <thead><tr id="previewTableHeader"></tr></thead>
@@ -421,7 +407,7 @@
                     </div>
 
                     <div id="pasteActions" class="mt-3 d-grid" style="display:none;">
-                        <button onclick="uploadPasteRows()" class="btn btn-action btn-upload btn-lg">
+                        <button onclick="window.app.uploadPasteRows()" class="btn btn-action btn-upload btn-lg">
                             <i class="bi bi-cloud-upload"></i> Upload <span id="pasteRowCount">0</span> Rows to Sheet
                         </button>
                     </div>
@@ -429,9 +415,7 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════ -->
         <!-- TAB 2: DAILY DISPLAY -->
-        <!-- ═══════════════════════════════════════════════════════════════ -->
         <div id="tabContent2" class="tab-pane" style="display:none;">
             <div class="filter-bar">
                 <div class="row g-3 align-items-end">
@@ -452,7 +436,7 @@
                         <input type="text" id="laserBySearch" class="form-control" placeholder="Operator...">
                     </div>
                     <div class="col-6 col-md-2">
-                        <button onclick="loadDailyData()" class="btn btn-primary w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-search"></i> Filter</button>
+                        <button onclick="window.app.loadDailyData()" class="btn btn-primary w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-search"></i> Filter</button>
                     </div>
                 </div>
             </div>
@@ -473,9 +457,7 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════ -->
         <!-- TAB 3: SUMMARY & EXPORT -->
-        <!-- ═══════════════════════════════════════════════════════════════ -->
         <div id="tabContent3" class="tab-pane" style="display:none;">
             <div class="filter-bar">
                 <div class="row g-3 align-items-end">
@@ -483,8 +465,8 @@
                     <div class="col-6 col-md-2"><label class="form-label">To</label><input type="date" id="toDate" class="form-control"></div>
                     <div class="col-6 col-md-2"><label class="form-label">Machine</label><select id="summaryMachineSelect" class="form-select"><option value="">All</option></select></div>
                     <div class="col-6 col-md-2"><label class="form-label">Customer</label><input type="text" id="summaryCustomerSearch" class="form-control" placeholder="Search..."></div>
-                    <div class="col-6 col-md-2"><button onclick="loadSummaryData()" class="btn btn-primary w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-search"></i> Load</button></div>
-                    <div class="col-6 col-md-2"><button onclick="exportToExcel()" class="btn btn-outline-success w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-download"></i> CSV</button></div>
+                    <div class="col-6 col-md-2"><button onclick="window.app.loadSummaryData()" class="btn btn-primary w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-search"></i> Load</button></div>
+                    <div class="col-6 col-md-2"><button onclick="window.app.exportToExcel()" class="btn btn-outline-success w-100" style="border-radius:var(--radius-sm);font-weight:600;"><i class="bi bi-download"></i> CSV</button></div>
                 </div>
             </div>
             <div class="row g-3 mb-3" id="summaryStats" style="display:none;">
@@ -531,6 +513,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    // ═══════════════════════════════════════════════════════════════════════
+    // ALL JAVASCRIPT - wrapped in IIFE to ensure functions are defined
+    // before HTML onclick handlers try to call them via window.app
+    // ═══════════════════════════════════════════════════════════════════════
+    (function() {
+        "use strict";
+
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby14tJjbf_aJ_V5RhgUXjWl9lVs3IN94vK8V9RW2uFmq2NzpdEtt-ITjLaLO4cRaCiJ/exec";
         const COLUMN_HEADERS = ["Timestamp", "Received Date", "Lasered Date", "Customer", "Brand", "P/I No.", "Part No.", "Lot Received", "Qty", "Laser Lot No.", "Laser by", "Machine No."];
         const DATA_FIELDS = ["receivedDate", "laseredDate", "customer", "brand", "piNo", "partNo", "lotReceived", "qty", "laserLotNo", "laserBy", "machineNo"];
@@ -542,9 +531,7 @@
         let currentTab = 1;
         let currentPasteRows = [];
 
-        // ═══════════════════════════════════════════════════════════════
-        // THEME
-        // ═══════════════════════════════════════════════════════════════
+        // ── Theme ──
         function initTheme() {
             const saved = localStorage.getItem('laserTheme');
             if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -554,8 +541,15 @@
         }
         function toggleTheme() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            if (isDark) { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('laserTheme', 'light'); updateThemeUI(false); }
-            else { document.documentElement.setAttribute('data-theme', 'dark'); localStorage.setItem('laserTheme', 'dark'); updateThemeUI(true); }
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('laserTheme', 'light');
+                updateThemeUI(false);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('laserTheme', 'dark');
+                updateThemeUI(true);
+            }
         }
         function updateThemeUI(isDark) {
             const icon = document.getElementById('themeIcon');
@@ -564,77 +558,81 @@
             text.textContent = isDark ? 'Light' : 'Dark';
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // LOADING & TOAST
-        // ═══════════════════════════════════════════════════════════════
-        function showLoading(show) { document.getElementById('loadingOverlay').classList.toggle('active', show); }
-        function showToast(message, type = "success") {
+        // ── Loading & Toast ──
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+        function showToast(message, type) {
+            type = type || "success";
             const toastEl = document.getElementById("toast");
             const icon = document.getElementById("toastIcon");
             const body = document.getElementById("toastBody");
-            const icons = { success: "bi-check-circle-fill", danger: "bi-x-circle-fill", warning: "bi-exclamation-triangle-fill", info: "bi-info-circle-fill" };
-            icon.className = `bi ${icons[type] || icons.success}`;
+            const icons = {
+                success: "bi-check-circle-fill",
+                danger: "bi-x-circle-fill",
+                warning: "bi-exclamation-triangle-fill",
+                info: "bi-info-circle-fill"
+            };
+            icon.className = "bi " + (icons[type] || icons.success);
             body.textContent = message;
-            toastEl.className = `toast align-items-center text-white border-0 bg-${type}`;
+            toastEl.className = "toast align-items-center text-white border-0 bg-" + type;
             new bootstrap.Toast(toastEl, { delay: 3000 }).show();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // DATE HELPERS
-        // ═══════════════════════════════════════════════════════════════
+        // ── Date Helpers ──
         function formatDateForSheet(dateString) {
             if (!dateString) return "";
-            const [y, m, d] = dateString.split("-");
-            return `${parseInt(d, 10)}/${parseInt(m, 10)}/${y}`;
+            const parts = dateString.split("-");
+            return parseInt(parts[2], 10) + "/" + parseInt(parts[1], 10) + "/" + parts[0];
         }
         function todayStr() {
             const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        }
-        function parseAnyDate(dateStr) {
-            if (!dateStr) return null;
-            // D/M/YYYY or DD/MM/YYYY or YYYY-MM-DD
-            let parts = dateStr.split(/[-\/]/);
-            if (parts.length !== 3) return null;
-            let day, month, year;
-            if (parts[0].length === 4) { [year, month, day] = parts; }
-            else { [day, month, year] = parts; }
-            if (year.length === 2) year = "20" + year;
-            return new Date(year, month - 1, day);
+            return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // GRID SYSTEM (Manual Entry)
-        // ═══════════════════════════════════════════════════════════════
+        // ── Grid System ──
         function createGridRowHTML(rowNum) {
-            const inputs = DATA_FIELDS.map((field, i) => {
-                const type = DATA_TYPES[i];
-                const placeholder = DATA_LABELS[i];
-                if (type === 'date') return `<td><input type="date" class="grid-input" data-field="${field}" data-row="${rowNum}" placeholder="${placeholder}"></td>`;
-                else if (type === 'number') return `<td><input type="number" class="grid-input" data-field="${field}" data-row="${rowNum}" placeholder="${placeholder}" min="0"></td>`;
-                else return `<td><input type="text" class="grid-input" data-field="${field}" data-row="${rowNum}" placeholder="${placeholder}" autocomplete="off"></td>`;
-            }).join('');
-            return `<tr id="gridRow${rowNum}">
-                <td class="row-num"><span class="row-num-text">${rowNum}</span><button class="delete-row-btn" onclick="deleteGridRow(${rowNum})">×</button></td>
-                ${inputs}
-            </tr>`;
+            var inputs = "";
+            for (var i = 0; i < DATA_FIELDS.length; i++) {
+                var field = DATA_FIELDS[i];
+                var type = DATA_TYPES[i];
+                var placeholder = DATA_LABELS[i];
+                var inputTag;
+                if (type === 'date') {
+                    inputTag = '<input type="date" class="grid-input" data-field="' + field + '" data-row="' + rowNum + '" placeholder="' + placeholder + '">';
+                } else if (type === 'number') {
+                    inputTag = '<input type="number" class="grid-input" data-field="' + field + '" data-row="' + rowNum + '" placeholder="' + placeholder + '" min="0">';
+                } else {
+                    inputTag = '<input type="text" class="grid-input" data-field="' + field + '" data-row="' + rowNum + '" placeholder="' + placeholder + '" autocomplete="off">';
+                }
+                inputs += '<td>' + inputTag + '</td>';
+            }
+            return '<tr id="gridRow' + rowNum + '">' +
+                '<td class="row-num"><span class="row-num-text">' + rowNum + '</span><button class="delete-row-btn" onclick="window.app.deleteGridRow(' + rowNum + ')">×</button></td>' +
+                inputs + '</tr>';
         }
+
         function addGridRow() {
             gridRowCount++;
-            const tbody = document.getElementById('entryGridBody');
-            const temp = document.createElement('tbody');
+            var tbody = document.getElementById('entryGridBody');
+            var temp = document.createElement('tbody');
             temp.innerHTML = createGridRowHTML(gridRowCount);
             tbody.appendChild(temp.firstElementChild);
             updateGridPendingCount();
-            const newRow = document.getElementById(`gridRow${gridRowCount}`);
-            const firstInput = newRow.querySelector('input');
+            var newRow = document.getElementById('gridRow' + gridRowCount);
+            var firstInput = newRow.querySelector('input');
             if (firstInput) firstInput.focus();
         }
-        function addGridRows(count) { for (let i = 0; i < count; i++) addGridRow(); }
+
+        function addGridRows(count) {
+            for (var i = 0; i < count; i++) addGridRow();
+        }
+
         function deleteGridRow(rowNum) {
-            const row = document.getElementById(`gridRow${rowNum}`);
+            var row = document.getElementById('gridRow' + rowNum);
             if (row) { row.remove(); updateGridPendingCount(); }
         }
+
         function clearAllGridRows() {
             if (gridRowCount > 0 && !confirm('Clear all rows?')) return;
             document.getElementById('entryGridBody').innerHTML = '';
@@ -643,49 +641,58 @@
             updateGridPendingCount();
             showToast('Grid cleared. 5 new rows ready.', 'info');
         }
+
         function updateGridPendingCount() {
-            const filled = getGridData().length;
-            const badge = document.getElementById('gridPendingCount');
-            badge.textContent = `${filled} pending`;
+            var filled = getGridData().length;
+            var badge = document.getElementById('gridPendingCount');
+            badge.textContent = filled + ' pending';
             badge.className = filled > 0 ? 'badge bg-warning text-dark ms-2' : 'badge bg-secondary ms-2';
         }
+
         function getGridData() {
-            const rows = [];
-            for (let i = 1; i <= gridRowCount; i++) {
-                const rowEl = document.getElementById(`gridRow${i}`);
+            var rows = [];
+            for (var i = 1; i <= gridRowCount; i++) {
+                var rowEl = document.getElementById('gridRow' + i);
                 if (!rowEl) continue;
-                const inputs = rowEl.querySelectorAll('.grid-input');
-                const rowData = [];
-                let hasValue = false;
-                inputs.forEach((input, idx) => {
-                    let val = input.value.trim();
-                    if (DATA_TYPES[idx] === 'date' && val) val = formatDateForSheet(val);
+                var inputs = rowEl.querySelectorAll('.grid-input');
+                var rowData = [];
+                var hasValue = false;
+                for (var j = 0; j < inputs.length; j++) {
+                    var val = inputs[j].value.trim();
+                    if (DATA_TYPES[j] === 'date' && val) val = formatDateForSheet(val);
                     if (val) hasValue = true;
                     rowData.push(val);
-                });
+                }
                 if (hasValue) rows.push(rowData);
             }
             return rows;
         }
+
         function validateRows(rows) {
-            const errors = [];
-            rows.forEach((row, idx) => {
-                const emptyIndices = [];
-                row.forEach((cell, i) => { if (!cell) emptyIndices.push(DATA_LABELS[i]); });
-                if (emptyIndices.length > 0) errors.push(`Row ${idx + 1}: Missing ${emptyIndices.join(', ')}`);
-            });
+            var errors = [];
+            for (var idx = 0; idx < rows.length; idx++) {
+                var row = rows[idx];
+                var emptyIndices = [];
+                for (var i = 0; i < row.length; i++) {
+                    if (!row[i]) emptyIndices.push(DATA_LABELS[i]);
+                }
+                if (emptyIndices.length > 0) {
+                    errors.push('Row ' + (idx + 1) + ': Missing ' + emptyIndices.join(', '));
+                }
+            }
             return errors;
         }
+
         async function saveGridRows() {
-            const rows = getGridData();
+            var rows = getGridData();
             if (rows.length === 0) { showToast('No data to save. Fill at least one row.', 'warning'); return; }
-            const errors = validateRows(rows);
+            var errors = validateRows(rows);
             if (errors.length > 0) { showToast(errors[0], 'warning'); return; }
             showLoading(true);
             try {
-                const result = await saveToSheet(rows);
+                var result = await saveToSheet(rows);
                 if (result.success) {
-                    showToast(`${rows.length} row(s) saved!`, 'success');
+                    showToast(rows.length + ' row(s) saved!', 'success');
                     document.getElementById('entryGridBody').innerHTML = '';
                     gridRowCount = 0;
                     addGridRows(5);
@@ -696,22 +703,20 @@
             finally { showLoading(false); }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // BULK PASTE FROM EXCEL
-        // ═══════════════════════════════════════════════════════════════
-        function handlePaste(e) {
-            // Let the paste go into the textarea naturally, then auto-preview after a short delay
-            setTimeout(() => {
-                const text = document.getElementById('pasteArea').value.trim();
+        // ── Bulk Paste ──
+        function handlePasteEvent(e) {
+            setTimeout(function() {
+                var text = document.getElementById('pasteArea').value.trim();
                 if (text) previewPaste();
             }, 100);
         }
-        function handleDrop(e) {
+
+        function handleDropEvent(e) {
             e.preventDefault();
             e.currentTarget.classList.remove('dragover');
-            const files = e.dataTransfer.files;
+            var files = e.dataTransfer.files;
             if (files.length > 0 && files[0].name.endsWith('.csv')) {
-                const reader = new FileReader();
+                var reader = new FileReader();
                 reader.onload = function(evt) {
                     document.getElementById('pasteArea').value = evt.target.result;
                     previewPaste();
@@ -721,84 +726,90 @@
                 showToast('Please drop a .csv file', 'warning');
             }
         }
+
         function parsePasteText(text) {
-            const lines = text.split(/
+            var lines = text.split(/
 ?
-/).filter(l => l.trim() !== "");
-            return lines.map(line => {
-                // Split by tab first, then by comma if no tabs found
-                let cols;
+/).filter(function(l) { return l.trim() !== ""; });
+            return lines.map(function(line) {
+                var cols;
                 if (line.includes('	')) {
                     cols = line.split('	');
                 } else if (line.includes(',')) {
-                    // Simple CSV parse (no quoted commas handling for simplicity)
                     cols = line.split(',');
                 } else {
-                    cols = line.split(/\s{2,}/); // multiple spaces
+                    cols = line.split(/\s{2,}/);
                 }
-                return cols.map(c => c.trim()).filter(c => c !== '');
+                return cols.map(function(c) { return c.trim(); }).filter(function(c) { return c !== ''; });
             });
         }
+
         function autoFormatDate(cell) {
             if (!cell) return "";
-            // If it looks like YYYY-MM-DD, convert to D/M/YYYY
             if (/^\d{4}-\d{2}-\d{2}$/.test(cell)) {
-                const [y, m, d] = cell.split("-");
-                return `${parseInt(d, 10)}/${parseInt(m, 10)}/${y}`;
+                var parts = cell.split("-");
+                return parseInt(parts[2], 10) + "/" + parseInt(parts[1], 10) + "/" + parts[0];
             }
-            // If it looks like DD/MM/YYYY or D/M/YYYY, keep as-is
             if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/.test(cell)) {
-                const parts = cell.split(/[\/\-]/);
-                let day = parts[0], month = parts[1], year = parts[2];
+                var parts = cell.split(/[\/\-]/);
+                var day = parts[0], month = parts[1], year = parts[2];
                 if (year.length === 2) year = "20" + year;
-                return `${parseInt(day, 10)}/${parseInt(month, 10)}/${year}`;
+                return parseInt(day, 10) + "/" + parseInt(month, 10) + "/" + year;
             }
             return cell;
         }
+
         function previewPaste() {
-            const text = document.getElementById("pasteArea").value.trim();
+            var text = document.getElementById("pasteArea").value.trim();
             if (!text) { showToast('Paste area is empty', 'warning'); return; }
 
-            const rawRows = parsePasteText(text);
+            var rawRows = parsePasteText(text);
             if (rawRows.length === 0) { showToast('No valid rows found', 'warning'); return; }
 
-            // Auto-format dates in first two columns
-            currentPasteRows = rawRows.map(row => {
-                const formatted = [...row];
+            currentPasteRows = rawRows.map(function(row) {
+                var formatted = row.slice();
                 if (formatted[0]) formatted[0] = autoFormatDate(formatted[0]);
                 if (formatted[1]) formatted[1] = autoFormatDate(formatted[1]);
                 return formatted;
             });
 
-            // Build preview table
-            const thead = document.getElementById('previewTableHeader');
-            const tbody = document.getElementById('previewTableBody');
+            var thead = document.getElementById('previewTableHeader');
+            var tbody = document.getElementById('previewTableBody');
 
-            thead.innerHTML = '<th class="preview-row-num">#</th>' +
-                DATA_LABELS.map(l => `<th>${l}</th>`).join('');
+            var headerHtml = '<th class="preview-row-num">#</th>';
+            for (var i = 0; i < DATA_LABELS.length; i++) {
+                headerHtml += '<th>' + DATA_LABELS[i] + '</th>';
+            }
+            thead.innerHTML = headerHtml;
 
-            tbody.innerHTML = currentPasteRows.map((row, idx) => {
-                const cells = DATA_LABELS.map((label, i) => {
-                    const val = row[i] || '';
-                    const isEmpty = !val;
-                    return `<td style="${isEmpty ? 'background:rgba(220,53,69,0.08);color:var(--danger);' : ''}">${val || '<i class="bi bi-exclamation-circle" style="opacity:0.5;"></i> empty'}</td>`;
-                }).join('');
-                return `<tr><td class="preview-row-num">${idx + 1}</td>${cells}</tr>`;
-            }).join('');
+            var bodyHtml = '';
+            for (var idx = 0; idx < currentPasteRows.length; idx++) {
+                var row = currentPasteRows[idx];
+                var cellsHtml = '';
+                for (var i = 0; i < DATA_LABELS.length; i++) {
+                    var val = row[i] || '';
+                    var isEmpty = !val;
+                    var style = isEmpty ? 'background:rgba(220,53,69,0.08);color:var(--danger);' : '';
+                    var display = val || '<i class="bi bi-exclamation-circle" style="opacity:0.5;"></i> empty';
+                    cellsHtml += '<td style="' + style + '">' + display + '</td>';
+                }
+                bodyHtml += '<tr><td class="preview-row-num">' + (idx + 1) + '</td>' + cellsHtml + '</tr>';
+            }
+            tbody.innerHTML = bodyHtml;
 
             document.getElementById('pastePreviewBox').style.display = 'block';
             document.getElementById('pasteActions').style.display = 'grid';
             document.getElementById('pasteRowCount').textContent = currentPasteRows.length;
             updatePastePendingCount();
 
-            // Validate column count
-            const badRows = currentPasteRows.filter(r => r.length !== 11);
+            var badRows = currentPasteRows.filter(function(r) { return r.length !== 11; });
             if (badRows.length > 0) {
-                showToast(`${badRows.length} row(s) don't have exactly 11 columns. Check your data.`, 'warning');
+                showToast(badRows.length + ' row(s) do not have exactly 11 columns. Check your data.', 'warning');
             } else {
-                showToast(`${currentPasteRows.length} rows ready to upload`, 'success');
+                showToast(currentPasteRows.length + ' rows ready to upload', 'success');
             }
         }
+
         function clearPaste() {
             document.getElementById('pasteArea').value = '';
             document.getElementById('pastePreviewBox').style.display = 'none';
@@ -806,29 +817,30 @@
             currentPasteRows = [];
             updatePastePendingCount();
         }
+
         function updatePastePendingCount() {
-            const badge = document.getElementById('pastePendingCount');
-            badge.textContent = `${currentPasteRows.length} pending`;
+            var badge = document.getElementById('pastePendingCount');
+            badge.textContent = currentPasteRows.length + ' pending';
             badge.className = currentPasteRows.length > 0 ? 'badge bg-warning text-dark ms-2' : 'badge bg-secondary ms-2';
         }
+
         async function uploadPasteRows() {
             if (currentPasteRows.length === 0) { showToast('No rows to upload', 'warning'); return; }
 
-            // Pad or trim to exactly 11 columns
-            const normalized = currentPasteRows.map(row => {
-                const padded = [...row];
+            var normalized = currentPasteRows.map(function(row) {
+                var padded = row.slice();
                 while (padded.length < 11) padded.push('');
                 return padded.slice(0, 11);
             });
 
-            const errors = validateRows(normalized);
+            var errors = validateRows(normalized);
             if (errors.length > 0) { showToast(errors[0], 'warning'); return; }
 
             showLoading(true);
             try {
-                const result = await saveToSheet(normalized);
+                var result = await saveToSheet(normalized);
                 if (result.success) {
-                    showToast(`${normalized.length} row(s) uploaded from Excel!`, 'success');
+                    showToast(normalized.length + ' row(s) uploaded from Excel!', 'success');
                     clearPaste();
                     fetchAllData();
                 } else { showToast(result.error || 'Upload failed', 'danger'); }
@@ -836,15 +848,13 @@
             finally { showLoading(false); }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // API
-        // ═══════════════════════════════════════════════════════════════
+        // ── API ──
         async function fetchAllData() {
-            const refreshIcon = document.getElementById('refreshIcon');
+            var refreshIcon = document.getElementById('refreshIcon');
             refreshIcon.classList.add('fa-spin');
             showLoading(true);
             try {
-                const response = await fetch(`${WEB_APP_URL}?action=read`);
+                var response = await fetch(WEB_APP_URL + '?action=read');
                 allData = await response.json();
                 updateStats();
                 populateMachineDropdown();
@@ -854,8 +864,9 @@
             } catch (err) { showToast('Failed to refresh', 'danger'); }
             finally { showLoading(false); refreshIcon.classList.remove('fa-spin'); }
         }
+
         async function saveToSheet(rows) {
-            const response = await fetch(WEB_APP_URL, {
+            var response = await fetch(WEB_APP_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify(rows)
@@ -863,22 +874,20 @@
             return await response.json();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // STATS
-        // ═══════════════════════════════════════════════════════════════
+        // ── Stats ──
         function updateStats() {
             document.getElementById('statTotalRecords').textContent = allData.length.toLocaleString();
-            const today = new Date(); today.setHours(0,0,0,0);
-            const todayRecords = allData.filter(r => {
-                const ts = r['Timestamp']; if (!ts) return false;
-                let d;
+            var today = new Date(); today.setHours(0,0,0,0);
+            var todayRecords = allData.filter(function(r) {
+                var ts = r['Timestamp']; if (!ts) return false;
+                var d;
                 if (ts instanceof Date) d = ts;
                 else {
-                    const parts = ts.split(' ');
+                    var parts = ts.split(' ');
                     if (parts.length >= 1) {
-                        const dp = parts[0].split('-');
+                        var dp = parts[0].split('-');
                         if (dp.length === 3) {
-                            const yy = dp[2].length === 2 ? '20' + dp[2] : dp[2];
+                            var yy = dp[2].length === 2 ? '20' + dp[2] : dp[2];
                             d = new Date(yy, dp[1]-1, dp[0]);
                         }
                     }
@@ -887,209 +896,235 @@
                 return d.toDateString() === today.toDateString();
             });
             document.getElementById('statTodayRecords').textContent = todayRecords.length;
-            const machines = new Set(allData.map(r => r['Machine No.']).filter(Boolean));
+            var machines = new Set(allData.map(function(r) { return r['Machine No.']; }).filter(Boolean));
             document.getElementById('statActiveMachines').textContent = machines.size;
-            const totalQty = allData.reduce((sum, r) => sum + (parseFloat(r['Qty']) || 0), 0);
+            var totalQty = allData.reduce(function(sum, r) { return sum + (parseFloat(r['Qty']) || 0); }, 0);
             document.getElementById('statTotalQty').textContent = totalQty.toLocaleString();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // DROPDOWNS
-        // ═══════════════════════════════════════════════════════════════
+        // ── Dropdowns ──
         function populateMachineDropdown() {
-            const select = document.getElementById("machineSelect");
-            const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
-            const current = select.value;
-            select.innerHTML = `<option value="">All Machines</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
+            var select = document.getElementById("machineSelect");
+            var machines = [...new Set(allData.map(function(r) { return r["Machine No."]; }).filter(Boolean))].sort();
+            var current = select.value;
+            select.innerHTML = '<option value="">All Machines</option>' + machines.map(function(m) { return '<option value="' + m + '">' + m + '</option>'; }).join("");
             select.value = current;
         }
         function populateSummaryMachineDropdown() {
-            const select = document.getElementById("summaryMachineSelect");
-            const machines = [...new Set(allData.map(r => r["Machine No."]).filter(Boolean))].sort();
-            const current = select.value;
-            select.innerHTML = `<option value="">All</option>` + machines.map(m => `<option value="${m}">${m}</option>`).join("");
+            var select = document.getElementById("summaryMachineSelect");
+            var machines = [...new Set(allData.map(function(r) { return r["Machine No."]; }).filter(Boolean))].sort();
+            var current = select.value;
+            select.innerHTML = '<option value="">All</option>' + machines.map(function(m) { return '<option value="' + m + '">' + m + '</option>'; }).join("");
             select.value = current;
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // TABLE RENDERING
-        // ═══════════════════════════════════════════════════════════════
+        // ── Table Rendering ──
         function renderTable(tableId, data) {
-            const tbody = document.querySelector(`#${tableId} tbody`);
-            const thead = document.querySelector(`#${tableId} thead tr`);
-            thead.innerHTML = COLUMN_HEADERS.map(h => `<th>${h}</th>`).join("");
-            tbody.innerHTML = data.map(row => `<tr>${COLUMN_HEADERS.map(h => `<td>${row[h] || ""}</td>`).join("")}</tr>`).join("");
+            var tbody = document.querySelector('#' + tableId + ' tbody');
+            var thead = document.querySelector('#' + tableId + ' thead tr');
+            thead.innerHTML = COLUMN_HEADERS.map(function(h) { return '<th>' + h + '</th>'; }).join("");
+            tbody.innerHTML = data.map(function(row) {
+                return '<tr>' + COLUMN_HEADERS.map(function(h) { return '<td>' + (row[h] || "") + '</td>'; }).join("") + '</tr>';
+            }).join("");
             return data.length;
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // DAILY TAB
-        // ═══════════════════════════════════════════════════════════════
+        // ── Daily Tab ──
         function loadDailyData() {
-            const m = document.getElementById("machineSelect").value;
-            const dRaw = document.getElementById("dailyDateInput").value;
-            const partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
-            const laserByQuery = document.getElementById("laserBySearch").value.toLowerCase().trim();
+            var m = document.getElementById("machineSelect").value;
+            var dRaw = document.getElementById("dailyDateInput").value;
+            var partQuery = document.getElementById("partSearch").value.toLowerCase().trim();
+            var laserByQuery = document.getElementById("laserBySearch").value.toLowerCase().trim();
 
-            let filtered = allData;
-            if (m) filtered = filtered.filter(r => String(r["Machine No."]).trim() === String(m).trim());
-            if (partQuery) filtered = filtered.filter(r => String(r["Part No."]).toLowerCase().includes(partQuery));
-            if (laserByQuery) filtered = filtered.filter(r => String(r["Laser by"]).toLowerCase().includes(laserByQuery));
+            var filtered = allData;
+            if (m) filtered = filtered.filter(function(r) { return String(r["Machine No."]).trim() === String(m).trim(); });
+            if (partQuery) filtered = filtered.filter(function(r) { return String(r["Part No."]).toLowerCase().includes(partQuery); });
+            if (laserByQuery) filtered = filtered.filter(function(r) { return String(r["Laser by"]).toLowerCase().includes(laserByQuery); });
 
             if (dRaw) {
-                const parts = dRaw.split("-");
-                const yyyy = parts[0], mm = parts[1], dd = parts[2];
-                const mmNoZero = parseInt(mm, 10).toString();
-                const ddNoZero = parseInt(dd, 10).toString();
-                const yy = yyyy.slice(-2);
-                const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                const monthName = months[parseInt(mm, 10) - 1];
-                const validFormats = [
-                    `${ddNoZero}/${mmNoZero}/${yyyy}`, `${dd}/${mm}/${yyyy}`,
-                    `${dd}-${mm}-${yy}`, `${dd}-${monthName}-${yyyy}`, `${yyyy}-${mm}-${dd}`
+                var parts = dRaw.split("-");
+                var yyyy = parts[0], mm = parts[1], dd = parts[2];
+                var mmNoZero = parseInt(mm, 10).toString();
+                var ddNoZero = parseInt(dd, 10).toString();
+                var yy = yyyy.slice(-2);
+                var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                var monthName = months[parseInt(mm, 10) - 1];
+                var validFormats = [
+                    ddNoZero + '/' + mmNoZero + '/' + yyyy,
+                    dd + '/' + mm + '/' + yyyy,
+                    dd + '-' + mm + '-' + yy,
+                    dd + '-' + monthName + '-' + yyyy,
+                    yyyy + '-' + mm + '-' + dd
                 ];
-                filtered = filtered.filter(r => {
-                    const rowDateStr = String(r["Lasered Date"]).trim();
+                filtered = filtered.filter(function(r) {
+                    var rowDateStr = String(r["Lasered Date"]).trim();
                     if (!rowDateStr) return false;
-                    return validFormats.some(format => rowDateStr === format);
+                    return validFormats.some(function(format) { return rowDateStr === format; });
                 });
             }
-            const count = renderTable("dailyTable", filtered);
+            var count = renderTable("dailyTable", filtered);
             document.getElementById("dailyNoData").style.display = count > 0 ? "none" : "block";
-            document.getElementById("dailyCountBadge").textContent = `${count} records`;
+            document.getElementById("dailyCountBadge").textContent = count + ' records';
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // SUMMARY TAB
-        // ═══════════════════════════════════════════════════════════════
+        // ── Summary Tab ──
         function loadSummaryData() {
-            const fromRaw = document.getElementById("fromDate").value;
-            const toRaw = document.getElementById("toDate").value;
-            const machine = document.getElementById("summaryMachineSelect").value;
-            const customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
+            var fromRaw = document.getElementById("fromDate").value;
+            var toRaw = document.getElementById("toDate").value;
+            var machine = document.getElementById("summaryMachineSelect").value;
+            var customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
 
-            const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
-            const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+            var fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            var toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
 
-            let filtered = allData.filter(r => {
-                const rowDateStr = r["Lasered Date"]; if (!rowDateStr) return false;
-                let parts = rowDateStr.split(/[-\/]/); if (parts.length !== 3) return true;
-                let day, month, year;
-                if (parts[0].length === 4) { [year, month, day] = parts; }
-                else { [day, month, year] = parts; }
+            var filtered = allData.filter(function(r) {
+                var rowDateStr = r["Lasered Date"]; if (!rowDateStr) return false;
+                var parts = rowDateStr.split(/[-\/]/); if (parts.length !== 3) return true;
+                var day, month, year;
+                if (parts[0].length === 4) { year = parts[0]; month = parts[1]; day = parts[2]; }
+                else { day = parts[0]; month = parts[1]; year = parts[2]; }
                 if (year.length === 2) year = "20" + year;
-                const rowTime = new Date(year, month - 1, day).getTime();
+                var rowTime = new Date(year, month - 1, day).getTime();
                 if (fromTime && rowTime < fromTime) return false;
                 if (toTime && rowTime > toTime) return false;
                 return true;
             });
-            if (machine) filtered = filtered.filter(r => String(r["Machine No."]).trim() === machine);
-            if (customerQuery) filtered = filtered.filter(r => String(r["Customer"]).toLowerCase().includes(customerQuery));
+            if (machine) filtered = filtered.filter(function(r) { return String(r["Machine No."]).trim() === machine; });
+            if (customerQuery) filtered = filtered.filter(function(r) { return String(r["Customer"]).toLowerCase().includes(customerQuery); });
 
-            const count = renderTable("summaryTable", filtered);
+            var count = renderTable("summaryTable", filtered);
             document.getElementById("summaryNoData").style.display = count > 0 ? "none" : "block";
-            document.getElementById("summaryCountBadge").textContent = `${count} records`;
+            document.getElementById("summaryCountBadge").textContent = count + ' records';
 
             if (count > 0) {
                 document.getElementById('summaryStats').style.display = 'flex';
                 document.getElementById('sumTotalRecords').textContent = count;
-                const totalQty = filtered.reduce((sum, r) => sum + (parseFloat(r['Qty']) || 0), 0);
+                var totalQty = filtered.reduce(function(sum, r) { return sum + (parseFloat(r['Qty']) || 0); }, 0);
                 document.getElementById('sumTotalQty').textContent = totalQty.toLocaleString();
-                document.getElementById('sumUniqueOperators').textContent = new Set(filtered.map(r => r['Laser by']).filter(Boolean)).size;
-                document.getElementById('sumUniqueCustomers').textContent = new Set(filtered.map(r => r['Customer']).filter(Boolean)).size;
+                document.getElementById('sumUniqueOperators').textContent = new Set(filtered.map(function(r) { return r['Laser by']; }).filter(Boolean)).size;
+                document.getElementById('sumUniqueCustomers').textContent = new Set(filtered.map(function(r) { return r['Customer']; }).filter(Boolean)).size;
             } else { document.getElementById('summaryStats').style.display = 'none'; }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // EXPORT
-        // ═══════════════════════════════════════════════════════════════
+        // ── Export ──
         function exportToExcel() {
-            const fromRaw = document.getElementById("fromDate").value;
-            const toRaw = document.getElementById("toDate").value;
-            const machine = document.getElementById("summaryMachineSelect").value;
-            const customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
-            const fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
-            const toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
+            var fromRaw = document.getElementById("fromDate").value;
+            var toRaw = document.getElementById("toDate").value;
+            var machine = document.getElementById("summaryMachineSelect").value;
+            var customerQuery = document.getElementById("summaryCustomerSearch").value.toLowerCase().trim();
+            var fromTime = fromRaw ? new Date(fromRaw).setHours(0,0,0,0) : null;
+            var toTime = toRaw ? new Date(toRaw).setHours(23,59,59,999) : null;
 
-            let filtered = allData.filter(r => {
-                const rowDateStr = r["Lasered Date"]; if (!rowDateStr) return false;
-                let parts = rowDateStr.split(/[-\/]/); if (parts.length !== 3) return true;
-                let day, month, year;
-                if (parts[0].length === 4) { [year, month, day] = parts; }
-                else { [day, month, year] = parts; }
+            var filtered = allData.filter(function(r) {
+                var rowDateStr = r["Lasered Date"]; if (!rowDateStr) return false;
+                var parts = rowDateStr.split(/[-\/]/); if (parts.length !== 3) return true;
+                var day, month, year;
+                if (parts[0].length === 4) { year = parts[0]; month = parts[1]; day = parts[2]; }
+                else { day = parts[0]; month = parts[1]; year = parts[2]; }
                 if (year.length === 2) year = "20" + year;
-                const rowTime = new Date(year, month - 1, day).getTime();
+                var rowTime = new Date(year, month - 1, day).getTime();
                 if (fromTime && rowTime < fromTime) return false;
                 if (toTime && rowTime > toTime) return false;
                 return true;
             });
-            if (machine) filtered = filtered.filter(r => String(r["Machine No."]).trim() === machine);
-            if (customerQuery) filtered = filtered.filter(r => String(r["Customer"]).toLowerCase().includes(customerQuery));
+            if (machine) filtered = filtered.filter(function(r) { return String(r["Machine No."]).trim() === machine; });
+            if (customerQuery) filtered = filtered.filter(function(r) { return String(r["Customer"]).toLowerCase().includes(customerQuery); });
 
-            let csv = COLUMN_HEADERS.join(",") + "
+            var csv = COLUMN_HEADERS.join(",") + "
 ";
-            filtered.forEach(row => {
-                csv += COLUMN_HEADERS.map(h => `"${(row[h] || "").toString().replace(/"/g, '""')}"`).join(",") + "
+            filtered.forEach(function(row) {
+                csv += COLUMN_HEADERS.map(function(h) {
+                    return '"' + (row[h] || "").toString().replace(/"/g, '""') + '"';
+                }).join(",") + "
 ";
             });
-            const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
+            var blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement("a");
             a.href = url;
-            a.download = `Laser_Data_${new Date().toISOString().slice(0,10)}.csv`;
+            a.download = 'Laser_Data_' + new Date().toISOString().slice(0,10) + '.csv';
             a.click();
             window.URL.revokeObjectURL(url);
-            showToast(`Exported ${filtered.length} records`, 'success');
+            showToast('Exported ' + filtered.length + ' records', 'success');
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // TAB SWITCHING
-        // ═══════════════════════════════════════════════════════════════
+        // ── Tab Switching ──
         function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll(".tab-pane").forEach(el => { el.style.display = "none"; el.classList.remove('animate-in'); });
-            const target = document.getElementById(`tabContent${tab}`);
-            target.style.display = "block"; target.classList.add('animate-in');
-            document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-            document.getElementById(`tab${tab}`).classList.add("active");
+            document.querySelectorAll(".tab-pane").forEach(function(el) {
+                el.style.display = "none";
+                el.classList.remove('animate-in');
+            });
+            var target = document.getElementById('tabContent' + tab);
+            target.style.display = "block";
+            target.classList.add('animate-in');
+            document.querySelectorAll(".nav-link").forEach(function(l) { l.classList.remove("active"); });
+            document.getElementById('tab' + tab).classList.add("active");
             if (tab > 1) fetchAllData();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // KEYBOARD SHORTCUTS
-        // ═══════════════════════════════════════════════════════════════
+        // ── Keyboard Shortcuts ──
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'Enter' && currentTab === 1) {
                 e.preventDefault();
-                // If paste area is focused, upload paste. Otherwise save grid.
-                if (document.activeElement && document.activeElement.id === 'pasteArea') {
+                var active = document.activeElement;
+                if (active && active.id === 'pasteArea') {
                     if (currentPasteRows.length > 0) uploadPasteRows();
                     else previewPaste();
                 } else {
                     saveGridRows();
                 }
             }
-            if (e.key === 'Tab' && currentTab === 1) {
-                const active = document.activeElement;
-                if (active && active.classList.contains('grid-input')) {
-                    const rowNum = parseInt(active.dataset.row);
-                    const isLastCell = active.parentElement === active.parentElement.parentElement.lastElementChild;
-                    if (isLastCell && rowNum === gridRowCount && !e.shiftKey) {
-                        setTimeout(() => addGridRow(), 50);
-                    }
-                }
+        });
+
+        // ── Event Listeners for Paste Area ──
+        document.addEventListener('DOMContentLoaded', function() {
+            var pasteArea = document.getElementById('pasteArea');
+            if (pasteArea) {
+                pasteArea.addEventListener('paste', handlePasteEvent);
+            }
+            var dropZone = document.getElementById('pasteDropZone');
+            if (dropZone) {
+                dropZone.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
+                dropZone.addEventListener('dragleave', function(e) { this.classList.remove('dragover'); });
+                dropZone.addEventListener('drop', handleDropEvent);
             }
         });
 
-        // ═══════════════════════════════════════════════════════════════
-        // INIT
-        // ═══════════════════════════════════════════════════════════════
-        window.onload = function() {
+        // ── Init ──
+        function init() {
             initTheme();
             addGridRows(5);
             document.getElementById('dailyDateInput').value = todayStr();
             fetchAllData();
+        }
+
+        // Expose all functions to window.app so onclick handlers work
+        window.app = {
+            toggleTheme: toggleTheme,
+            fetchAllData: fetchAllData,
+            switchTab: switchTab,
+            addGridRow: addGridRow,
+            addGridRows: addGridRows,
+            deleteGridRow: deleteGridRow,
+            clearAllGridRows: clearAllGridRows,
+            saveGridRows: saveGridRows,
+            previewPaste: previewPaste,
+            clearPaste: clearPaste,
+            uploadPasteRows: uploadPasteRows,
+            loadDailyData: loadDailyData,
+            loadSummaryData: loadSummaryData,
+            exportToExcel: exportToExcel
         };
+
+        // Run init when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
     </script>
 </body>
 </html>
